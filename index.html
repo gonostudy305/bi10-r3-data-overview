@@ -42,7 +42,7 @@ header.top .sub { font-size: 12px; opacity: .75; }
 .theme-btn:hover { background: rgba(255,255,255,.2); }
 .theme-btn:focus-visible, .filters select:focus-visible { outline: 2px solid #9ec5e8; outline-offset: 2px; }
 .theme-btn svg { width: 15px; height: 15px; flex: none; }
-h2.sec { font-size: 15px; font-weight: 650; margin: 22px 2px 10px; display: flex; gap: 8px; align-items: baseline; }
+h2.sec { font-size: 15px; font-weight: 650; margin: 22px 2px 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
 h2.sec small { font-weight: 400; color: var(--muted); font-size: 12px; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--gap); }
 .kpi { background: var(--card); border-radius: var(--radius); padding: 16px 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
@@ -64,6 +64,9 @@ h2.sec small { font-weight: 400; color: var(--muted); font-size: 12px; }
            box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .insight.warn { border-left-color: var(--warn); }
 .insight .t { font-weight: 650; margin-bottom: 2px; }
+.review-card ul { margin: 8px 0 0 18px; }
+.review-card li { margin: 6px 0; }
+.review-card p { margin-top: 8px; }
 .tbl-wrap { overflow-x: auto; max-height: 560px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
 thead th { position: sticky; top: 0; background: var(--card); text-align: left; padding: 8px 10px;
@@ -108,14 +111,14 @@ footer ul { margin: 6px 0 0 18px; }
   <h2 class="sec">1. Hợp đồng theo thời gian <small>contract · 01/2025 – 09/2026 · lọc theo Sản phẩm</small></h2>
   <div class="grid">
     <div class="card" style="grid-column: span 2; min-width: 0">
-      <h3>Hồ sơ nộp và hợp đồng giải ngân theo tháng</h3>
-      <div class="cap">Cột: số hồ sơ (date_apply) theo sản phẩm · Đường: tỷ lệ booked = booked / hồ sơ</div>
+      <h3>Hồ sơ nộp và hồ sơ booked proxy theo tháng</h3>
+      <div class="cap">Cột: hồ sơ theo date_apply · Đường: tỷ lệ hồ sơ thuộc nhóm booked proxy / hồ sơ nộp</div>
       <div class="chart tall"><canvas id="c-monthly"></canvas></div>
     </div>
   </div>
   <div class="grid three" style="margin-top: var(--gap)">
     <div class="card">
-      <h3>Cơ cấu hợp đồng booked theo sản phẩm</h3>
+      <h3>Cơ cấu hồ sơ thuộc nhóm booked proxy theo sản phẩm</h3>
       <div class="cap">Toàn kỳ 21 tháng</div>
       <div class="chart"><canvas id="c-mix"></canvas></div>
     </div>
@@ -126,7 +129,7 @@ footer ul { margin: 6px 0 0 18px; }
     </div>
     <div class="card">
       <h3>Tỷ lệ cờ trễ kỳ 1 (dpd_1pd) theo tháng nộp</h3>
-      <div class="cap">Hợp đồng booked, nộp trước 06/2026 để kịp quan sát kỳ 1</div>
+      <div class="cap">Hồ sơ thuộc nhóm booked proxy, nộp trước 06/2026 để có thời gian quan sát dpd_1pd</div>
       <div class="chart"><canvas id="c-fpd"></canvas></div>
     </div>
   </div>
@@ -134,30 +137,31 @@ footer ul { margin: 6px 0 0 18px; }
   <h2 class="sec">2. Mạng lưới shop <small>salesroom × contract · 12 tháng gần nhất (10/2025 – 09/2026)</small></h2>
   <div class="grid">
     <div class="card">
-      <h3>Hợp đồng theo loại shop</h3>
-      <div class="cap">"Not in salesroom table" = mã shop có trong contract nhưng không có trong salesroom.xlsx · lọc theo Sản phẩm</div>
+      <h3>Hồ sơ theo danh mục shop</h3>
+      <div class="cap">"Not in salesroom table" = mã shop không khớp salesroom · không đủ căn cứ kết luận là kênh online · lọc theo Sản phẩm</div>
       <div class="chart"><canvas id="c-cat"></canvas></div>
     </div>
     <div class="card">
       <h3>Mức độ tập trung (Pareto)</h3>
-      <div class="cap">% hợp đồng booked L12M do x% shop đứng đầu tạo ra · tất cả shop có ≥1 booking</div>
+      <div class="cap">% hồ sơ booked proxy L12M do x% shop đứng đầu tạo ra · shop có ≥1 hồ sơ thuộc nhóm này</div>
       <div class="chart"><canvas id="c-pareto"></canvas></div>
     </div>
   </div>
   <div class="grid" style="margin-top: var(--gap)">
     <div class="card">
       <h3>Phân bố quy mô shop (shop có trong salesroom)</h3>
-      <div class="cap">Cột: số shop theo số hợp đồng booked L12M · Đường: số SA trung bình được gán/shop tại 30/09/2026</div>
+      <div class="cap">Cột: số shop theo số hồ sơ booked proxy L12M · Đường: số SA trung bình được gán/shop tại 30/09/2026</div>
       <div class="chart"><canvas id="c-size"></canvas></div>
     </div>
     <div class="card">
-      <h3>Shop và hợp đồng theo vùng</h3>
-      <div class="cap">Cột: số shop theo loại · Đường: hợp đồng booked L12M · lọc theo Vùng/Loại shop</div>
+      <h3>Shop và hồ sơ theo vùng</h3>
+      <div class="cap">Cột: số shop theo loại · Đường: hồ sơ booked proxy L12M · lọc theo Vùng/Loại shop</div>
       <div class="chart"><canvas id="c-area"></canvas></div>
     </div>
   </div>
 
-  <h2 class="sec">3. Lead và chuyển đổi <small>leads · 31/12/2025 – 17/10/2026 · số lead đã nhân sample_weight</small></h2>
+  <h2 class="sec">3. Lead và liên kết ứng viên với contract <small>leads · 31/12/2025 – 17/10/2026 · số liệu lead có nhân sample_weight</small></h2>
+  <div class="note"><b>Cách đọc:</b> số dòng lead, số UUID và số sau sample_weight là các đại lượng khác nhau. Biểu đồ ghép dùng ASOF để gán tối đa một contract ứng viên phù hợp cho mỗi lead; đây là candidate association theo một chính sách ghép, không xác nhận conversion hay đóng góp nhân quả. Hợp đồng dừng ở 30/09/2026 nên các lead cuối kỳ bị right-censored.</div>
   <div class="grid">
     <div class="card">
       <h3>Lead theo tháng gán (date_assigned)</h3>
@@ -165,15 +169,15 @@ footer ul { margin: 6px 0 0 18px; }
       <div class="chart"><canvas id="c-leads"></canvas></div>
     </div>
     <div class="card">
-      <h3>Tỷ lệ lead → hợp đồng theo quy tắc của đề</h3>
-      <div class="cap">Cùng khách + cùng sản phẩm + date_assigned ≤ date_apply · cột: % lead khớp · đường: % khớp trong 30 ngày</div>
+      <h3>Lead ghép với contract ứng viên (quy tắc đề)</h3>
+      <div class="cap">Cùng khách đã chuẩn hóa + cùng sản phẩm + date_assigned ≤ date_apply · mỗi lead chọn một contract ASOF gần nhất · đây là liên kết ứng viên, chưa phải conversion chính thức</div>
       <div class="chart"><canvas id="c-match"></canvas></div>
     </div>
   </div>
   <div class="grid three" style="margin-top: var(--gap)">
     <div class="card">
-      <h3>Lead chuyển thành hợp đồng được ký ở đâu?</h3>
-      <div class="cap">Theo loại shop tạo lead · % lead đã khớp</div>
+      <h3>Contract ứng viên được ghép với lead ở shop nào?</h3>
+      <div class="cap">Trong các lead có trọng số đã ghép được · ASOF theo rule ở trên</div>
       <div class="chart"><canvas id="c-cross"></canvas></div>
     </div>
     <div class="card">
@@ -188,7 +192,7 @@ footer ul { margin: 6px 0 0 18px; }
     </div>
   </div>
 
-  <h2 class="sec">4. Top 300 shop theo hợp đồng booked L12M <small>chỉ shop có trong salesroom · bấm tiêu đề cột để sắp xếp · lọc theo Vùng/Loại shop</small></h2>
+  <h2 class="sec">4. Top 300 shop theo hồ sơ booked proxy L12M <small>chỉ shop có trong salesroom · bấm tiêu đề cột để sắp xếp · lọc theo Vùng/Loại shop</small></h2>
   <div class="card">
     <div class="tbl-wrap"><table id="t-shops"></table></div>
   </div>
@@ -199,17 +203,71 @@ footer ul { margin: 6px 0 0 18px; }
     <div class="card"><div class="tbl-wrap"><table id="t-tables"></table></div></div>
   </div>
 
+  <h2 class="sec">6. Độ phủ, khóa nối và giới hạn dữ liệu <small>đối soát ClickHouse ngày 21/10/2026 · biểu đồ phía trên là snapshot 20/10/2026 22:07</small></h2>
+  <div class="grid">
+    <div class="card review-card">
+      <h3>Độ phủ giữa các bảng</h3>
+      <div class="cap">Tỷ lệ tính trên số dòng hoặc số mã được ghi rõ</div>
+      <ul>
+        <li><b>Contract → salesroom:</b> 621.387/3.775.371 hồ sơ khớp (16,46%); 3.153.984 hồ sơ (83,54%) thuộc 15.250 mã shop không có trong salesroom. Đây là thiếu mapping, <b>không phải bằng chứng kênh online/đối tác</b>.</li>
+        <li>Tỷ lệ contract khớp salesroom theo sản phẩm: CD 100%, TW 22,31%, BNPL 4,61%, CC 4,37%, CL 1,78%, CW 1,09%. Chưa có mapping chính thức giải thích phần chênh lệch.</li>
+        <li><b>Salesroom → seller:</b> 14.216/14.231 shop (99,89%). <b>Leads → salesroom:</b> 385.273/6.130.637 dòng lead thô (6,28%).</li>
+        <li><b>contract_product:</b> 784.902 dòng chi tiết đều nối được tới contract; có chi tiết cho 779.941/3.775.371 hồ sơ (20,66%), tối đa 5 dòng mỗi case. Gom về một dòng/case trước khi cộng giá trị tín dụng.</li>
+      </ul>
+    </div>
+    <div class="card review-card">
+      <h3>Lead và liên kết cross-sell</h3>
+      <div class="cap">Đếm dòng, UUID và trọng số riêng biệt</div>
+      <ul>
+        <li>Leads có 6.130.637 dòng và 5.921.646 <code>id_uuid</code> khác nhau; 208.991 dòng dư phát sinh từ 208.990 UUID lặp. Có 2.000.000 dòng mang <code>sample_weight = 19.662104</code>, đưa tổng có trọng số lên 43.454.845. Ý nghĩa trọng số cần BTC xác nhận; không gọi đây là số lead duy nhất.</li>
+        <li>Rule cross-sell của đề: cùng <code>skp_client</code> đã chuẩn hóa, cùng product, và <code>date_assigned ≤ date_apply</code>. Trong 1.587.078 contract có client hợp lệ giai đoạn 01–09/2026, 260.453 có ít nhất một UUID ứng viên; 54.359 có nhiều hơn một UUID; tổng cộng 338.860 cặp contract–UUID. Đây là ứng viên liên kết, chưa phải conversion hoặc attribution đã chốt.</li>
+        <li>Ghép trực tiếp bằng <code>skp_credit_case</code>: trong 130.381 dòng lead có mã case, 119.802 ghép được contract (91,89%); chỉ 69.519 thỏa thứ tự thời gian. Đây là kiểm tra khác, không thay thế rule cross-sell của đề.</li>
+        <li>Contract chỉ đến 30/09/2026 còn lead đến 17/10/2026; 387.017 dòng lead thô trong tháng 10 chưa có đủ hợp đồng quan sát. Với cửa sổ 30 ngày, chỉ dùng cohort gán lead đến hết 31/08/2026.</li>
+      </ul>
+    </div>
+    <div class="card review-card">
+      <h3>Khóa và trường dữ liệu cần thận trọng</h3>
+      <div class="cap">Không suy ra hiệu quả nhân viên hoặc doanh thu từ trường thiếu</div>
+      <ul>
+        <li><code>skp_client</code> trong contract thường có hậu tố <code>.0</code> (3.775.364 dòng); chuẩn hóa trước khi nối. Sau chuẩn hóa, 1.283.673 contract (34,0%) có client xuất hiện trong leads.</li>
+        <li>BTC xác nhận sheet Employee trong StructureTable là phần dư, không có bảng Employee. <code>emp_2_salesroom</code> vẫn tồn tại nhưng là lịch sử phân công theo thời hạn; <code>leads.skp_employee</code> trống toàn bộ. Không dùng dữ liệu này để kết luận năng suất từng nhân viên.</li>
+        <li><code>date_sign = 3000-01-01</code> ở 1.048.871 contract (27,78%) là sentinel, không phải ngày ký thật. <code>contract.price</code> thiếu 2.995.428 dòng (79,34%); không dùng trường này làm doanh thu.</li>
+        <li><code>credit_amount</code> có 7 giá trị không parse được; CC không có giá trị này trong nguồn. Tổng <code>credit_amount</code> trên hồ sơ booked proxy không phải dư nợ hiện tại hay số giải ngân đã được BTC xác nhận.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec">7. Tách bạch bốn lớp tiềm năng theo đề Round 3</h2>
+  <div class="grid three">
+    <div class="card review-card">
+      <h3>Current Actual</h3>
+      <p>Kết quả quan sát được trong kỳ. Khi phân tích theo shop, chỉ 16,46% dòng contract ghép được với salesroom; định nghĩa hồ sơ thành công cũng cần BTC xác nhận.</p>
+    </div>
+    <div class="card review-card">
+      <h3>Business-as-Usual</h3>
+      <p>Dự báo nếu điều kiện hiện tại giữ nguyên, có tính mùa vụ, mix sản phẩm và kỳ quan sát đầy đủ. Không ngoại suy thẳng qua các cohort bị right-censored.</p>
+    </div>
+    <div class="card review-card">
+      <h3>Attainable Potential</h3>
+      <p>Mức có thể đạt qua can thiệp khả thi, ước tính từ nhóm shop tương đồng và ràng buộc về nhân sự, nguồn lead, sản phẩm, chất lượng và rủi ro; nêu rõ giả định và cách kiểm chứng.</p>
+    </div>
+    <div class="card review-card">
+      <h3>Addressable Market Ceiling</h3>
+      <p>Quy mô lý thuyết có thể phục vụ trong một phạm vi thị trường xác định. Bộ dữ liệu hiện tại chưa có tổng khách đủ điều kiện, footfall/traffic hay thị phần để ước tính đáng tin cậy.</p>
+    </div>
+  </div>
+  <div class="note"><b>Giới hạn suy luận:</b> dữ liệu hiện có chưa đủ để tính market ceiling, lợi nhuận tăng thêm hay ROI vì thiếu quy mô thị trường/footfall, biên lợi nhuận và chi phí thu hút. Hãy trình bày các phần đó dưới dạng giả định cho đến khi có nguồn dữ liệu phù hợp.</div>
   <footer>
     <b>Định nghĩa và giới hạn</b>
     <ul>
-      <li><b>Booked</b>: name_status ∈ {Active, Finished, Paid off, Written off, Signed}. Tỷ lệ booked = booked / tổng hồ sơ nộp.</li>
-      <li><b>Dư nợ giải ngân</b> dùng credit_amount; CC không có credit_amount (= 0) nên không tính được hạn mức thẻ.</li>
+      <li><b>Booked proxy</b>: dashboard tạm dùng name_status ∈ {Active, Finished, Paid off, Written off, Signed}; đây chưa phải định nghĩa thành công/giải ngân chính thức của BTC. Tỷ lệ proxy = hồ sơ trong nhóm này / tổng hồ sơ nộp.</li>
+      <li><b>credit_amount proxy</b> là tổng credit_amount trên hồ sơ thuộc nhóm booked proxy; không phải dư nợ hiện tại hay số giải ngân đã xác nhận. CC không có credit_amount trong nguồn.</li>
       <li><b>Cờ trễ kỳ 1</b>: dpd_1pd là cờ 0/1, không phải số ngày.</li>
-      <li><b>Lead</b>: 2.000.000 dòng CL có sample_weight 19,66 (dữ liệu lấy mẫu); mọi số lead đều đã nhân trọng số. leads.id_uuid bị trùng (6,13 triệu dòng / 5,92 triệu id).</li>
+      <li><b>Lead</b>: 2.000.000 dòng có sample_weight 19.662104; số lead có trọng số là ước lượng mở rộng, cần BTC xác nhận phương pháp lấy mẫu. id_uuid bị lặp; xem mục 6 để biết cả số dòng và số UUID.</li>
       <li><b>Kết quả lead</b>: 99,67% code_lead_status = 4 nên dashboard dùng cột <i>result</i> và ánh xạ sang cl_lead_fin_reason. Đây là giả định cần xác nhận với BTC.</li>
-      <li><b>Kiểm duyệt phải (right-censoring)</b>: hợp đồng chỉ có đến 30/09/2026 nên lead gán gần cuối kỳ chưa đủ thời gian chuyển đổi; tỷ lệ khớp các tháng cuối bị thấp giả tạo.</li>
-      <li><b>Shop "Not in salesroom table"</b>: phần lớn có thể là kênh online/đối tác. Chưa có xác nhận từ BTC, đây là giả thuyết.</li>
-      <li>Nguồn: ClickHouse <code>r3_bronze</code> (nạp nguyên văn từ Round3_BI10_dataset.zip). Script: <code>hackathon_round3/03_dashboard/build_data_overview.py</code>.</li>
+      <li><b>Right-censoring</b>: contract kết thúc 30/09/2026, leads đến 17/10/2026. Lead cuối kỳ chưa đủ thời gian quan sát; cửa sổ 30 ngày chỉ đầy đủ với cohort đến 31/08/2026.</li>
+      <li><b>Shop không khớp salesroom</b>: chưa có mapping chính thức; không kết luận là online/đối tác chỉ từ mã không khớp.</li>
+      <li>Nguồn: ClickHouse <code>r3_bronze</code> từ Round3_BI10_dataset.zip; các kiểm tra độ phủ ở mục 6 được rà soát ngày 21/10/2026. Snapshot biểu đồ tạo ngày 20/10/2026 22:07. Script: <code>hackathon_round3/03_dashboard/build_data_overview.py</code>.</li>
     </ul>
   </footer>
 </div>
@@ -280,11 +338,11 @@ function renderKPIs() {
   const matchRate = pct(sum(lm, "matched_w"), sum(lm, "leads_w"), 2);
   const k = [
     ["Hồ sơ nộp", big(apps), `${fmt(apps)} hồ sơ · 21 tháng`],
-    ["Hợp đồng booked", big(booked), `Tỷ lệ booked ${pct(booked, apps)}`],
-    ["Dư nợ giải ngân", big(credit) + " ₫", "Tổng credit_amount của HĐ booked (CC = 0)"],
-    ["Hồ sơ ở shop ngoài bảng salesroom", pct(notDim, apps), `${fmt(notDim)} hồ sơ`],
-    ["Cờ trễ kỳ 1", pct(sum(fc, "fpd_num"), sum(fc, "fpd_den")), "HĐ booked nộp trước 06/2026"],
-    ["Lead (có trọng số)", big(leads), `${matchRate} khớp được với hợp đồng`],
+    ["Hồ sơ booked proxy*", big(booked), `Tỷ lệ proxy ${pct(booked, apps)}`],
+    ["credit_amount proxy*", big(credit) + " ₫", "Tổng credit_amount trên hồ sơ booked proxy; không phải dư nợ xác nhận"],
+    ["Hợp đồng chưa khớp salesroom", pct(notDim, apps), `${fmt(notDim)} hồ sơ · không suy ra kênh`],
+    ["Cờ trễ kỳ 1", pct(sum(fc, "fpd_num"), sum(fc, "fpd_den")), "Hồ sơ booked proxy nộp trước 06/2026"],
+    ["Lead (có trọng số)", big(leads), `${matchRate} ghép candidate theo ASOF · không phải conversion chính thức`],
   ];
   document.getElementById("kpis").innerHTML = k.map(([l, v, s]) =>
     `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
@@ -293,31 +351,34 @@ function renderKPIs() {
 function renderInsights() {
   const apps = sum(D.contract_by_category, "apps");
   const notDim = D.contract_by_category.filter(r => r.category === "Not in salesroom table");
-  const cdNotDim = sum(notDim.filter(r => r.product === "CD"), "apps");
   const p1 = D.pareto.find(p => p.pct_shops >= 1), p10 = D.pareto.find(p => p.pct_shops >= 10);
   const cross = ["Big", "Medium", "Small"].map(c => {
     const rows = D.lead_cross_shop.filter(r => r.lead_shop_cat === c);
-    const tot = sum(rows, "leads_w");
-    const out = sum(rows.filter(r => r.booked_at === "Other shop (not in salesroom table)"), "leads_w");
-    return `${c} ${pct(out, tot, 0)}`;
+    const totalCandidates = sum(rows, "leads_w");
+    const unmatchedDestination = sum(rows.filter(r => r.booked_at === "Other shop (not in salesroom table)"), "leads_w");
+    return c + " " + pct(unmatchedDestination, totalCandidates, 0);
   }).join(" · ");
-  const lm = D.lead_match;
-  const outc = D.lead_outcome, outTot = sum(outc, "leads_w");
-  const ni = outc.find(r => r.outcome === "NOT_INTEREST");
+  const leadMatches = D.lead_match;
   const items = [
-    ["", "Phần lớn hợp đồng nằm ngoài bảng shop",
-     `${pct(sum(notDim, "apps"), apps)} hồ sơ (${fmt(D.data_quality.find(r => r.check === "contract shops not in salesroom table")?.value)} mã shop) không có trong salesroom.xlsx. CD ở nhóm này chỉ có ${fmt(cdNotDim)} hồ sơ, gợi ý đây là kênh online/đối tác (giả thuyết).`],
-    ["", "Doanh số tập trung rất mạnh",
-     `Top 1% shop tạo ${fmt(p1.pct_booked, 1)}% hợp đồng booked L12M; top 10% tạo ${fmt(p10.pct_booked, 1)}% (trên ${fmt(D.pareto_meta.shops_with_booking)} shop có booking).`],
-    ["", "Dấu vết cross-sell từ shop vật lý",
-     `Trong các lead phát sinh từ shop vật lý và đã khớp được hợp đồng, phần được ký ở shop ngoài bảng salesroom: ${cross}.`],
-    ["warn", "Lead: chuyển đổi thấp, cần cẩn trọng",
-     `Chỉ ${pct(sum(lm, "matched_w"), sum(lm, "leads_w"), 2)} lead (có trọng số) khớp được hợp đồng theo quy tắc của đề; ${ni ? pct(ni.leads_w, outTot) : "–"} có result = NOT_INTEREST. Lead tháng 9–10/2026 bị kiểm duyệt phải.`],
+    ["warn", "Hợp đồng thiếu mapping salesroom, chưa xác định được kênh",
+      pct(sum(notDim, "apps"), apps) + " hồ sơ (" +
+      fmt(sum(notDim, "apps")) + "/" + fmt(apps) + ") ở " +
+      fmt(D.data_quality.find(r => r.check === "contract shops not in salesroom table")?.value) +
+      " mã shop không khớp salesroom. Thiếu mapping không chứng minh đây là online hay đối tác; tỷ lệ khớp khác nhiều theo sản phẩm."],
+    ["", "Booked proxy tập trung ở một nhóm shop",
+      "Top 1% shop có " + fmt(p1.pct_booked, 1) +
+      "% hồ sơ booked proxy L12M; top 10% có " + fmt(p10.pct_booked, 1) +
+      "% trên " + fmt(D.pareto_meta.shops_with_booking) + " shop có booking proxy."],
+    ["warn", "Liên kết khác shop chỉ là ứng viên cross-sell",
+      "Trong các lead có trọng số đã ghép từ POS vật lý, tỷ trọng contract ở mã shop ngoài salesroom là " +
+      cross + ". Biểu đồ dùng một phép gán ASOF; đây không phải conversion chính thức hay bằng chứng nhân quả."],
+    ["warn", "Không đọc match rate như conversion",
+      pct(sum(leadMatches, "matched_w"), sum(leadMatches, "leads_w"), 2) +
+      " lead có trọng số được ghép với contract ứng viên trong snapshot. UUID lặp, sample_weight và right-censoring cần được xử lý trước khi công bố conversion."]
   ];
   document.getElementById("insights").innerHTML = items.map(([c, t, b]) =>
-    `<div class="insight ${c}"><div class="t">${t}</div>${b}</div>`).join("");
+    '<div class="insight ' + c + '"><div class="t">' + t + '</div>' + b + '</div>').join("");
 }
-
 function renderMonthly() {
   const cm = byProd(D.contract_monthly, state.product);
   const months = uniq(D.contract_monthly.map(r => r.month)).sort();
@@ -329,14 +390,14 @@ function renderMonthly() {
     data: { labels: months, datasets: [
       ...prods.map(p => ({ type: "bar", label: p, data: months.map(m => get(m, p, "apps")),
         backgroundColor: PCOLOR[p], stack: "a", yAxisID: "y", order: 2 })),
-      { type: "line", label: "Tỷ lệ booked (%)", data: rate, borderColor: css("--text"), backgroundColor: css("--text"),
+      { type: "line", label: "Tỷ lệ booked proxy (%)", data: rate, borderColor: css("--text"), backgroundColor: css("--text"),
         yAxisID: "y1", tension: .25, pointRadius: 2, order: 1 } ] },
     options: { interaction: { mode: "index", intersect: false },
       scales: { x: { stacked: true, grid: { display: false } },
         y: { stacked: true, ticks: { callback: v => big(v) }, title: { display: true, text: "Hồ sơ" } },
         y1: { position: "right", min: 0, max: 100, grid: { display: false }, ticks: { callback: v => v + "%" } } },
       plugins: { tooltip: { callbacks: { label: c => c.dataset.yAxisID === "y1"
-        ? ` Tỷ lệ booked: ${fmt(c.parsed.y, 1)}%` : ` ${c.dataset.label}: ${fmt(c.parsed.y)}` } } } }
+        ? ` Tỷ lệ booked proxy: ${fmt(c.parsed.y, 1)}%` : ` ${c.dataset.label}: ${fmt(c.parsed.y)}` } } } }
   });
 }
 
@@ -386,7 +447,7 @@ function renderCategory() {
   draw("c-cat", { type: "bar",
     data: { labels: cats, datasets: [
       { label: "Hồ sơ", data: cats.map(c => sum(rows.filter(r => r.category === c), "apps")), backgroundColor: "#9ec5e8" },
-      { label: "Booked", data: cats.map(c => sum(rows.filter(r => r.category === c), "n_booked")), backgroundColor: "#2f6fb0" },
+      { label: "Booked proxy", data: cats.map(c => sum(rows.filter(r => r.category === c), "n_booked")), backgroundColor: "#2f6fb0" },
       { label: "Số shop", type: "line", yAxisID: "y1", showLine: false, pointRadius: 6, pointStyle: "rectRot",
         borderColor: "#e07b39", backgroundColor: "#e07b39",
         data: cats.map(c => { const rs = D.contract_by_category.filter(r => r.category === c);
@@ -402,11 +463,11 @@ function renderPareto() {
   const pts = [{ x: 0, y: 0 }, ...D.pareto.map(p => ({ x: p.pct_shops, y: p.pct_booked }))];
   draw("c-pareto", { type: "line",
     data: { datasets: [
-      { label: "Tích lũy % booked", data: pts, borderColor: "#2f6fb0", backgroundColor: "#2f6fb022", fill: true, pointRadius: 0, tension: .1 },
+      { label: "Tích lũy % booked proxy", data: pts, borderColor: "#2f6fb0", backgroundColor: "#2f6fb022", fill: true, pointRadius: 0, tension: .1 },
       { label: "Phân bổ đều", data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css("--muted"), borderDash: [5, 5], pointRadius: 0 } ] },
-    options: { parsing: false, scales: { x: { type: "linear", min: 0, max: 100, title: { display: true, text: "% shop (xếp theo booked giảm dần)" }, ticks: { callback: v => v + "%" } },
+    options: { parsing: false, scales: { x: { type: "linear", min: 0, max: 100, title: { display: true, text: "% shop (xếp theo booked proxy giảm dần)" }, ticks: { callback: v => v + "%" } },
       y: { min: 0, max: 100, ticks: { callback: v => v + "%" } } },
-      plugins: { tooltip: { callbacks: { label: c => ` Top ${fmt(c.parsed.x, 1)}% shop → ${fmt(c.parsed.y, 1)}% booked` } } } } });
+      plugins: { tooltip: { callbacks: { label: c => ` Top ${fmt(c.parsed.x, 1)}% shop → ${fmt(c.parsed.y, 1)}% booked proxy` } } } } });
 }
 
 function renderSize() {
@@ -414,7 +475,7 @@ function renderSize() {
   draw("c-size", { data: { labels: r.map(x => x.bucket), datasets: [
       { type: "bar", label: "Số shop", data: r.map(x => x.shops), backgroundColor: "#3a9a5b", yAxisID: "y" },
       { type: "line", label: "SA trung bình/shop", data: r.map(x => x.avg_sa), borderColor: "#e07b39", backgroundColor: "#e07b39", yAxisID: "y1", tension: .25 } ] },
-    options: { scales: { x: { title: { display: true, text: "Hợp đồng booked L12M / shop" }, grid: { display: false } },
+    options: { scales: { x: { title: { display: true, text: "Hồ sơ booked proxy L12M / shop" }, grid: { display: false } },
       y: { ticks: { callback: v => big(v) } }, y1: { position: "right", grid: { display: false }, min: 0 } } } });
 }
 
@@ -428,7 +489,7 @@ function renderArea() {
   draw("c-area", { data: { labels: areas, datasets: [
       ...cats.map(c => ({ type: "bar", label: c, stack: "s", yAxisID: "y", backgroundColor: ccol[c],
         data: areas.map(a => sum(rows.filter(r => r.area === a && r.category === c), "shops")) })),
-      { type: "line", label: "Booked L12M", yAxisID: "y1", borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2,
+      { type: "line", label: "Booked proxy L12M", yAxisID: "y1", borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2,
         data: areas.map(a => sum(rows.filter(r => r.area === a), "booked_l12")) } ] },
     options: { interaction: { mode: "index", intersect: false },
       scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, title: { display: true, text: "Số shop" } },
@@ -451,9 +512,9 @@ function renderMatch() {
   const months = uniq(D.lead_match.map(r => r.month)).sort();
   const series = (k) => months.map(m => { const rs = rows.filter(r => r.month === m); const t = sum(rs, "leads_w"); return t ? sum(rs, k) / t * 100 : null; });
   draw("c-match", { data: { labels: months, datasets: [
-      { type: "bar", label: "% lead khớp hợp đồng", data: series("matched_w"), backgroundColor: "#2f6fb0" },
-      { type: "bar", label: "% khớp và booked", data: series("matched_booked_w"), backgroundColor: "#3a9a5b" },
-      { type: "line", label: "% khớp trong 30 ngày", data: series("matched_30d_w"), borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2 } ] },
+      { type: "bar", label: "% lead ghép candidate contract (ASOF)", data: series("matched_w"), backgroundColor: "#2f6fb0" },
+      { type: "bar", label: "% ghép candidate và booked proxy", data: series("matched_booked_w"), backgroundColor: "#3a9a5b" },
+      { type: "line", label: "% ghép candidate trong 30 ngày", data: series("matched_30d_w"), borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2 } ] },
     options: { interaction: { mode: "index", intersect: false }, scales: { x: { grid: { display: false } }, y: { min: 0, ticks: { callback: v => fmt(v, 1) + "%" } } },
       plugins: { tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${fmt(c.parsed.y, 2)}%` } },
         subtitle: { display: true, text: "Các tháng cuối thấp một phần do kiểm duyệt phải (contract dừng ở 30/09/2026)", font: { size: 11 } } } } });
@@ -492,7 +553,7 @@ function renderSource() {
 const SHOP_COLS = [
   ["shop", "Shop"], ["category", "Loại"], ["model", "Model"], ["area", "Vùng"], ["province", "Tỉnh"],
   ["product", "SP chính"], ["status", "Trạng thái"], ["age_m", "Tuổi (tháng)", 1], ["sa", "SA gán", 1],
-  ["booked_l12", "Booked L12M", 1], ["book_rate", "% booked", 1], ["q3_yoy", "Q3 YoY %", 1], ["fpd", "Trễ kỳ 1 %", 1], ["n_products", "Số SP", 1]];
+  ["booked_l12", "Booked proxy L12M", 1], ["book_rate", "% booked proxy", 1], ["q3_yoy", "Q3 YoY %", 1], ["fpd", "Trễ kỳ 1 %", 1], ["n_products", "Số SP", 1]];
 let sortKey = "booked_l12", sortDir = -1;
 function renderShopTable() {
   let rows = D.shop_table;
