@@ -1,96 +1,227 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" modified="2026-10-21T10:00:00.000Z" agent="Codex" version="24.7.17" type="device">
   <diagram id="r3-cleaning-erd" name="R3 Cleaning ERD">
-    <mxGraphModel dx="2260" dy="1740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2260" pageHeight="1740" math="0" shadow="0">
+    <mxGraphModel dx="2620" dy="1135" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2620" pageHeight="1135" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="seller" value="&lt;b&gt;clean_seller&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / seller&lt;/font&gt;&lt;br&gt;&lt;br&gt;seller_id · PK&lt;br&gt;seller_model / seller_status&lt;br&gt;seller_type / seller_product&lt;br&gt;seller_province / seller_area&lt;br&gt;&lt;br&gt;&lt;b&gt;11.639 dòng · 8 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="50" y="130" width="390" height="190" as="geometry" />
+        <mxCell id="seller" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_seller&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / seller&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;seller_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;seller_model&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;seller_status&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;seller_type&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;seller_product&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;11.639 rows · 8 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="90" width="430" height="177" as="geometry" />
         </mxCell>
-        <mxCell id="salesroom" value="&lt;b&gt;clean_salesroom&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop master&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id · PK&lt;br&gt;seller_id · join seller&lt;br&gt;category / model / status&lt;br&gt;dt_start / dt_end&lt;br&gt;province / area / seller_found&lt;br&gt;&lt;br&gt;&lt;b&gt;14.231 dòng · 15 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="50" y="430" width="390" height="250" as="geometry" />
+        <mxCell id="staff" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_emp_2_salesroom&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / assignment SA&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK → shop&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;employee_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;không có dim Employee&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;role&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;DateTime    &lt;font face=&quot;monospace&quot;&gt;valid_from&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(DateTime)  &lt;font face=&quot;monospace&quot;&gt;valid_to&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;NULL = open-ended&lt;/font&gt;&lt;br&gt;UInt16      &lt;font face=&quot;monospace&quot;&gt;dup_rank&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;bản sao được gắn cờ&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;275.856 rows · 9 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="410" width="430" height="199" as="geometry" />
         </mxCell>
-        <mxCell id="reason" value="&lt;b&gt;clean_lead_finish_reason&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / mã kết thúc lead&lt;/font&gt;&lt;br&gt;&lt;br&gt;finish_id · mã nguồn&lt;br&gt;finish_code&lt;br&gt;finish_desc&lt;br&gt;&lt;br&gt;&lt;b&gt;12 dòng · 3 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="50" y="830" width="390" height="180" as="geometry" />
+        <mxCell id="dim_shop" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;dim_shop_all&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop_id quan sát được&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK logic&lt;/font&gt;&lt;br&gt;UInt8       &lt;font face=&quot;monospace&quot;&gt;in_master&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;category&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;contracts / booked&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt64 / Float64  &lt;font face=&quot;monospace&quot;&gt;lead_rows / leads_w&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;province / area&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;32.524 rows · 17 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="710" width="430" height="199" as="geometry" />
         </mxCell>
-        <mxCell id="bronze" value="&lt;b&gt;r3_bronze · nguồn BTC&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;7 bảng gốc · giữ nguyên&lt;/font&gt;&lt;br&gt;&lt;br&gt;Dữ liệu thô không bị sửa&lt;br&gt;Đối soát qua dq_reconciliation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#596575;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="50" y="1330" width="390" height="165" as="geometry" />
+        <mxCell id="salesroom" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_salesroom&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop master&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;seller_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK logic → seller&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;manager_emp_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;SA assignment&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;category / model&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;DateTime    &lt;font face=&quot;monospace&quot;&gt;dt_start / dt_end&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;province / area&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt8       &lt;font face=&quot;monospace&quot;&gt;seller_found&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;14.231 rows · 15 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="540" y="160" width="430" height="221" as="geometry" />
         </mxCell>
-        <mxCell id="contract" value="&lt;b&gt;clean_contract&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK&lt;br&gt;shop_id · join shop&lt;br&gt;client_id / product&lt;br&gt;dt_apply / dt_sign&lt;br&gt;status_group / is_booked&lt;br&gt;shop_in_master / FPD flags&lt;br&gt;&lt;br&gt;&lt;b&gt;3.775.371 dòng · 31 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="600" y="120" width="390" height="300" as="geometry" />
+        <mxCell id="staff_month" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_shop_staff_month&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop × month&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;grain key&lt;/font&gt;&lt;br&gt;Date        &lt;font face=&quot;monospace&quot;&gt;month&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;grain key&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;sa_headcount&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Float64     &lt;font face=&quot;monospace&quot;&gt;sa_fte&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;sa_dedicated&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;161.306 rows · 5 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="540" y="690" width="430" height="177" as="geometry" />
         </mxCell>
-        <mxCell id="lead" value="&lt;b&gt;clean_lead&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / dòng lead nguồn&lt;/font&gt;&lt;br&gt;&lt;br&gt;lead_row · source row id&lt;br&gt;lead_uuid · không duy nhất&lt;br&gt;client_id / product&lt;br&gt;shop_id / dt_assigned&lt;br&gt;finish_code / lead_credit_case_id&lt;br&gt;w / is_latest_offer flags&lt;br&gt;&lt;br&gt;&lt;b&gt;6.130.637 dòng · 27 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="600" y="540" width="390" height="320" as="geometry" />
+        <mxCell id="contract" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_contract&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;credit_case_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK logic&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK logic → shop&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;client_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;product&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;DateTime    &lt;font face=&quot;monospace&quot;&gt;dt_apply&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(DateTime)  &lt;font face=&quot;monospace&quot;&gt;dt_sign&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;sentinel → NULL&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;emp_pre_process_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt8       &lt;font face=&quot;monospace&quot;&gt;is_booked / FPD flags&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;3.775.371 rows · 31 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="75" width="430" height="243" as="geometry" />
         </mxCell>
-        <mxCell id="staff" value="&lt;b&gt;clean_emp_2_salesroom&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / lịch sử phân công SA&lt;/font&gt;&lt;br&gt;&lt;br&gt;employee_id / shop_id&lt;br&gt;role / status_code&lt;br&gt;valid_from / valid_to&lt;br&gt;is_open_ended&lt;br&gt;dup_rank / validity flag&lt;br&gt;&lt;br&gt;&lt;b&gt;275.856 dòng · 9 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="600" y="980" width="390" height="260" as="geometry" />
+        <mxCell id="product" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_contract_product&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / goods line&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;credit_case_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK logic → contract&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;line_no&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;thứ tự trong hồ sơ&lt;/font&gt;&lt;br&gt;Nullable(String)  &lt;font face=&quot;monospace&quot;&gt;producer&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(String)  &lt;font face=&quot;monospace&quot;&gt;goods_category&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(String)  &lt;font face=&quot;monospace&quot;&gt;goods_type&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(String)  &lt;font face=&quot;monospace&quot;&gt;goods_group&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;784.902 rows · 6 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="420" width="430" height="199" as="geometry" />
         </mxCell>
-        <mxCell id="product" value="&lt;b&gt;clean_contract_product&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / dòng hàng hóa&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · join contract&lt;br&gt;line_no · thứ tự nguồn&lt;br&gt;producer / goods_category&lt;br&gt;goods_type / goods_group&lt;br&gt;&lt;br&gt;&lt;b&gt;784.902 dòng · 6 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="1450" width="390" height="220" as="geometry" />
+        <mxCell id="goods" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_contract_goods&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case có hàng hóa&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;credit_case_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK / FK logic&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;goods_lines&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(String)  &lt;font face=&quot;monospace&quot;&gt;goods_group_line1&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;line_no nhỏ nhất&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;goods_groups_distinct&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt8       &lt;font face=&quot;monospace&quot;&gt;flag_goods_group_missing&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;779.941 rows · 5 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="700" width="430" height="177" as="geometry" />
         </mxCell>
-        <mxCell id="goods" value="&lt;b&gt;clean_contract_goods&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case có hàng hóa&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK / FK&lt;br&gt;goods_lines&lt;br&gt;goods_group_line1&lt;br&gt;goods_groups_distinct&lt;br&gt;flag_goods_group_missing&lt;br&gt;&lt;br&gt;&lt;b&gt;779.941 dòng · 5 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="140" width="390" height="220" as="geometry" />
+        <mxCell id="attr" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;lead_contract_attr&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / contract được ghép lead&lt;/font&gt;&lt;br&gt;Int64       &lt;font face=&quot;monospace&quot;&gt;credit_case_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;PK logic → contract&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;lead_row&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;lead được chọn&lt;/font&gt;&lt;br&gt;key pair    &lt;font face=&quot;monospace&quot;&gt;client_id + product&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;DateTime    &lt;font face=&quot;monospace&quot;&gt;dt_assigned&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;≤ dt_apply&lt;/font&gt;&lt;br&gt;DateTime    &lt;font face=&quot;monospace&quot;&gt;dt_apply&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;lead_shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt8 / Int64  &lt;font face=&quot;monospace&quot;&gt;same_shop / days&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;n_candidates&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;260.674 rows · 20 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="700" width="430" height="243" as="geometry" />
         </mxCell>
-        <mxCell id="staff_month" value="&lt;b&gt;clean_shop_staff_month&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop × tháng&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id + month · khóa grain&lt;br&gt;sa_headcount / sa_fte&lt;br&gt;sa_dedicated&lt;br&gt;từ lịch sử SA + khoảng hiệu lực&lt;br&gt;&lt;br&gt;&lt;b&gt;161.306 dòng · 5 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="470" width="390" height="220" as="geometry" />
+        <mxCell id="lead" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_lead&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / source lead row&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;lead_row&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;row surrogate&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;lead_uuid&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;không duy nhất&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;client_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;product&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(DateTime)  &lt;font face=&quot;monospace&quot;&gt;dt_assigned&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;shop_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK logic → shop&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;finish_code&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;từ result_code&lt;/font&gt;&lt;br&gt;Nullable(Int64)  &lt;font face=&quot;monospace&quot;&gt;lead_credit_case_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;FK logic → contract&lt;/font&gt;&lt;br&gt;Float64     &lt;font face=&quot;monospace&quot;&gt;w&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;sample weight&lt;/font&gt;&lt;br&gt;UInt8       &lt;font face=&quot;monospace&quot;&gt;is_latest_offer&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;cờ, không xóa dòng&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;6.130.637 rows · 27 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1580" y="75" width="430" height="287" as="geometry" />
         </mxCell>
-        <mxCell id="attr" value="&lt;b&gt;lead_contract_attr&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / contract được ghép lead&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK / contract&lt;br&gt;lead_row · lead được chọn&lt;br&gt;client_id + product&lt;br&gt;date_assigned ≤ dt_apply&lt;br&gt;last touch; tie → lead_row lớn nhất&lt;br&gt;same_shop / master-scope flags&lt;br&gt;&lt;br&gt;&lt;b&gt;260.674 dòng · 20 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="820" width="390" height="270" as="geometry" />
+        <mxCell id="reason" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;clean_lead_finish_reason&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / finish reason&lt;/font&gt;&lt;br&gt;Int32       &lt;font face=&quot;monospace&quot;&gt;finish_id&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;mã nguồn&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;finish_code&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;lookup key&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;finish_desc&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;12 rows · 3 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="2070" y="500" width="430" height="133" as="geometry" />
         </mxCell>
-        <mxCell id="dim_shop" value="&lt;b&gt;dim_shop_all&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / mã shop quan sát được&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id · PK&lt;br&gt;in_master / category&lt;br&gt;contract &amp;amp; booked counts&lt;br&gt;lead rows / weighted leads&lt;br&gt;union contract ∪ leads ∪ master&lt;br&gt;&lt;br&gt;&lt;b&gt;32.524 dòng · 17 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="1170" width="390" height="250" as="geometry" />
+        <mxCell id="mart" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;mart_shop_month&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / master shop × month&lt;/font&gt;&lt;br&gt;Int64 + Date  &lt;font face=&quot;monospace&quot;&gt;shop_id + month&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;grain key&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;applications / booked&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Float64     &lt;font face=&quot;monospace&quot;&gt;leads_w&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;weighted&lt;/font&gt;&lt;br&gt;Float64     &lt;font face=&quot;monospace&quot;&gt;cross-shop measures&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;Float64 / UInt64  &lt;font face=&quot;monospace&quot;&gt;sa_fte / headcount&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;fpd_num / fpd_den&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;apply trước 01/08/2026&lt;/font&gt;&lt;br&gt;metrics     &lt;font face=&quot;monospace&quot;&gt;product mix / credit&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;136.093 rows · 30 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#287a64;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="2070" y="100" width="430" height="221" as="geometry" />
         </mxCell>
-        <mxCell id="mart" value="&lt;b&gt;mart_shop_month&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop master × tháng&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id + month · khóa grain&lt;br&gt;applications / booked&lt;br&gt;product mix / credit&lt;br&gt;lead volume (weighted)&lt;br&gt;cross-shop attributed leads&lt;br&gt;staffing FTE / FPD measures&lt;br&gt;&lt;br&gt;&lt;b&gt;136.093 dòng · 30 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#287a64;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1700" y="430" width="390" height="310" as="geometry" />
+        <mxCell id="dq" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;dq_reconciliation&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / kiểm tra&lt;/font&gt;&lt;br&gt;UInt64      &lt;font face=&quot;monospace&quot;&gt;check_no&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;check_name&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;status&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;24 PASS · 5 INFO&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;bronze_value&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;clean_value&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;String      &lt;font face=&quot;monospace&quot;&gt;note&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;29 rows · 6 cols&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#506174;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="2070" y="700" width="430" height="199" as="geometry" />
         </mxCell>
-        <mxCell id="dq" value="&lt;b&gt;dq_reconciliation&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / kiểm tra đối soát&lt;/font&gt;&lt;br&gt;&lt;br&gt;check_no · thứ tự kiểm tra&lt;br&gt;check_name / status&lt;br&gt;bronze_value / clean_value&lt;br&gt;24 PASS · 5 INFO · 0 FAIL&lt;br&gt;&lt;br&gt;&lt;b&gt;29 dòng · 6 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#506174;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
-          <mxGeometry x="1700" y="1120" width="390" height="220" as="geometry" />
+        <mxCell id="bronze" value="&lt;b&gt;&lt;font color=&quot;white&quot;&gt;r3_bronze · BTC&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;7 bảng nguồn · giữ nguyên&lt;/font&gt;&lt;br&gt;—           &lt;font face=&quot;monospace&quot;&gt;raw source&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;không sửa&lt;/font&gt;&lt;br&gt;—           &lt;font face=&quot;monospace&quot;&gt;row counts / totals&lt;/font&gt;  &lt;font color=&quot;#667085&quot;&gt;đối soát qua DQ&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#596575;fontColor=#1f2933;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1010" width="430" height="111" as="geometry" />
         </mxCell>
-        <mxCell id="e1" value="K01 · seller_id → seller_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="seller" target="salesroom">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e1" value="K01" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.4181;entryX=0;entryY=0.4344;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="seller" target="salesroom">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="164" />
+              <mxPoint x="500" y="256" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e2" value="K02 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="contract">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e2" value="K02" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.3348;entryX=0;entryY=0.3951;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="salesroom" target="contract">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="234" />
+              <mxPoint x="1000" y="171" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e3" value="K03 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="lead">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e3" value="K03" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.3348;entryX=0;entryY=0.6411;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="salesroom" target="lead">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="234" />
+              <mxPoint x="1000" y="38" />
+              <mxPoint x="1560" y="38" />
+              <mxPoint x="1560" y="259" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e4" value="K04 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="staff">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e4" value="K04" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=0;exitY=0.3348;entryX=1;entryY=0.3719;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="salesroom" target="staff">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="234" />
+              <mxPoint x="500" y="484" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e5" value="K05 · credit_case_id → credit_case_id + line_no" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="contract" target="product">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e5" value="K05" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.3045;entryX=1;entryY=0.3719;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="contract" target="product">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="149" />
+              <mxPoint x="1490" y="494" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e6" value="K06 · credit_case_id → credit_case_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="contract" target="goods">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e6" value="K06" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.3045;entryX=1;entryY=0.4181;startArrow=ERone;endArrow=ERzeroToOne;" edge="1" parent="1" source="contract" target="goods">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1505" y="149" />
+              <mxPoint x="1505" y="774" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e7" value="K07 · finish_id → finish_code → result_code → finish_code" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="reason" target="lead">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e7" value="K07" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=0;exitY=0.7218;entryX=0;entryY=0.7178;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="reason" target="lead">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1500" y="596" />
+              <mxPoint x="1500" y="281" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e8" value="T01 · employee_id + shop_id + thời hạn → shop_id + month" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="staff" target="staff_month">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e8" value="K08" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#3d5a80;exitX=1;exitY=0.3045;entryX=0;entryY=0.7944;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="contract" target="lead">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="149" />
+              <mxPoint x="1490" y="303" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e9" value="L01 · client_id + product + dt_apply → credit_case_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#a66b12;dashed=1" edge="1" parent="1" source="contract" target="attr">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e9" value="T01" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.3719;entryX=0;entryY=0.4181;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="staff" target="staff_month">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="484" />
+              <mxPoint x="500" y="764" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e10" value="L02 · lead_row + client_id + product + dt_assigned → lead_row" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#a66b12;dashed=1" edge="1" parent="1" source="lead" target="attr">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e10" value="L01" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#a66b12;exitX=1;exitY=0.3045;entryX=0;entryY=0.3045;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="contract" target="attr">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="149" />
+              <mxPoint x="1490" y="774" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e11" value="T02 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="salesroom" target="dim_shop">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e11" value="L02" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#a66b12;exitX=1;exitY=0.2578;entryX=1;entryY=0.3951;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="lead" target="attr">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2040" y="149" />
+              <mxPoint x="2040" y="796" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e12" value="T03 · shop_id × tháng → shop_id + month" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="contract" target="mart">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e12" value="T02a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=0;exitY=0.3348;entryX=1;entryY=0.4824;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="salesroom" target="dim_shop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="234" />
+              <mxPoint x="500" y="930" />
+              <mxPoint x="500" y="930" />
+              <mxPoint x="500" y="806" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e13" value="T04 · lead_shop_id + assigned_month → lead conversion / cross-shop measures" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="attr" target="mart">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e13" value="T02b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.3951;entryX=1;entryY=0.7035;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="contract" target="dim_shop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="171" />
+              <mxPoint x="1490" y="950" />
+              <mxPoint x="500" y="950" />
+              <mxPoint x="500" y="850" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e14" value="T05 · shop_id + month → sa_fte / headcount" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="staff_month" target="mart">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e14" value="T02c" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.6411;entryX=1;entryY=0.8141;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="lead" target="dim_shop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2040" y="259" />
+              <mxPoint x="2040" y="970" />
+              <mxPoint x="500" y="970" />
+              <mxPoint x="500" y="872" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e15" value="Q01 · row counts / totals / placeholders → bronze_value ↔ clean_value" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#748091;dashed=1" edge="1" parent="1" source="bronze" target="dq">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e15" value="T03a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.3348;entryX=0;entryY=0.3348;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="salesroom" target="mart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="234" />
+              <mxPoint x="1000" y="28" />
+              <mxPoint x="2060" y="28" />
+              <mxPoint x="2060" y="174" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16" value="T03b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.3951;entryX=0;entryY=0.4344;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="contract" target="mart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1505" y="171" />
+              <mxPoint x="1505" y="48" />
+              <mxPoint x="2060" y="48" />
+              <mxPoint x="2060" y="196" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" value="T03c" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=1;exitY=0.6411;entryX=0;entryY=0.5339;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="lead" target="mart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2040" y="259" />
+              <mxPoint x="2040" y="218" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="T04" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=0;exitY=0.7572;entryX=0;entryY=0.6335;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="attr" target="mart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1500" y="884" />
+              <mxPoint x="1500" y="63" />
+              <mxPoint x="2060" y="63" />
+              <mxPoint x="2060" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" value="T05" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#7961a8;exitX=0;exitY=0.7910;entryX=0;entryY=0.7330;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="staff_month" target="mart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="830" />
+              <mxPoint x="500" y="68" />
+              <mxPoint x="2060" y="68" />
+              <mxPoint x="2060" y="262" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" value="Q01" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#748091;exitX=1;exitY=0.6667;entryX=1;entryY=0.7035;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="bronze" target="dq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2560" y="1084" />
+              <mxPoint x="2560" y="840" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

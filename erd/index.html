@@ -200,8 +200,8 @@ function bar(v) { return v == null ? "" : `<span class="bar" style="width:${Math
 function renderRel() {
   const rows = D.relationships;
   if (activeView === "clean") {
-    document.getElementById("t-rel").innerHTML = `<thead><tr><th>Mã</th><th>Nguồn / bảng cha</th><th>Bảng đích</th><th>Khóa hoặc logic nối</th><th>Loại quan hệ</th><th>Ghi chú</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td><span class="pill">${r.code}</span></td><td><code>${r.parent}</code></td><td><code>${r.child}</code></td><td><code>${r.parent_col} → ${r.child_col}</code></td><td><span class="pill">${KIND[r.kind]}</span></td><td class="note">${r.note}</td></tr>`).join("") + "</tbody>";
+    document.getElementById("t-rel").innerHTML = `<thead><tr><th>Mã</th><th>Nguồn / bảng cha</th><th>Bảng đích</th><th>Khóa hoặc logic nối</th><th>Bội số / cách gộp</th><th>Loại quan hệ</th><th>Ghi chú</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td><span class="pill">${r.code}</span></td><td><code>${r.parent}</code></td><td><code>${r.child}</code></td><td><code>${r.parent_col} → ${r.child_col}</code></td><td>${r.cardinality}</td><td><span class="pill">${KIND[r.kind]}</span></td><td class="note">${r.note}</td></tr>`).join("") + "</tbody>";
     return;
   }
   document.getElementById("t-rel").innerHTML = `<thead><tr><th>Bảng cha</th><th>Khóa cha</th><th>Bảng con</th><th>Khóa con</th><th>Kiểu</th>
@@ -233,7 +233,7 @@ function switchView(view) {
   document.getElementById("section-title-main").textContent = clean ? "1. ERD lớp cleaning & bảng dẫn xuất" : "1. ERD nguồn BTC";
   document.getElementById("section-summary").textContent = clean ? "13 bảng trong r3_sandbox_vu · schema và grain lấy từ catalog ClickHouse" : "7 bảng nguồn; không có bảng Employee theo đính chính BTC";
   document.getElementById("legend").innerHTML = clean
-    ? `<span>Khóa/grain logic</span><span>Nét liền: nối theo mã khóa</span><span>Nét đứt: biến đổi hoặc tổng hợp</span><span>Nét chấm: logic nghiệp vụ hoặc đối soát; không phải FK vật lý</span><span>Rê chuột lên đường để xem ghi chú; bảng dưới đây ghi rõ cột và grain</span>`
+     ? `<span><code>||</code> một bản ghi cha</span><span><code>o&lt;</code> 0..n bản ghi con; <code>o|</code> 0..1</span><span>Nét liền: nối theo khóa logic</span><span>Nét đứt: biến đổi, tổng hợp hoặc quy tắc ghép</span><span>Nét chấm: đối soát chất lượng</span><span>Đầu nối chạm đúng dòng field; khóa logic không phải FK vật lý</span>`
     : `<span><code>PK</code> khóa chính</span><span><code>FK</code> khóa ngoại</span><span>Đường liền: khóa ngoại · Đường chấm: liên kết logic, không có bảng chiều (khách hàng, nhân viên)</span><span>Mỗi đường nối đúng dòng khóa ở hai bảng (tên cột màu xanh). Chân chim ở phía bảng con, thanh ngang ở phía bảng cha</span><span>Nhãn tròn: % dòng của bảng con có khóa tồn tại ở bảng cha (đo trên ClickHouse r3_bronze); rê chuột để xem đầy đủ</span>`;
   document.getElementById("facts-heading").textContent = clean ? "2. Quyết định cleaning cần nhớ" : "2. Điều cần biết trước khi join";
   document.getElementById("rel-heading-main").textContent = clean ? "3. Quan hệ và lineage" : "3. Danh sách quan hệ";
