@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-10-21T10:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="r3-cleaning-erd" name="R3 Cleaning ERD">
+    <mxGraphModel dx="2260" dy="1740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2260" pageHeight="1740" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="seller" value="&lt;b&gt;clean_seller&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / seller&lt;/font&gt;&lt;br&gt;&lt;br&gt;seller_id · PK&lt;br&gt;seller_model / seller_status&lt;br&gt;seller_type / seller_product&lt;br&gt;seller_province / seller_area&lt;br&gt;&lt;br&gt;&lt;b&gt;11.639 dòng · 8 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="130" width="390" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="salesroom" value="&lt;b&gt;clean_salesroom&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop master&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id · PK&lt;br&gt;seller_id · join seller&lt;br&gt;category / model / status&lt;br&gt;dt_start / dt_end&lt;br&gt;province / area / seller_found&lt;br&gt;&lt;br&gt;&lt;b&gt;14.231 dòng · 15 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="430" width="390" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="reason" value="&lt;b&gt;clean_lead_finish_reason&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / mã kết thúc lead&lt;/font&gt;&lt;br&gt;&lt;br&gt;finish_id · mã nguồn&lt;br&gt;finish_code&lt;br&gt;finish_desc&lt;br&gt;&lt;br&gt;&lt;b&gt;12 dòng · 3 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2f6fb0;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="830" width="390" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="bronze" value="&lt;b&gt;r3_bronze · nguồn BTC&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;7 bảng gốc · giữ nguyên&lt;/font&gt;&lt;br&gt;&lt;br&gt;Dữ liệu thô không bị sửa&lt;br&gt;Đối soát qua dq_reconciliation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#596575;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1330" width="390" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="contract" value="&lt;b&gt;clean_contract&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK&lt;br&gt;shop_id · join shop&lt;br&gt;client_id / product&lt;br&gt;dt_apply / dt_sign&lt;br&gt;status_group / is_booked&lt;br&gt;shop_in_master / FPD flags&lt;br&gt;&lt;br&gt;&lt;b&gt;3.775.371 dòng · 31 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="120" width="390" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="lead" value="&lt;b&gt;clean_lead&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / dòng lead nguồn&lt;/font&gt;&lt;br&gt;&lt;br&gt;lead_row · source row id&lt;br&gt;lead_uuid · không duy nhất&lt;br&gt;client_id / product&lt;br&gt;shop_id / dt_assigned&lt;br&gt;finish_code / lead_credit_case_id&lt;br&gt;w / is_latest_offer flags&lt;br&gt;&lt;br&gt;&lt;b&gt;6.130.637 dòng · 27 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="540" width="390" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="staff" value="&lt;b&gt;clean_emp_2_salesroom&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / lịch sử phân công SA&lt;/font&gt;&lt;br&gt;&lt;br&gt;employee_id / shop_id&lt;br&gt;role / status_code&lt;br&gt;valid_from / valid_to&lt;br&gt;is_open_ended&lt;br&gt;dup_rank / validity flag&lt;br&gt;&lt;br&gt;&lt;b&gt;275.856 dòng · 9 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="980" width="390" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="product" value="&lt;b&gt;clean_contract_product&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / dòng hàng hóa&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · join contract&lt;br&gt;line_no · thứ tự nguồn&lt;br&gt;producer / goods_category&lt;br&gt;goods_type / goods_group&lt;br&gt;&lt;br&gt;&lt;b&gt;784.902 dòng · 6 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b9651c;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1450" width="390" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="goods" value="&lt;b&gt;clean_contract_goods&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / credit case có hàng hóa&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK / FK&lt;br&gt;goods_lines&lt;br&gt;goods_group_line1&lt;br&gt;goods_groups_distinct&lt;br&gt;flag_goods_group_missing&lt;br&gt;&lt;br&gt;&lt;b&gt;779.941 dòng · 5 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="140" width="390" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="staff_month" value="&lt;b&gt;clean_shop_staff_month&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop × tháng&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id + month · khóa grain&lt;br&gt;sa_headcount / sa_fte&lt;br&gt;sa_dedicated&lt;br&gt;từ lịch sử SA + khoảng hiệu lực&lt;br&gt;&lt;br&gt;&lt;b&gt;161.306 dòng · 5 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="470" width="390" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="attr" value="&lt;b&gt;lead_contract_attr&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / contract được ghép lead&lt;/font&gt;&lt;br&gt;&lt;br&gt;credit_case_id · PK / contract&lt;br&gt;lead_row · lead được chọn&lt;br&gt;client_id + product&lt;br&gt;date_assigned ≤ dt_apply&lt;br&gt;last touch; tie → lead_row lớn nhất&lt;br&gt;same_shop / master-scope flags&lt;br&gt;&lt;br&gt;&lt;b&gt;260.674 dòng · 20 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="820" width="390" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="dim_shop" value="&lt;b&gt;dim_shop_all&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / mã shop quan sát được&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id · PK&lt;br&gt;in_master / category&lt;br&gt;contract &amp;amp; booked counts&lt;br&gt;lead rows / weighted leads&lt;br&gt;union contract ∪ leads ∪ master&lt;br&gt;&lt;br&gt;&lt;b&gt;32.524 dòng · 17 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7253a1;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1170" width="390" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="mart" value="&lt;b&gt;mart_shop_month&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / shop master × tháng&lt;/font&gt;&lt;br&gt;&lt;br&gt;shop_id + month · khóa grain&lt;br&gt;applications / booked&lt;br&gt;product mix / credit&lt;br&gt;lead volume (weighted)&lt;br&gt;cross-shop attributed leads&lt;br&gt;staffing FTE / FPD measures&lt;br&gt;&lt;br&gt;&lt;b&gt;136.093 dòng · 30 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#287a64;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="430" width="390" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="dq" value="&lt;b&gt;dq_reconciliation&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#667085&quot;&gt;1 dòng / kiểm tra đối soát&lt;/font&gt;&lt;br&gt;&lt;br&gt;check_no · thứ tự kiểm tra&lt;br&gt;check_name / status&lt;br&gt;bronze_value / clean_value&lt;br&gt;24 PASS · 5 INFO · 0 FAIL&lt;br&gt;&lt;br&gt;&lt;b&gt;29 dòng · 6 cột&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#506174;fontColor=#1f2933;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="1120" width="390" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="K01 · seller_id → seller_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="seller" target="salesroom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="K02 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="contract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="K03 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="lead">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="K04 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="salesroom" target="staff">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="K05 · credit_case_id → credit_case_id + line_no" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=var(--edge)" edge="1" parent="1" source="contract" target="product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="K06 · credit_case_id → credit_case_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="contract" target="goods">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="K07 · finish_id → finish_code → result_code → finish_code" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="reason" target="lead">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="T01 · employee_id + shop_id + thời hạn → shop_id + month" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="staff" target="staff_month">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="L01 · client_id + product + dt_apply → credit_case_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#a66b12;dashed=1" edge="1" parent="1" source="contract" target="attr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="L02 · lead_row + client_id + product + dt_assigned → lead_row" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#a66b12;dashed=1" edge="1" parent="1" source="lead" target="attr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="T02 · shop_id → shop_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="salesroom" target="dim_shop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="T03 · shop_id × tháng → shop_id + month" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="contract" target="mart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="T04 · lead_shop_id + assigned_month → lead conversion / cross-shop measures" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="attr" target="mart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="T05 · shop_id + month → sa_fte / headcount" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#7961a8;dashed=1" edge="1" parent="1" source="staff_month" target="mart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" value="Q01 · row counts / totals / placeholders → bronze_value ↔ clean_value" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#748091;dashed=1" edge="1" parent="1" source="bronze" target="dq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
