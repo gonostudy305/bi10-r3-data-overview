@@ -153,7 +153,26 @@ facts=[
  {'class':'','title':'Sentinel ngày và khả năng quan sát FPD','body':'date_sign = 3000-01-01 đổi thành NULL; valid_to sentinel thành NULL kèm is_open_ended. FPD chỉ observable cho hồ sơ booked nộp trước 01/08/2026.'},
  {'class':'warn','title':'Đối soát lớp clean','body':'dq_reconciliation: 29 kiểm tra, 24 PASS, 5 INFO, 0 FAIL. INFO được giữ lại để giải thích vấn đề; các nhóm có thể chồng lấn.'},
 ]
-D={'generated_at':'2026-10-21','tables':tables,'entities':entities,'relationships':rels,'facts':facts,'svg':svg}
+# Aggregates from read-only ClickHouse queries; see lead_contract_flow.sql.
+journey={
+ 'lead_rows':6130637,
+ 'lead_rows_shop_master':385273,
+ 'weighted_leads':43454845,
+ 'weighted_leads_shop_master':1276986,
+ 'master_shops_with_leads':10796,
+ 'lead_rows_with_case_id':130381,
+ 'lead_rows_with_valid_case_id':119802,
+ 'distinct_contracts_directly_referenced':103926,
+ 'eligible_contracts':1592580,
+ 'attributed_contracts':260674,
+ 'attributed_booked_contracts':191857,
+ 'attributed_over_90d':41426,
+ 'attributed_within_90d':219248,
+ 'period_start':'2025-12-31',
+ 'period_end':'2026-09-30',
+ 'as_of':'2026-10-21',
+}
+D={'generated_at':'2026-10-21','tables':tables,'entities':entities,'relationships':rels,'facts':facts,'journey':journey,'svg':svg}
 (OUT/'cleaning_erd.js').write_text('window.D_CLEAN = '+json.dumps(D,ensure_ascii=False,separators=(',',':'))+';\n',encoding='utf-8')
 
 # Editable diagrams.net file with nodes anchored by field-row coordinates and routed orthogonal edges.
