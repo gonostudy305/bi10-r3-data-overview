@@ -79,6 +79,10 @@ h2.sec small { font-weight: 400; color: var(--muted); font-size: 12px; }
 .cleaning-table td:first-child { min-width: 190px; font-weight: 600; }
 .cleaning-table th { cursor: default; }
 .cleaning-table th:hover { color: var(--muted); }
+.correlation-grid { margin-top: var(--gap); }
+.correlation-card figure { margin: 0; }
+.correlation-card img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.correlation-card figcaption { margin-top: 8px; color: var(--muted); font-size: 12px; }
 .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--gap); margin-top: var(--gap); }
 .method-grid .card { height: 100%; }
 .scope-line { margin-top: 8px; color: var(--muted); font-size: 12px; }
@@ -100,6 +104,7 @@ footer ul { margin: 6px 0 0 18px; }
   .tabbar { margin-inline: -2px; }
   .tab-button { padding: 9px 13px; }
   .cleaning-chart { height: 260px; }
+  .correlation-card { padding: 12px; }
   #t-cleaning thead { display: none; }
   #t-cleaning tbody tr { display: block; border: 1px solid var(--line); border-radius: 8px; margin: 8px; padding: 5px; }
   #t-cleaning tbody td { display: block; min-width: 0; padding: 4px 7px; border: 0; }
@@ -129,9 +134,10 @@ footer ul { margin: 6px 0 0 18px; }
     </div>
   </header>
 
-  <nav class="tabbar" role="tablist" aria-label="Các màn hình tổng quan dữ liệu">
+  <nav class="tabbar" role="tablist" aria-label="Các màn hình phân tích dữ liệu">
     <button class="tab-button" type="button" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" tabindex="0">Tổng quan</button>
     <button class="tab-button" type="button" id="tab-cleaning" role="tab" aria-selected="false" aria-controls="panel-cleaning" tabindex="-1">Data Cleaning</button>
+    <button class="tab-button" type="button" id="tab-correlation" role="tab" aria-selected="false" aria-controls="panel-correlation" tabindex="-1">Tương quan</button>
   </nav>
 
   <section class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
@@ -365,6 +371,41 @@ footer ul { margin: 6px 0 0 18px; }
         <li>Snapshot tổng hợp tạo lúc <span id="cleaning-generated-at"></span>. Các số đếm theo dòng, UUID, shop ID và sample_weight không thay thế lẫn nhau.</li>
       </ul>
     </footer>
+  </section>
+
+  <section class="tab-panel" id="panel-correlation" role="tabpanel" aria-labelledby="tab-correlation" tabindex="0" hidden>
+    <h2 class="sec">Tương quan shop-tháng <small>Pearson · Spearman · các cặp biến minh họa</small></h2>
+    <p class="cap">Nguồn: <code>r3_sandbox_vu.mart_shop_month</code> · 61.491 dòng · grain shop × tháng · 01/03–01/08/2026 · shop trong danh mục salesroom.</p>
+    <div class="note"><b>Cách đọc:</b> Pearson mô tả liên hệ tuyến tính; Spearman mô tả liên hệ theo thứ hạng (đơn điệu), không phải phép dò mọi dạng phi tuyến. Ma trận dùng các cặp giá trị không NULL nên số quan sát có thể khác nhau theo từng ô. Scatter dùng mẫu xác định tối đa 5.000 điểm cho mỗi hình; hệ số r/rho trên hình được tính đúng trên các điểm đang hiển thị.</div>
+    <div class="note"><b>Giới hạn:</b> đây là tương quan gộp mô tả, không chứng minh nguyên nhân hay tác động. Mỗi shop có thể xuất hiện ở nhiều tháng, nên các dòng không độc lập; tab không trình bày p-value hay khoảng tin cậy. Một số biến có quan hệ công thức với nhau (ví dụ booked, approval rate, booked/FTE); FPD rate chỉ có khi mẫu số quan sát được lớn hơn 0.</div>
+
+    <div class="grid correlation-grid">
+      <article class="card correlation-card">
+        <h3>Liên hệ tuyến tính giữa các biến · Pearson</h3>
+        <div class="cap">Hệ số r từ −1 đến +1; màu thể hiện chiều và mức độ tương quan</div>
+        <figure><img src="assets/correlation/corr_01_pearson_heatmap_reviewed.png" alt="Heatmap tương quan Pearson cho 17 biến shop-tháng" loading="lazy"><figcaption>Pairwise complete cases; cỡ mẫu của từng cặp biến không được đồng nhất.</figcaption></figure>
+      </article>
+      <article class="card correlation-card">
+        <h3>Liên hệ theo thứ hạng · Spearman</h3>
+        <div class="cap">Cho biết hai biến có xu hướng tăng/giảm cùng thứ hạng đến mức nào</div>
+        <figure><img src="assets/correlation/corr_02_spearman_heatmap_reviewed.png" alt="Heatmap tương quan hạng Spearman cho 17 biến shop-tháng" loading="lazy"><figcaption>Spearman đo liên hệ đơn điệu theo thứ hạng; hệ số khác Pearson không tự chứng minh quan hệ phi tuyến.</figcaption></figure>
+      </article>
+      <article class="card correlation-card">
+        <h3>Tương quan hạng với Booked và FPD rate</h3>
+        <div class="cap">So sánh Spearman rho với hai chỉ số; không diễn giải các biến là “động lực” gây ra kết quả</div>
+        <figure><img src="assets/correlation/corr_03_target_associations_reviewed.png" alt="Biểu đồ thanh Spearman của các biến với Booked và FPD rate" loading="lazy"><figcaption>Booked và một số tỷ lệ/năng suất có quan hệ số học; FPD chỉ dùng hồ sơ có thời gian quan sát.</figcaption></figure>
+      </article>
+      <article class="card correlation-card">
+        <h3>Bốn cặp biến để xem phân bố</h3>
+        <div class="cap">Mỗi panel nêu bộ lọc, hệ số Pearson, Spearman và số điểm được vẽ</div>
+        <figure><img src="assets/correlation/corr_04_scatter_associations_reviewed.png" alt="Bốn scatterplot về nhân sự và Booked, lead và Apps, ticket và FPD, approval rate và năng suất" loading="lazy"><figcaption>Đường đỏ là hồi quy tuyến tính mô tả trên mẫu đang vẽ; không phải ước lượng tác động nhân quả.</figcaption></figure>
+      </article>
+    </div>
+    <footer><b>Nguồn và phạm vi</b><ul>
+      <li>Phân tích: <code>hackathon_round3/05_analysis/run_r3_correlation_analysis.py</code>; mart xây từ clean tables trong sandbox nhóm.</li>
+      <li>Thời gian gồm các tháng 03–08/2026; mỗi dòng là một shop trong master tại một tháng. Đây không phải toàn bộ shop ID trong contract.</li>
+      <li>Các biểu đồ dùng tương quan mô tả; không trình bày ý nghĩa thống kê do cùng shop lặp qua nhiều tháng và chưa điều chỉnh cấu trúc cụm.</li>
+    </ul></footer>
   </section>
 </div>
 
@@ -780,24 +821,24 @@ function render() {
 document.getElementById("sub").textContent =
   `Nguồn: ClickHouse r3_bronze · tạo lúc ${D.generated_at} · ${fmt(sum(D.tables, "rows"))} dòng trên ${D.tables.length} bảng`;
 function renderAll() {
-  if (document.getElementById("panel-cleaning").hidden) {
+  if (!document.getElementById("panel-overview").hidden) {
     renderInsights(); renderPareto(); renderSize(); renderCross(); renderOutcome(); renderSource(); renderDQ();
     render();
-  } else {
+  } else if (!document.getElementById("panel-cleaning").hidden) {
     renderCleaning();
   }
 }
 function activateTab(tabId, moveFocus = false) {
-  const isCleaning = tabId === "tab-cleaning";
-  for (const id of ["tab-overview", "tab-cleaning"]) {
+  const ids = ["tab-overview", "tab-cleaning", "tab-correlation"];
+  for (const id of ids) {
     const active = id === tabId;
     const tab = document.getElementById(id);
     tab.setAttribute("aria-selected", String(active));
     tab.tabIndex = active ? 0 : -1;
-    document.getElementById(id === "tab-overview" ? "panel-overview" : "panel-cleaning").hidden = !active;
+    document.getElementById(id.replace("tab-", "panel-")).hidden = !active;
     if (active && moveFocus) tab.focus();
   }
-  document.querySelectorAll(".overview-filter").forEach(el => { el.hidden = isCleaning; });
+  document.querySelectorAll(".overview-filter").forEach(el => { el.hidden = tabId !== "tab-overview"; });
   requestAnimationFrame(() => {
     renderAll();
     Object.values(charts).forEach(chart => chart.resize());
@@ -806,7 +847,7 @@ function activateTab(tabId, moveFocus = false) {
 document.querySelectorAll('[role="tab"]').forEach(tab => {
   tab.addEventListener("click", () => activateTab(tab.id));
   tab.addEventListener("keydown", event => {
-    const ids = ["tab-overview", "tab-cleaning"];
+    const ids = ["tab-overview", "tab-cleaning", "tab-correlation"];
     const index = ids.indexOf(tab.id);
     let next = null;
     if (event.key === "ArrowRight") next = ids[(index + 1) % ids.length];
