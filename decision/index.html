@@ -22,10 +22,16 @@
   --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#184f95;--goodtxt:#0ca30c;--midpt:#383835;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--plane);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-header h1{font-size:18px;margin:0;font-weight:650}
-header .sub{color:var(--ink2);font-size:12px}
-header .spacer{flex:1}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:nowrap}
+header .brand{min-width:0;flex:1 1 auto}
+header h1{font-size:18px;margin:0;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .sub{color:var(--ink2);font-size:12px;margin-top:2px}
+header .actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;flex-wrap:nowrap}
+@media (max-width:1100px){
+  header{flex-wrap:wrap;gap:10px}
+  header h1{white-space:normal}
+  header .actions{width:100%;justify-content:flex-end}
+}
 nav{display:flex;gap:4px;padding:8px 16px 0;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
 nav button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;font:inherit;color:var(--ink2);cursor:pointer}
 nav button.on{color:var(--ink);border-bottom-color:var(--s1);font-weight:600}
@@ -100,18 +106,20 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
 </head>
 <body data-palette="#2a78d6,#eb6834,#1baf7a,#eda100">
 <header>
-  <div><h1 data-i18n="head_title">Shop Growth Decision</h1><div class="sub" data-i18n="head_sub">BI10 Round 3 · Task 6 on the team’s final model (v4) · Network potential → priority waves &amp; levers → validation &amp; pilot. Units: booked contracts per month unless stated.</div></div>
-  <div class="spacer"></div>
-  <div style="display:flex; gap:8px; align-items:center;">
+  <div class="brand">
+    <h1 data-i18n="head_title">Shop Growth Decision</h1>
+    <div class="sub" data-i18n="head_sub">BI10 Round 3 · Task 6 on the team’s final model (v4) · Network potential → priority waves &amp; levers → validation &amp; pilot. Units: booked contracts per month unless stated.</div>
+  </div>
+  <div class="actions">
     <a href="../" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_data_overview">📊 Data Overview</a>
     <a href="../erd/" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_erd">🏛️ ERD Architecture</a>
+    <div class="sub" id="dataStamp" style="margin-left:4px"></div>
+    <div style="display:inline-flex; gap:2px; border:1px solid var(--axis); border-radius:6px; padding:2px; background:var(--surface)">
+      <button type="button" class="lang-btn" data-lang="vi" onclick="setLanguage('vi')">VI</button>
+      <button type="button" class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+    <button class="btn" id="themeBtn" title="Toggle light / dark" style="padding:4px 8px">◐</button>
   </div>
-  <div class="sub" id="dataStamp"></div>
-  <div style="display:inline-flex; gap:2px; border:1px solid var(--axis); border-radius:6px; padding:2px; background:var(--surface)">
-    <button type="button" class="lang-btn" data-lang="vi" onclick="setLanguage('vi')">VI</button>
-    <button type="button" class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
-  </div>
-  <button class="btn" id="themeBtn" title="Toggle light / dark">◐</button>
 </header>
 <nav>
   <button data-page="network" class="on" data-i18n="nav_page_network">1 · Network potential</button>
