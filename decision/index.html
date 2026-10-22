@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shop Growth Decision</title>
+<meta name="description" content="BI10 Round 3 - Task 6 on the team's final model (v4): network potential, priority waves and levers, validation and pilot.">
+<style>
+:root{color-scheme:light;
+  --surface:#fcfcfb;--plane:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s7:#6250d6;--de:#b8b6ad;
+  --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#104281;
+  --good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;--goodtxt:#006300;
+  --midpt:#f0efec;}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;
+  --surface:#1a1a19;--plane:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--de:#5a5955;
+  --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#184f95;--goodtxt:#0ca30c;--midpt:#383835;}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --surface:#1a1a19;--plane:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--de:#5a5955;
+  --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#184f95;--goodtxt:#0ca30c;--midpt:#383835;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0;font-weight:650}
+header .sub{color:var(--ink2);font-size:12px}
+header .spacer{flex:1}
+nav{display:flex;gap:4px;padding:8px 16px 0;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;font:inherit;color:var(--ink2);cursor:pointer}
+nav button.on{color:var(--ink);border-bottom-color:var(--s1);font-weight:600}
+.filters{display:flex;gap:10px;padding:10px 16px;align-items:end;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border)}
+.filters label,.inputs label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}
+select,input[type=number],input[type=range],button.btn{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--axis);border-radius:6px;padding:5px 8px}
+button.btn{cursor:pointer}
+button.btn.primary{background:var(--s1);color:#fff;border-color:var(--s1)}
+main{padding:16px;max-width:1500px;margin:0 auto}
+section.page{display:none}section.page.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;min-width:0}
+.card h3{margin:0 0 2px;font-size:14px;font-weight:600}
+.card .cap{color:var(--muted);font-size:12px;margin-bottom:8px}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}.c2{grid-column:span 2}
+@media (max-width:1000px){.c3,.c2{grid-column:span 6}.c4{grid-column:span 6}.c8,.c6{grid-column:span 12}}
+@media (max-width:620px){.c3,.c2,.c4,.c6{grid-column:span 12}main{padding:12px}}
+.tile .label{font-size:12px;color:var(--ink2)}
+.tile .value{font-size:26px;font-weight:600;line-height:1.15;margin-top:2px}
+.tile .delta{font-size:12px;color:var(--muted)}
+.hero .value{font-size:48px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+svg text{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;fill:var(--ink2)}
+svg .ax{stroke:var(--axis);stroke-width:1}
+svg .gl{stroke:var(--grid);stroke-width:1}
+svg .lbl{fill:var(--ink);font-variant-numeric:tabular-nums}
+svg .mut{fill:var(--muted)}
+svg .ref{stroke:var(--muted);stroke-width:1}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:4px 0 6px}
+.legend span i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);padding:6px 9px;border-radius:6px;font-size:12px;display:none;z-index:50;max-width:280px;line-height:1.35}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:left;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+th{color:var(--ink2);font-weight:600;position:sticky;top:0;background:var(--surface)}
+.tbl{max-height:380px;overflow:auto;border:1px solid var(--grid);border-radius:6px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-weight:700;font-size:16px;color:#fff}
+.badge.APPROVE{background:var(--good)}.badge.REVISE{background:var(--warn);color:#0b0b0b}.badge.REJECT{background:var(--crit)}
+.checks{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+.checks li{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.checks li b{font-weight:600}
+.ok{color:var(--goodtxt)}.ko{color:var(--crit)}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 14px}
+.inputs .rng{display:flex;gap:8px;align-items:center}.inputs .rng input[type=range]{flex:1;padding:0}
+.inputs .rng output{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.note{font-size:12.5px;color:var(--ink2)}
+ul.tight{margin:6px 0 0 18px;padding:0}ul.tight li{margin:3px 0}
+.pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;border:1px solid var(--border);color:var(--ink2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}.kv b{font-variant-numeric:tabular-nums}
+footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
+.toggle-tbl{font-size:12px;color:var(--s1);background:none;border:0;cursor:pointer;padding:0;margin-top:6px}
+.hid{display:none}
+.pair{display:grid;grid-template-columns:minmax(150px,1.1fr) 1fr 1fr;gap:0;font-size:13px}
+.pair>div{padding:5px 8px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
+.pair .h{font-weight:600;color:var(--ink)}.pair .k{color:var(--ink2)}
+.pair .win{color:var(--goodtxt);font-weight:600}
+.pairin{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:8px}
+.pairin input{width:130px}
+.story{font-size:13.5px;line-height:1.5}
+.trf{display:flex;gap:8px;align-items:end;font-size:12px;color:var(--ink2);margin-bottom:4px}
+@media (max-width:620px){.pair{grid-template-columns:1fr 1fr 1fr;font-size:12px}}
+</style>
+</head>
+<body data-palette="#2a78d6,#eb6834,#1baf7a,#eda100">
+<header>
+  <div><h1>Shop Growth Decision</h1><div class="sub">BI10 Round 3 · Task 6 on the team’s final model (v4) · Network potential → priority waves &amp; levers → validation &amp; pilot. Units: booked contracts per month unless stated.</div></div>
+  <div class="spacer"></div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <a href="../" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;">📊 Data Overview</a>
+    <a href="../erd/" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;">🏛️ ERD Architecture</a>
+  </div>
+  <div class="sub" id="dataStamp"></div>
+  <button class="btn" id="themeBtn" title="Toggle light / dark">◐</button>
+</header>
+<nav>
+  <button data-page="network" class="on">1 · Network potential</button>
+  <button data-page="sim">2 · Waves &amp; allocation</button>
+  <button data-page="valid">3 · Validation &amp; pilot</button>
+</nav>
+<div class="filters" id="filters">
+  <label>Priority wave<select id="fWave"></select></label>
+  <label>Area<select id="fArea"></select></label>
+  <label>Province<select id="fProv"></select></label>
+  <label>Category<select id="fCat"></select></label>
+  <label>Model<select id="fModel"></select></label>
+  <label>Shop product<select id="fProd"></select></label>
+  <label>Track<select id="fTrack"></select></label>
+  <button class="btn" id="fReset">Reset</button>
+  <span class="note" id="fCount"></span>
+</div>
+<main>
+<!-- ================= PAGE 1 ================= -->
+<section class="page on" id="page-network">
+  <div class="grid">
+    <div class="card c3 tile hero"><div class="label">Growth gap in scope (Attainable − BAU)</div><div class="value" id="heroGap">–</div><div class="delta" id="heroGapSub"></div></div>
+    <div class="card" style="grid-column:span 9"><div class="tiles" id="tilesNet"></div></div>
+    <div class="card c12"><h3>Two shops, same sales: which one still has room to grow?</h3><div class="cap">The brief’s core question, two cases on the final model. Pick a case or type any two scored shop IDs (the filter row does not apply here).</div>
+      <div class="pairin"><label class="note">Case<select id="pairCase"></select></label><label class="note">Shop A<input type="number" id="pairA"></label><label class="note">Shop B<input type="number" id="pairB"></label><span class="note" id="pairMsg"></span></div>
+      <div class="grid" style="gap:12px"><div class="c6" id="pairTbl"></div><div class="c6"><div id="chPair"></div><div class="story" id="pairStory" style="margin-top:8px"></div></div></div></div>
+    <div class="card c4"><h3>Four levels of shop performance</h3><div class="cap">Sum over shops in scope · Attainable = peer P75 frontier with the 3× growth guardrail and the provincial ceiling (team model v4)</div><div id="chLadder"></div></div>
+    <div class="card c4"><h3>Where the gap sits: main constraint</h3><div class="cap">Gap by the main constraint the team model assigned to each shop</div><div id="chConstraint"></div></div>
+    <div class="card c4"><h3>Where the gap sits: geography</h3><div class="cap" id="chGeoCap">Gap by area</div><div id="chGeo"></div></div>
+    <div class="card c6"><h3>What can today’s measured levers close?</h3><div class="cap">Upper bound: SA FTE doubled in every FTE-eligible shop, a programme slot for every eligible shop, measured responses · extra booked / month</div><div id="chReach"></div><div class="story" id="reachStory" style="margin-top:6px"></div></div>
+    <div class="card c6"><h3>Sourcing vs booking: business the booking view does not credit</h3><div class="cap">Booked contracts whose lead came from a shop in scope but that were signed at another shop · lead → contract: same client, same product, assigned ≤ apply, last touch within 90 days · Jul–Sep 2026</div><div class="tiles" id="srcTiles"></div><div class="note" style="margin:10px 0 4px">Booked elsewhere as a share of the shop’s own booked, by shop size (booked / month)</div><div id="chSrc"></div><div class="note" id="srcNote"></div></div>
+    <div class="card c8"><h3>Network trend by month</h3><div class="cap">All scored shops (not affected by the filter row) · applications and booked contracts (left) · SA FTE assigned (right)</div><div class="trf"><label>From<select id="tFrom"></select></label><label>To<select id="tTo"></select></label></div><div class="grid" style="gap:8px"><div class="c8" id="chTrend"></div><div class="c4" id="chTrendFte"></div></div></div>
+    <div class="card c4"><h3>Round 2 → Round 3 bridge</h3><div class="cap">Same customers, next period: contract outcome by Round 2 segment group (customer level, not shop level)</div><div id="chR2"></div><div class="note" id="r2Note"></div></div>
+    <div class="card c6"><h3>Highlights &amp; lowlights</h3><ul class="tight" id="hl"></ul></div>
+    <div class="card c6"><h3>Priority list in scope</h3><div class="cap">Team ranking of Invest shops by conservative gap (gap_low = min(gap P05 × provincial cap factor, gap)) · top 15 in scope</div><div class="tbl" id="tblTop"></div></div>
+  </div>
+</section>
+<!-- ================= PAGE 2 ================= -->
+<section class="page" id="page-sim">
+  <div class="grid">
+    <div class="card c12"><h3>Priority waves and the part a measured lever can back</h3><div class="cap">Waves are cumulative: the team’s ranking of the 5,755 Invest shops by conservative gap (t05 / t06) · measured lever = closing-quality programme in Active shops with ≥ 3 applications a month that book below the peer mean (half the shortfall × applications, capped at the gap) · whole network, filter row not applied</div>
+      <div class="grid" style="gap:12px"><div class="c8"><div class="tbl" id="tblWaves" style="max-height:none"></div></div><div class="c4" id="chWaves"></div></div><div class="story" id="wavesStory" style="margin-top:8px"></div></div>
+    <div class="card c12"><h3>Inputs — what Sales Management controls</h3><div class="cap">Scope = priority scope ∩ filter row. The engine assigns one lever per shop: SA FTE (demand capture) or one programme slot (closing quality / reactivation / fix quality first).</div>
+      <div class="inputs">
+        <label>Priority scope<select id="inScope"><option value="500" selected>Wave 1 · top 500</option><option value="1000">Wave 2 · top 1,000</option><option value="2000">Wave 3 · top 2,000</option><option value="5755">All Invest · 5,755</option><option value="">All scored shops</option></select></label>
+        <label>Extra SA FTE budget<div class="rng"><input type="range" id="inFte" min="0" max="100" step="1" value="0"><output id="outFte">0</output></div></label>
+        <label>Programme slots (shops)<div class="rng"><input type="range" id="inSlots" min="0" max="2000" step="25" value="500"><output id="outSlots">500</output></div></label>
+        <label>Horizon (months)<select id="inHorizon"><option>3</option><option selected>6</option><option>12</option></select></label>
+        <label>Max shop FPD for any lever<div class="rng"><input type="range" id="inFpd" min="0.05" max="0.40" step="0.01" value="0.40"><output id="outFpd">any</output></div></label>
+        <label>Minimum confidence<select id="inConf"><option value="">All shops</option><option value="hm">Medium + High</option><option value="h">High only</option></select></label>
+        <label>Slots reserved for reactivation<div class="rng"><input type="range" id="inReact" min="0" max="50" step="5" value="0"><output id="outReact">0%</output></div></label>
+        <label>Staffing response (elasticity)<select id="inElas"><option value="low">Low</option><option value="base" selected>Base</option><option value="high">High</option></select></label>
+      </div>
+    </div>
+    <div class="card c4"><h3>Decision</h3><div class="cap">Hard guardrails decide Reject; any other failed check gives Revise</div><div id="verdict"></div><ul class="checks" id="checks"></ul></div>
+    <div class="card c8"><div class="tiles" id="tilesSim"></div><div class="note" style="margin-top:10px" id="reco"></div></div>
+    <div class="card c4"><h3>Uplift by lever</h3><div class="cap">Engine plan vs the team priority order with the same budget (FTE spread evenly, slots in rank order)</div><div id="chLever"></div></div>
+    <div class="card c4"><h3>Does an extra SA FTE pay back?</h3><div class="cap">Average extra booked per added FTE-month as the FTE budget grows in scope (slots held at 0) · reference line = network booked per FTE-month</div><div id="chCurve"></div></div>
+    <div class="card c4"><h3>Uplift by area</h3><div class="cap">Expected extra booked / month from the plan</div><div id="chUpArea"></div></div>
+    <div class="card c12"><h3>The plan: shops selected</h3><div class="cap" id="planCap"></div><div class="tbl" id="tblPlan"></div><div style="margin-top:8px;display:flex;gap:8px;align-items:center"><button class="btn primary" id="btnCsv">Download plan (CSV)</button><span class="note">Expected uplift = extra booked contracts per month at the end of the horizon; P05 = conservative share from the team’s gap_low.</span></div></div>
+  </div>
+</section>
+<!-- ================= PAGE 3 ================= -->
+<section class="page" id="page-valid">
+  <div class="grid">
+    <div class="card c12"><h3>Can we trust the numbers? Team validation (Task 3–5) and Task 6 checks</h3><div class="tiles" id="tilesVal"></div></div>
+    <div class="card c6"><h3>Attainable is a range, not a point</h3><div class="cap">Network Attainable before the provincial ceiling under other benchmark quantiles and growth guardrails (team summary.json) · base = P75 and 3×</div><div id="chRange"></div><div class="note" id="rangeNote"></div></div>
+    <div class="card c6"><h3>Pilot: how the waves are proven before scaling</h3><div id="pilot"></div></div>
+    <div class="card c6"><h3>Reference scenarios</h3><div class="cap">Python engine on the v4 model; the browser engine reproduces these (page 2)</div><div class="tbl" id="tblScen"></div></div>
+    <div class="card c6"><h3>Sensitivity: does the plan change when assumptions move?</h3><div class="cap">Engine plan “all scored shops, 500 slots, no FTE” re-run under each assumption · Jaccard = shops selected in both runs ÷ shops in either run · last column: yield of a 20-FTE add-on</div><div class="tbl" id="tblSens"></div></div>
+    <div class="card c6"><h3>Round 2 insight carried into Round 3</h3><div class="cap">FHS × CES segments were built on Dec-24/Jan-25 applicants; those who transact again in 2025-26 show the segmentation holds out of sample at customer level</div><div class="tbl" id="tblR2"></div><div class="note" id="r2Note2"></div></div>
+    <div class="card c6"><h3>Method notes &amp; assumptions</h3><ul class="tight" id="notes"></ul></div>
+  </div>
+</section>
+</main>
+<footer>Dashboard owner: Vietnam Ecom Team - Hayat · Data: team final package v4 (05_analysis/output: shop_potential, t05 / t06 priority tables, summary) + r3_silver (sourcing view) + r2_gold.customer_segment_actions (Round 2 bridge) · Task 6 engine, plain HTML/SVG, runs offline.</footer>
+<div id="tip"></div>
+<script src="data.js"></script>
+<script>
+/* ===================== helpers ===================== */
+const $=s=>document.querySelector(s);
+const fN=(x,d=0)=>(x==null||isNaN(x))?'–':Math.abs(x)>=1e6?(x/1e6).toFixed(1)+'M':Math.abs(x)>=1e4?(x/1e3).toFixed(1)+'K':Number(x).toLocaleString('en-US',{maximumFractionDigits:d});
+const fP=(x,d=1)=>(x==null||isNaN(x))?'–':(x*100).toFixed(d)+'%';
+const f1=x=>(x==null||isNaN(x))?'–':Number(x).toFixed(1);
+const f2=x=>(x==null||isNaN(x))?'–':Number(x).toFixed(2);
+const sum=(a,f)=>a.reduce((t,r)=>t+(f?f(r):r),0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=$('#tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.display='block';moveTip(e);}
+function moveTip(e){const w=tip.offsetWidth,h=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;if(x+w>innerWidth-8)x=e.clientX-w-10;if(y+h>innerHeight-8)y=e.clientY-h-10;tip.style.left=x+'px';tip.style.top=y+'px';}
+function hideTip(){tip.style.display='none';}
+function bindTips(root){root.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('mouseenter',e=>showTip(e,el.dataset.tip));el.addEventListener('mousemove',moveTip);el.addEventListener('mouseleave',hideTip);});}
+function tableHTML(cols,rows){return '<table><thead><tr>'+cols.map(c=>`<th class="${c.n?'n':''}">${esc(c.h)}</th>`).join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+cols.map(c=>`<td class="${c.n?'n':''}">${c.f?c.f(r):esc(r[c.k]??'–')}</td>`).join('')+'</tr>').join('')+'</tbody></table>';}
+function tableView(el,cols,rows){const id='tv'+Math.random().toString(36).slice(2,7);const b=document.createElement('button');b.className='toggle-tbl';b.textContent='Table view';const d=document.createElement('div');d.className='tbl hid';d.style.marginTop='6px';d.innerHTML=tableHTML(cols,rows);b.onclick=()=>{d.classList.toggle('hid');b.textContent=d.classList.contains('hid')?'Table view':'Hide table';};el.appendChild(b);el.appendChild(d);}
+
+/* ===================== charts (SVG) ===================== */
+function hbar(el,rows,o={}){ // rows:[{label,value,color,tip,sub}]
+  el.innerHTML='';const W=el.clientWidth||520,lw=o.labelW||150,bh=16,gap=10,top=4;const H=top+rows.length*(bh+gap)+4;
+  const mx=o.max||Math.max(1e-9,...rows.map(r=>Math.abs(r.value)));const pw=W-lw-70;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  rows.forEach((r,i)=>{const y=top+i*(bh+gap);const w=Math.max(0,Math.abs(r.value)/mx*pw);const col=r.color||'var(--s1)';
+    s+=`<text x="${lw-8}" y="${y+bh-3}" text-anchor="end" class="lbl">${esc(r.label)}</text>`;
+    s+=`<rect x="${lw}" y="${y}" width="${w}" height="${bh}" fill="${col}" rx="4" ry="4" style="clip-path:inset(0 0 0 0 round 0 4px 4px 0)" data-tip="${esc(r.tip||r.label+': '+fN(r.value,1))}"/>`;
+    s+=`<rect x="${lw}" y="${y}" width="${Math.min(4,w)}" height="${bh}" fill="${col}"/>`;
+    s+=`<text x="${lw+w+6}" y="${y+bh-3}" class="lbl">${esc(o.fmt?o.fmt(r.value):fN(r.value,1))}${r.sub?` <tspan class="mut">${esc(r.sub)}</tspan>`:''}</text>`;});
+  s+=`<line x1="${lw}" y1="${top-2}" x2="${lw}" y2="${H-2}" class="ax"/></svg>`;el.innerHTML=s;bindTips(el);
+  if(o.table!==false)tableView(el,[{h:o.labelH||'Item',k:'label'},{h:o.valueH||'Value',n:1,f:r=>o.fmt?o.fmt(r.value):fN(r.value,1)}],rows);}
+function vbar(el,rows,o={}){ // ordinal/level bars
+  el.innerHTML='';const W=el.clientWidth||400,H=o.h||220,pl=8,pb=28,pt=22;const n=rows.length;const slot=(W-pl*2)/n,bw=Math.min(40,slot*0.6);
+  const mx=o.max||Math.max(1e-9,...rows.map(r=>r.value));let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  rows.forEach((r,i)=>{const h=Math.max(0,r.value/mx*(H-pb-pt));const x=pl+i*slot+(slot-bw)/2,y=H-pb-h;
+    s+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="${r.color||'var(--s1)'}" rx="4" data-tip="${esc(r.tip||'')}"/><rect x="${x}" y="${H-pb-Math.min(4,h)}" width="${bw}" height="${Math.min(4,h)}" fill="${r.color||'var(--s1)'}"/>`;
+    s+=`<text x="${x+bw/2}" y="${y-5}" text-anchor="middle" class="lbl">${esc(o.fmt?o.fmt(r.value):fN(r.value))}</text>`;
+    s+=`<text x="${x+bw/2}" y="${H-pb+16}" text-anchor="middle">${esc(r.label)}</text>`;});
+  s+=`<line x1="${pl}" y1="${H-pb}" x2="${W-pl}" y2="${H-pb}" class="ax"/></svg>`;el.innerHTML=s;bindTips(el);
+  if(o.table!==false)tableView(el,[{h:'Level',k:'label'},{h:'Booked / month',n:1,f:r=>fN(r.value)}],rows);}
+function groupedHbar(el,cats,series,o={}){ // series:[{name,color,values[]}]
+  el.innerHTML='';const W=el.clientWidth||400,lw=o.labelW||150,bh=12,g=2,gap=12,top=4;const k=series.length;const H=top+cats.length*(k*(bh+g)+gap)+4;
+  const mx=Math.max(1e-9,...series.flatMap(s=>s.values));const pw=W-lw-60;
+  let s=`<div class="legend">${series.map(x=>`<span><i style="background:${x.color}"></i>${esc(x.name)}</span>`).join('')}</div><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  cats.forEach((c,i)=>{const y0=top+i*(k*(bh+g)+gap);s+=`<text x="${lw-8}" y="${y0+(k*(bh+g))/2+4}" text-anchor="end" class="lbl">${esc(c)}</text>`;
+    series.forEach((sr,j)=>{const v=sr.values[i]||0,w=Math.max(0,v/mx*pw),y=y0+j*(bh+g);s+=`<rect x="${lw}" y="${y}" width="${w}" height="${bh}" fill="${sr.color}" rx="4" data-tip="${esc(sr.name+' · '+c+': '+fN(v,1))}"/><rect x="${lw}" y="${y}" width="${Math.min(4,w)}" height="${bh}" fill="${sr.color}"/>`;
+      s+=`<text x="${lw+w+6}" y="${y+bh-2}" class="lbl" style="font-size:11px">${o.fmt?o.fmt(v):fN(v,0)}</text>`;});});
+  s+=`<line x1="${lw}" y1="${top-2}" x2="${lw}" y2="${H-2}" class="ax"/></svg>`;el.innerHTML=s;bindTips(el);
+  tableView(el,[{h:'Category',k:'c'},...series.map((sr,j)=>({h:sr.name,n:1,f:r=>fN(r.v[j],1)}))],cats.map((c,i)=>({c,v:series.map(sr=>sr.values[i]||0)})));}
+function lineChart(el,labels,series,o={}){ // series:[{name,color,values[]}]
+  el.innerHTML='';const W=el.clientWidth||500,H=o.h||220,pl=44,pr=14,pt=10,pb=26;const n=labels.length;
+  const all=series.flatMap(s=>s.values.filter(v=>v!=null));let mx=Math.max(...all,o.ref??-Infinity),mn=o.zero===false?Math.min(...all):0;if(mx===mn)mx=mn+1;
+  const X=i=>pl+i*(W-pl-pr)/Math.max(1,n-1),Y=v=>pt+(1-(v-mn)/(mx-mn))*(H-pt-pb);
+  const ticks=4;let s=(series.length>1?`<div class="legend">${series.map(x=>`<span><i style="background:${x.color}"></i>${esc(x.name)}</span>`).join('')}</div>`:'')+`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  for(let t=0;t<=ticks;t++){const v=mn+(mx-mn)*t/ticks,y=Y(v);s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" class="gl"/><text x="${pl-6}" y="${y+4}" text-anchor="end" class="mut">${o.axisFmt?o.axisFmt(v):fN(v)}</text>`;}
+  if(o.ref!=null){const y=Y(o.ref);s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" class="ref"/><text x="${W-pr}" y="${y-4}" text-anchor="end" class="mut">${esc(o.refLabel||'')}</text>`;}
+  const step=Math.ceil(n/8);labels.forEach((l,i)=>{if(i%step===0||(i===n-1&&(n-1)%step>=step/2))s+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="mut">${esc(l)}</text>`;});
+  series.forEach(sr=>{const pts=sr.values.map((v,i)=>v==null?null:[X(i),Y(v)]).filter(Boolean);s+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${sr.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const last=pts[pts.length-1];if(last)s+=`<circle cx="${last[0]}" cy="${last[1]}" r="4" fill="${sr.color}" stroke="var(--surface)" stroke-width="2"/>`;
+    // data labels: every point when <= 12 points, otherwise every 3rd point + peak + last (keeps them readable)
+    const vals=sr.values,iv=vals.map((v,i)=>[v,i]).filter(x=>x[0]!=null);const peak=iv.length?iv.reduce((a,b)=>b[0]>a[0]?b:a)[1]:-1;const li=iv.length?iv[iv.length-1][1]:-1;
+    const lstep=n<=12?1:3;vals.forEach((v,i)=>{if(v==null||o.labels===false)return;const pk=i===peak&&Math.abs(peak-li)>1&&(peak-li)%lstep!==0&&Math.abs((peak-li)%lstep)>1;if(!(n<=12||i%lstep===(li%lstep)||pk||i===li))return;
+      const x=X(i),y=Y(v);const anc=i===li?'end':i===0?'start':'middle';s+=`<text x="${anc==='end'?x-4:x}" y="${y-(o.below&&o.below(sr)?-14:7)}" text-anchor="${anc}" class="lbl" style="font-size:11px">${o.fmt?o.fmt(v):fN(v,v<100?1:0)}</text>`;});});
+  s+=`<line id="xh" x1="0" x2="0" y1="${pt}" y2="${H-pb}" class="ref" style="display:none"/></svg>`;el.innerHTML=s;
+  const svg=el.querySelector('svg'),xh=svg.querySelector('#xh');
+  svg.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect();const x=e.clientX-r.left;let i=Math.round((x-pl)/((W-pl-pr)/Math.max(1,n-1)));i=Math.max(0,Math.min(n-1,i));xh.setAttribute('x1',X(i));xh.setAttribute('x2',X(i));xh.style.display='';
+    showTip(e,`<b>${esc(labels[i])}</b><br>`+series.map(sr=>`${esc(sr.name)}: ${fN(sr.values[i],1)}`).join('<br>'));});
+  svg.addEventListener('mouseleave',()=>{xh.style.display='none';hideTip();});
+  tableView(el,[{h:'Period',k:'l'},...series.map((sr,j)=>({h:sr.name,n:1,f:r=>fN(r.v[j],1)}))],labels.map((l,i)=>({l,v:series.map(sr=>sr.values[i])})));}
+function tiles(el,items){el.innerHTML=items.map(t=>`<div class="tile"><div class="label">${esc(t.label)}</div><div class="value">${t.value}</div>${t.delta?`<div class="delta">${t.delta}</div>`:''}</div>`).join('');}
+
+/* ===================== data ===================== */
+const D=window.R3DATA,P0=D.params,COLS=D.columns,T=D.team,S6=D.task6,E=P0.elasticity_by_model;
+const SHOPS=D.shops.map(a=>{const o={};COLS.forEach((c,i)=>o[c]=a[i]);return o;});
+SHOPS.forEach(s=>{if(s.avg_ticket==null)s.avg_ticket=0;if(s.gap_p05_ratio==null)s.gap_p05_ratio=1;});
+const LEVER_COLOR={FTE:'var(--s1)',APPROVAL:'var(--s2)',REACT:'var(--s3)',QUALITY_FIX:'var(--s4)'};
+const LEVER_NAME={FTE:'Add SA FTE (demand capture)',APPROVAL:'Closing-quality programme',REACT:'Reactivation programme',QUALITY_FIX:'Fix quality first (programme, no FTE)'};
+$('#dataStamp').textContent='Model '+D.model.split(' · ')[0]+' · build '+D.generated+' · '+SHOPS.length.toLocaleString()+' scored shops';
+const sg=x=>(x>=0?'+':'−')+Math.abs(x).toFixed(2);
+
+/* ===================== filters ===================== */
+const F={area:'',province:'',category:'',model:'',shop_product:'',track:''};let FW='';
+const SEL={area:'#fArea',province:'#fProv',category:'#fCat',model:'#fModel',shop_product:'#fProd',track:'#fTrack'};
+const WAVES=[['','All scored shops'],['500','Wave 1 · top 500'],['1000','Wave 2 · top 1,000'],['2000','Wave 3 · top 2,000'],['5755','All Invest · 5,755']];
+$('#fWave').innerHTML=WAVES.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+const inWave=(s,w)=>!w||(s.team_rank!=null&&s.team_rank<=+w);
+function fillSelect(key){const el=$(SEL[key]);const base=SHOPS.filter(s=>inWave(s,FW)&&Object.keys(F).every(k=>k===key||!F[k]||s[k]===F[k]));const vals=[...new Set(base.map(s=>s[key]))].sort();
+  el.innerHTML=`<option value="">All</option>`+vals.map(v=>`<option value="${esc(v)}" ${F[key]===v?'selected':''}>${esc(v)}</option>`).join('');}
+function scopeRows(){return SHOPS.filter(s=>inWave(s,FW)&&Object.keys(F).every(k=>!F[k]||s[k]===F[k]));}
+Object.keys(SEL).forEach(k=>{$(SEL[k]).addEventListener('change',e=>{F[k]=e.target.value;if(k==='area')F.province='';refresh();});});
+$('#fWave').addEventListener('change',e=>{FW=e.target.value;refresh();});
+$('#fReset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');FW='';$('#fWave').value='';refresh();};
+function refresh(){Object.keys(SEL).forEach(fillSelect);const rows=scopeRows();$('#fCount').textContent=rows.length.toLocaleString()+' shops in scope';renderNetwork(rows);renderPair();runSim();}
+
+/* ===================== engine (port of engine.py, v4 parameters) ===================== */
+function params(over){return Object.assign({elas:E.base,p_react:P0.p_react,closable:P0.approval_closable_share,fte_step:P0.fte_step,fte_floor:P0.fte_floor,ramp:P0.ramp_factor,horizon:P0.horizon_months,conf:P0.conf_weight,minEff:P0.min_efficiency_vs_even,maxTop10:P0.max_top10_share,minP05:P0.min_p05_closure_ratio,minPerFte:P0.network_booked_per_fte,reactReserve:0,evenKey:P0.even_key},over||{});}
+const elOf=(r,p)=>p.elas[r.model]??0;
+const fteResp=(r,x,p)=>{const f0=Math.max(r.fte,p.fte_floor);return Math.min(r.attainable,r.bau*Math.pow((f0+x)/f0,elOf(r,p)));};
+const reactUp=(r,p)=>p.p_react*Math.max(r.attainable-r.bau,0);
+const apprUp=(r,p)=>Math.min(r.apps_pm*Math.max(r.peer_book_rate-r.book_rate,0)*p.closable,Math.max(r.attainable-r.bau,0));
+const wConf=(r,p)=>p.conf[r.confidence]??0.4;
+function allocate(rows,fteB,slotB,f,p,mode){
+  const scope=rows.filter(r=>(f.maxFpd==null||r.fpd_rate==null||r.fpd_rate<=f.maxFpd)&&(!f.conf||f.conf.includes(r.confidence)));
+  const alloc=new Map();scope.forEach(r=>alloc.set(r.shop_id,{fte:0,lever:null,uplift:0,slot:0}));
+  const fteRows=scope.filter(r=>r.elig_fte&&r.attainable>r.bau);const curve=[];
+  if(fteRows.length&&fteB>0){
+    if(mode==='even'){const x=fteB/fteRows.length;fteRows.forEach(r=>{const a=alloc.get(r.shop_id);a.fte=x;a.lever='FTE';a.uplift=fteResp(r,x,p)-r.bau;});}
+    else{const cur=new Float64Array(fteRows.length),gain=new Float64Array(fteRows.length);fteRows.forEach((r,i)=>gain[i]=(fteResp(r,p.fte_step,p)-r.bau)*wConf(r,p));
+      let rem=fteB,used=0,tot=0;while(rem>=p.fte_step-1e-9){let bi=-1,bg=1e-9;for(let i=0;i<gain.length;i++)if(gain[i]>bg){bg=gain[i];bi=i;}if(bi<0)break;
+        const r=fteRows[bi],a=alloc.get(r.shop_id);cur[bi]+=p.fte_step;a.fte=cur[bi];a.lever='FTE';rem-=p.fte_step;used+=p.fte_step;const u=fteResp(r,cur[bi],p)-r.bau;tot+=u-a.uplift;a.uplift=u;
+        gain[bi]=(fteResp(r,cur[bi]+p.fte_step,p)-fteResp(r,cur[bi],p))*wConf(r,p);curve.push([used,tot]);}}}
+  let cands=[];scope.forEach(r=>{if(alloc.get(r.shop_id).lever)return;if(r.elig_react)cands.push({u:reactUp(r,p),lever:'REACT',r});else if(r.elig_approval)cands.push({u:apprUp(r,p),lever:r.risk_flag?'QUALITY_FIX':'APPROVAL',r});});
+  if(mode==='even')cands.sort((a,b)=>((b.r[p.evenKey]||0)-(a.r[p.evenKey]||0))||(a.r.shop_id-b.r.shop_id));else cands.sort((a,b)=>(b.u*wConf(b.r,p)-a.u*wConf(a.r,p))||(a.r.shop_id-b.r.shop_id));
+  const slots=Math.max(0,Math.floor(slotB));let chosen=[];
+  if(mode!=='even'&&p.reactReserve>0){const nr=Math.floor(slots*p.reactReserve);const react=cands.filter(c=>c.lever==='REACT').slice(0,nr);chosen=react;const taken=new Set(react.map(c=>c.r.shop_id));cands=cands.filter(c=>!taken.has(c.r.shop_id));}
+  const nCands=chosen.length+cands.length;
+  chosen=chosen.concat(cands.slice(0,slots-chosen.length));chosen.forEach(c=>{const a=alloc.get(c.r.shop_id);a.lever=c.lever;a.uplift=c.u;a.slot=1;});
+  // budget binds when FTE is spent or programme candidates outnumber slots; otherwise both modes pick the same shops
+  return {scope,alloc,curve,binding:(fteRows.length>0&&fteB>0)||nCands>slots,nCands};}
+function kpis(scope,alloc,p,evenUp,binding){
+  const gapT=sum(scope,r=>Math.max(r.attainable-r.bau,0)),bauT=sum(scope,r=>r.bau),attT=sum(scope,r=>r.attainable);
+  const ups=scope.map(r=>[alloc.get(r.shop_id),r]).filter(([a])=>a.uplift>0);const up=sum(ups,([a])=>a.uplift),up05=sum(ups,([a,r])=>a.uplift*r.gap_p05_ratio);
+  const fteUsed=sum(scope,r=>alloc.get(r.shop_id).fte),slotsUsed=sum(scope,r=>alloc.get(r.shop_id).slot);
+  const fr=ups.filter(([a])=>a.lever==='FTE');const fUp=sum(fr,([a])=>a.uplift);
+  const fpdPlan=fr.length?sum(fr,([a,r])=>r.fpd_rate*a.uplift)/fUp:null,fpdPeer=fr.length?sum(fr,([a,r])=>r.peer_fpd*a.uplift)/fUp:null;
+  const top10=ups.map(([a])=>a.uplift).sort((a,b)=>b-a).slice(0,10);
+  const byLever={};ups.forEach(([a])=>{const d=byLever[a.lever]||(byLever[a.lever]={shops:0,uplift:0});d.shops++;d.uplift+=a.uplift;});
+  const k={shopsInScope:scope.length,shopsSelected:ups.length,bauT,attT,gapT,uplift:up,uplift05:up05,upliftH:up*p.horizon*p.ramp,creditH:sum(ups,([a,r])=>a.uplift*(r.avg_ticket||0))*p.horizon*p.ramp,
+    closure:gapT?up/gapT:0,attBefore:attT?bauT/attT:0,attAfter:attT?(bauT+up)/attT:0,fteUsed,slotsUsed,perFte:fteUsed?fUp/fteUsed:null,
+    fpdPlan,fpdPeer,riskFte:fr.filter(([a,r])=>r.risk_flag).length,top10:up?sum(top10)/up:0,p05ratio:up?up05/up:0,byLever,ups,binding};
+  if(evenUp!=null)k.eff=evenUp?up/evenUp:null;const v=verdict(k,p);k.verdict=v[0];k.checks=v[1];return k;}
+function verdict(k,p){const c=[
+  ['beats_even_spread','Beats the team priority order by ≥ '+Math.round((p.minEff-1)*100)+'% (same budget)',!k.binding||(k.eff||0)>=p.minEff,k.binding?`×${f2(k.eff)}`:'n/a: the budget covers every eligible shop in scope, so both orders pick the same shops'],
+  ['fpd_guardrail','FPD of shops receiving FTE ≤ peer FPD (+5%)',k.fpdPlan==null||k.fpdPlan<=k.fpdPeer*1.05,k.fpdPlan==null?'no FTE lever':`${fP(k.fpdPlan)} vs ${fP(k.fpdPeer)}`],
+  ['no_fte_to_risk_shops','No new FTE into risk-flagged shops (fix quality first)',k.riskFte===0,k.riskFte+' shops'],
+  ['not_over_concentrated','Top-10 shops carry ≤ '+Math.round(p.maxTop10*100)+'% of the uplift',k.top10<=p.maxTop10,fP(k.top10)],
+  ['robust_downside','Conservative case (gap_low) keeps ≥ '+Math.round(p.minP05*100)+'% of expected uplift',k.p05ratio>=p.minP05,fP(k.p05ratio)],
+  ['marginal_fte_productive','Each extra FTE yields ≥ network average ('+f2(p.minPerFte)+' booked / FTE-month)',k.perFte==null||k.perFte>=p.minPerFte,k.perFte==null?'no FTE lever':f2(k.perFte)]];
+  const hard=c[1][2]&&c[2][2];const nf=c.filter(x=>!x[2]).length;return [!hard?'REJECT':nf===0?'APPROVE':'REVISE',c];}
+function run(rows,fteB,slotB,f,p){const e=allocate(rows,fteB,slotB,f,p,'even');const ke=kpis(e.scope,e.alloc,p,null,e.binding);const o=allocate(rows,fteB,slotB,f,p,'opt');const k=kpis(o.scope,o.alloc,p,ke.uplift,o.binding);return {k,ke,o,e};}
+
+/* ===================== page 1 ===================== */
+const CN={'Demand capture (applications)':'Demand capture','Activation (no applications in 3 months)':'Activation (dormant)','Approval / closing':'Approval / closing','Demand capture (risk-capped)':'Demand (risk-capped)','None (at peer frontier)':'At frontier','Local market capacity':'Market capacity'};
+function renderNetwork(rows){
+  const A=sum(rows,r=>r.actual),B=sum(rows,r=>r.bau),Pv=sum(rows,r=>r.attainable),C=sum(rows,r=>r.ceiling),G=sum(rows,r=>r.gap),GL=sum(rows,r=>Math.max(r.gap_low||0,0));
+  $('#heroGap').textContent='+'+fN(G);$('#heroGapSub').innerHTML='booked contracts / month · conservative <b>+'+fN(GL)+'</b> (sum of shop gap_low) · '+fP(G/Math.max(1e-9,Pv))+' of Attainable not yet realised';
+  tiles($('#tilesNet'),[{label:'Shops in scope',value:fN(rows.length),delta:rows.filter(r=>r.team_rank!=null).length.toLocaleString()+' in the Invest ranking'},{label:'Current actual',value:fN(A),delta:'last 3 months run-rate'},{label:'Business-as-usual',value:fN(B),delta:'if nothing changes'},
+    {label:'Attainable',value:fN(Pv),delta:'peer P75 · 3× guardrail · ceiling'},{label:'Market ceiling',value:fN(C),delta:'provincial penetration frontier'},{label:'Attainment (BAU ÷ Attainable)',value:fP(B/Math.max(1e-9,Pv)),delta:'target 100%: gap closed'}]);
+  vbar($('#chLadder'),[{label:'Actual',value:A,color:'var(--o1)',tip:'Current run-rate'},{label:'BAU',value:B,color:'var(--o2)',tip:'Business-as-usual'},{label:'Attainable',value:Pv,color:'var(--o3)',tip:'Attainable (team v4)'},{label:'Ceiling',value:C,color:'var(--o4)',tip:'Addressable market ceiling'}]);
+  const byC={};rows.forEach(r=>{byC[r.main_constraint]=(byC[r.main_constraint]||0)+r.gap;});
+  hbar($('#chConstraint'),Object.entries(byC).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({label:CN[l]||l,value:v,tip:l+': '+fN(v,1),sub:fP(v/Math.max(1e-9,G),0)})),{labelW:140,labelH:'Constraint',valueH:'Gap'});
+  const geoKey=F.area?'province':'area';const byG={};rows.forEach(r=>{byG[r[geoKey]]=(byG[r[geoKey]]||0)+r.gap;});
+  $('#chGeoCap').textContent='Gap by '+geoKey+(F.area?' within '+F.area:'');
+  hbar($('#chGeo'),Object.entries(byG).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([l,v])=>({label:l,value:v,sub:fP(v/Math.max(1e-9,G),0)})),{labelW:120,labelH:geoKey,valueH:'Gap'});
+  const tr=trendRows();lineChart($('#chTrend'),tr.map(t=>t[0].slice(2)),[{name:'Applications',color:'var(--s1)',values:tr.map(t=>t[1])},{name:'Booked',color:'var(--s2)',values:tr.map(t=>t[2])}],{h:220,below:sr=>sr.name==='Booked'});
+  lineChart($('#chTrendFte'),tr.map(t=>t[0].slice(2)),[{name:'SA FTE',color:'var(--s7)',values:tr.map(t=>t[3])}],{h:200});
+  const g=D.r2_link.outcome_by_group;const order=['prime','growing','thin','stressed','not scored'];const names={prime:'Prime (S1–S3)',growing:'Growing (S4–S5)',thin:'Thin-file (S6–S7)',stressed:'Stressed (S8–S9)','not scored':'Not in Round 2'};
+  const rowsG=order.map(k=>g.find(x=>x.group===k)).filter(Boolean);
+  const el=$('#chR2');el.innerHTML='<div class="note" style="margin-bottom:4px">Booking rate</div><div id="r2a"></div><div class="note" style="margin:8px 0 4px">First-payment default (booked, observable)</div><div id="r2b"></div>';
+  hbar($('#r2a'),rowsG.map(x=>({label:names[x.group],value:x.book_rate,tip:names[x.group]+': '+fP(x.book_rate)+' booked of '+fN(x.contracts)+' contracts'})),{labelW:130,fmt:v=>fP(v),max:1,table:false});
+  hbar($('#r2b'),rowsG.map(x=>({label:names[x.group],value:x.fpd_rate,tip:names[x.group]+': FPD '+fP(x.fpd_rate)})),{labelW:130,fmt:v=>fP(v),max:0.12,table:false});
+  const rc=D.r2_link.correlations;
+  $('#r2Note').textContent='Directional at shop level: only '+D.r2_link.shops_with_30_scored+' shops have ≥ 30 scored clients. There, share of Prime customers correlates +'+f2(rc.c_prime_book)+' with booking rate vs peer and share of Stressed +'+f2(rc.c_stress_fpd)+' with FPD vs peer; the raw FHS / CES scores do not (ρ '+f2(rc.c_fhs_fpd)+' / '+f2(rc.c_ces_book)+'). Customer mix is context, not a lever.';
+  // highlights
+  const geo=Object.entries(byG).sort((a,b)=>b[1]-a[1]);const con=Object.entries(byC).sort((a,b)=>b[1]-a[1]);
+  const low=sum(rows.filter(r=>r.confidence==='Low'),r=>r.gap),dorm=rows.filter(r=>r.is_dormant).length,risk=rows.filter(r=>r.risk_flag).length,front=rows.filter(r=>r.track.startsWith('At frontier')).length,mkt=rows.filter(r=>r.track.startsWith('Market')).length;
+  const w1=rows.filter(r=>r.team_rank!=null&&r.team_rank<=500),w1G=sum(w1,r=>r.gap);
+  const fteT=sum(rows,r=>r.fte);const RE=renderReach(rows,G);const SRC=renderSourcing(rows);
+  $('#hl').innerHTML=[
+    `<b>Headline:</b> BAU is ${fP(B/Math.max(1e-9,Pv),0)} of Attainable; closing the whole gap adds <b>+${fN(G)}</b> booked / month (+${fP(G/Math.max(1e-9,B),0)} on BAU), +${fN(GL)} on the conservative shop-level gap (gap_low).`,
+    `<b>Where to start:</b> ${fN(w1.length)} Wave 1 shops in scope hold +${fN(w1G)} (${fP(w1G/Math.max(1e-9,G),0)} of the gap in scope); page 2 shows which part a measured lever can back.`,
+    `<b>Reach:</b> doubling SA FTE in every FTE-eligible shop and running a programme in every eligible shop closes only ${fP(RE.all/Math.max(1e-9,G),0)} of the gap (SA FTE alone ${fP(RE.fte/Math.max(1e-9,G),0)}). The gap is mainly a demand problem, not a headcount problem.`,
+    `<b>Parallax:</b> shops in scope also source <b>+${fN(SRC.x,0)}</b> booked / month signed at other shops (${fP(SRC.x/Math.max(1e-9,A),1)} of their own booked; ${fP(SRC.xp/Math.max(1e-9,SRC.x),0)} proven by the contract id on the lead). The smallest shops send the largest share elsewhere.`,
+    `<b>Driver:</b> ${con[0]?(CN[con[0][0]]||con[0][0]):'–'} explains ${con[0]?fP(con[0][1]/Math.max(1e-9,G),0):'–'} of the gap${con[1]?`; ${CN[con[1][0]]||con[1][0]} ${fP(con[1][1]/Math.max(1e-9,G),0)}`:''}.`,
+    `<b>Geography:</b> top 3 ${geoKey}s hold ${fP(sum(geo.slice(0,3),x=>x[1])/Math.max(1e-9,G),0)} of the gap (${geo.slice(0,3).map(x=>x[0]).join(', ')}).`,
+    `<b>Lowlight:</b> ${fP(low/Math.max(1e-9,G),0)} of the gap sits in Low-confidence shops (thin history or wide BAU interval): plan on it only through the pilot.`,
+    `<b>Capacity:</b> ${fN(fteT,0)} SA FTE assigned; the network books ${f2(P0.network_booked_per_fte)} per FTE-month. ${dorm.toLocaleString()} dormant, ${risk.toLocaleString()} risk-flagged (FPD above peer), ${front.toLocaleString()} at the peer frontier, ${mkt.toLocaleString()} held by the provincial ceiling.`,
+    `<b>Round 2 carry-over:</b> Prime customers book at ${fP(rowsG[0].book_rate,0)} with ${fP(rowsG[0].fpd_rate)} FPD vs ${fP(rowsG[4].book_rate,0)} / ${fP(rowsG[4].fpd_rate)} for customers not in Round 2: who a shop serves shapes how far it can grow.`].map(x=>`<li>${x}</li>`).join('');
+  const top=rows.filter(r=>r.team_rank!=null).sort((a,b)=>a.team_rank-b.team_rank).slice(0,15);
+  $('#tblTop').innerHTML=top.length?tableHTML([{h:'Rank',n:1,k:'team_rank'},{h:'Wave',f:r=>esc(r.wave)},{h:'Shop',k:'shop_id'},{h:'Area',k:'area'},{h:'Province',k:'province'},{h:'Cat.',k:'category'},{h:'Model',k:'model'},{h:'Actual',n:1,f:r=>f1(r.actual)},{h:'BAU',n:1,f:r=>f1(r.bau)},{h:'Attainable',n:1,f:r=>f1(r.attainable)},{h:'Gap',n:1,f:r=>f1(r.gap)},{h:'Gap low',n:1,f:r=>f1(r.gap_low)},{h:'Constraint',f:r=>esc(CN[r.main_constraint]||r.main_constraint)},{h:'Lever',f:r=>esc(leverOf(r))}],top):'<div class="note" style="padding:8px">No shop of the Invest ranking in this scope.</div>';}
+
+/* ---- trend month range (network trend is pre-aggregated for all scored shops) ---- */
+const TM=D.trend.map(t=>t[0]);
+function fillTrendSel(){const a=$('#tFrom'),b=$('#tTo');if(a.options.length)return;a.innerHTML=TM.map(m=>`<option>${m}</option>`).join('');b.innerHTML=a.innerHTML;a.value=TM[0];b.value=TM[TM.length-1];
+  [a,b].forEach(el=>el.addEventListener('change',()=>{if(a.value>b.value)(el===a?b:a).value=el.value;renderNetwork(scopeRows());}));}
+function trendRows(){fillTrendSel();const a=$('#tFrom').value,b=$('#tTo').value;return D.trend.filter(t=>t[0]>=a&&t[0]<=b);}
+
+/* ---- lever reach: upper bound of what the measured levers can close ---- */
+function renderReach(rows,G){
+  const p=params();let fteU=0,fteX=0,progAll=0,progRest=0,nProg=0;
+  rows.forEach(r=>{const gap=Math.max(r.attainable-r.bau,0);if(gap<=0)return;
+    const pr=r.elig_react?reactUp(r,p):r.elig_approval?apprUp(r,p):0;progAll+=pr;if(pr>0)nProg++;
+    if(r.elig_fte){const f0=Math.max(r.fte,p.fte_floor);fteU+=fteResp(r,f0,p)-r.bau;fteX+=f0;}else progRest+=pr;});
+  const out={fte:fteU,prog:progAll,all:fteU+progRest};out.rest=Math.max(G-out.all,0);
+  hbar($('#chReach'),[{label:'SA FTE ×2',value:out.fte,color:'var(--s1)',sub:fP(out.fte/Math.max(1e-9,G),0)+' · +'+fN(fteX,0)+' FTE'},
+    {label:'Programmes, all',value:out.prog,color:'var(--s2)',sub:fP(out.prog/Math.max(1e-9,G),0)+' · '+fN(nProg)+' shops'},
+    {label:'Both combined',value:out.all,color:'var(--s3)',sub:fP(out.all/Math.max(1e-9,G),0)},
+    {label:'Not reachable today',value:out.rest,color:'var(--de)',sub:fP(out.rest/Math.max(1e-9,G),0)}],{labelW:130,max:G,labelH:'Lever',valueH:'Booked / month'});
+  $('#reachStory').innerHTML=`Gap in scope <b>+${fN(G)}</b>. Doubling SA FTE in every FTE-eligible shop (+${fN(fteX,0)} FTE) closes ${fP(out.fte/Math.max(1e-9,G),0)}: the team’s fixed-effects response is ${f2(E.base.Aldi)} at Aldi shops (+100% FTE → +${fP(Math.pow(2,E.base.Aldi)-1,0)} booked) and none at Non-Aldi. <b>Fund programmes before headcount</b> (page 2) and test new demand levers in the pilot for the ${fP(out.rest/Math.max(1e-9,G),0)} that no measured lever reaches.`;
+  return out;}
+
+/* ---- sourcing vs booking ---- */
+function renderSourcing(rows){
+  const A=sum(rows,r=>r.actual),X=sum(rows,r=>r.xs_out_pm||0),Xp=sum(rows,r=>r.xs_out_proven_pm||0),nS=rows.filter(r=>(r.xs_out_pm||0)>0).length;
+  tiles($('#srcTiles'),[{label:'Booked at the shop',value:fN(A),delta:'booking view (actual)'},{label:'+ Booked elsewhere',value:'+'+fN(X,0),delta:fP(X/Math.max(1e-9,A),1)+' on top · '+fN(nS)+' shops'},
+    {label:'Proven by contract id',value:fP(Xp/Math.max(1e-9,X),0),delta:'rest: last-touch inference'}]);
+  const bands=[['< 3',0,3],['3–10',3,10],['10–30',10,30],['30+',30,1e9]];
+  hbar($('#chSrc'),bands.map(([l,lo,hi])=>{const b=rows.filter(r=>r.actual>=lo&&r.actual<hi);const a=sum(b,r=>r.actual),x=sum(b,r=>r.xs_out_pm||0);
+    return {label:l+' booked / mo',value:a?x/a:0,tip:`${l}: ${fN(b.length)} shops · own ${fN(a,0)} · elsewhere ${fN(x,1)} / month`,sub:'+'+fN(x,0)+' / mo'};}),{labelW:120,fmt:v=>fP(v,0),labelH:'Shop size',valueH:'Elsewhere ÷ own'});
+  $('#srcNote').innerHTML=`Most of it is signed at unclassified POS (${fP(D.sourcing.xs_out_to_unclassified_pm/Math.max(1e-9,D.sourcing.xs_out_pm),0)} network-wide), only a handful at Virtual shops. A small shop that looks weak on the booking view can be a lead source for others: use both views before cutting resources. Window Jul–Sep 2026: earlier months are under-counted because lead data start on 31 Dec 2025.`;
+  return {x:X,xp:Xp};}
+
+/* ---- two shops, same sales ---- */
+const BYID=new Map(SHOPS.map(s=>[s.shop_id,s]));
+function leverOf(r){return r.shop_status!=='Active'?'No lever: shop is '+r.shop_status:r.track.startsWith('Market')?'Hold: provincial market ceiling':r.risk_flag?'Fix quality first (FPD above peer)':r.elig_react?'Reactivation programme':r.elig_approval?'Closing-quality programme':r.gap<=0.5?'Hold: at peer frontier':r.main_constraint.startsWith('Demand')?'Demand capture: no measured lever yet (pilot)':'No funded lever';}
+$('#pairCase').innerHTML=D.pairs.map((c,i)=>`<option value="${i}">${esc(c.label)}</option>`).join('')+'<option value="">Custom IDs</option>';
+$('#pairCase').addEventListener('change',e=>{const c=D.pairs[e.target.value];if(c){$('#pairA').value=c.a;$('#pairB').value=c.b;}renderPair();});
+function renderPair(){
+  const ia=$('#pairA'),ib=$('#pairB');if(!ia.value){ia.value=D.pairs[0].a;ib.value=D.pairs[0].b;}
+  const a=BYID.get(+ia.value),b=BYID.get(+ib.value);
+  if(!a||!b){$('#pairMsg').textContent='Shop ID not found among the '+SHOPS.length.toLocaleString()+' scored shops';return;}$('#pairMsg').textContent='';
+  const per=r=>r.fte>0?r.actual/r.fte:null;
+  const rowsP=[['Area · province',r=>esc(r.area+' · '+r.province)],['Shop status · track',r=>esc(r.shop_status+' · '+r.track)],['Category · model · product',r=>esc(r.category+' · '+r.model+' · '+r.shop_product)],
+    ['Priority (team ranking)',r=>r.team_rank!=null?esc(r.wave)+' · rank '+r.team_rank:'not in the Invest ranking'],
+    ['Current actual (booked / mo)',r=>f1(r.actual)],['Business-as-usual',r=>f1(r.bau)],['Attainable',r=>f1(r.attainable)],['Market ceiling',r=>f1(r.ceiling)],
+    ['Gap (Attainable − BAU)',r=>'+'+f1(r.gap),'max',r=>r.gap],['Conservative gap (gap_low)',r=>'+'+f1(Math.max(r.gap_low,0))],['Attainment (BAU ÷ Attainable)',r=>fP(r.bau/Math.max(1e-9,r.attainable),0)],
+    ['Provincial cap factor',r=>f2(r.cap_factor)],['SA FTE · booked per FTE-month',r=>f2(r.fte)+' · '+f1(per(r))],['Applications / mo',r=>f1(r.apps_pm)],
+    ['Booking rate · peer mean · peer P75',r=>fP(r.book_rate,0)+' · '+fP(r.peer_book_rate,0)+' · '+fP(r.bench_book,0)],['FPD vs peer',r=>fP(r.fpd_rate)+' vs '+fP(r.peer_fpd)],
+    ['Booked elsewhere from its leads',r=>'+'+f1(r.xs_out_pm||0)+' / mo'],['Main constraint',r=>esc(r.main_constraint)],['Confidence',r=>esc(r.confidence)],['Recommended lever',r=>'<b>'+esc(leverOf(r))+'</b>']];
+  $('#pairTbl').innerHTML='<div class="pair"><div class="h"></div><div class="h">Shop A · '+a.shop_id+'</div><div class="h">Shop B · '+b.shop_id+'</div>'+
+    rowsP.map(([k,f,hl,v])=>{const va=v?v(a):0,vb=v?v(b):0;return `<div class="k">${k}</div><div class="${hl&&v&&va>vb?'win':''}">${f(a)}</div><div class="${hl&&v&&vb>va?'win':''}">${f(b)}</div>`;}).join('')+'</div>';
+  groupedHbar($('#chPair'),['Actual','BAU','Attainable','Ceiling'],[{name:'Shop A '+a.shop_id,color:'var(--s1)',values:[a.actual,a.bau,a.attainable,a.ceiling]},{name:'Shop B '+b.shop_id,color:'var(--s2)',values:[b.actual,b.bau,b.attainable,b.ceiling]}],{labelW:80,fmt:v=>f1(v)});
+  const [hi,lo,nh,nl]=a.gap>=b.gap?[a,b,'A','B']:[b,a,'B','A'];
+  const why=lo.track.startsWith('Market')?` and is held at the provincial market ceiling (cap factor ${f2(lo.cap_factor)}: its province has no headroom left)`:lo.gap<=0.5?` and already performs at the peer frontier (books ${fP(lo.book_rate,0)} of applications vs ${fP(lo.peer_book_rate,0)} for peers)`:'';
+  $('#pairStory').innerHTML=`Both book about <b>${f1(a.actual)}</b> and <b>${f1(b.actual)}</b> contracts a month. Shop ${nh} can realistically reach <b>${f1(hi.attainable)}</b> (+${f1(hi.gap)} on BAU, +${f1(Math.max(hi.gap_low,0))} conservative); its main constraint is ${esc(hi.main_constraint.toLowerCase())}`+
+    (hi.book_rate<hi.peer_book_rate?`: it books ${fP(hi.book_rate,0)} of applications vs ${fP(hi.peer_book_rate,0)} for peers`:'')+`. Shop ${nl} has +${f1(lo.gap)} left`+why+
+    `. <b>Same sales today, different decision:</b> ${esc(leverOf(hi).toLowerCase())} for Shop ${nh}${hi.team_rank!=null?' ('+esc(hi.wave)+', rank '+hi.team_rank+')':''}; ${esc(leverOf(lo).toLowerCase())} for Shop ${nl}.`;}
+['#pairA','#pairB'].forEach(id=>$(id).addEventListener('change',()=>{$('#pairCase').value='';renderPair();}));
+
+/* ===================== page 2 ===================== */
+function renderWaves(){
+  const W=[[500,'Wave 1'],[1000,'Wave 2'],[2000,'Wave 3']].map(([n,l])=>{const t=T.waves.find(x=>x.top_n_shops===n),e=S6.waves['top'+n];return {n,l,t,e};});
+  $('#tblWaves').innerHTML=tableHTML([{h:'Wave',f:r=>`<b>${r.l}</b> · top ${fN(r.n)}`},{h:'Gap',n:1,f:r=>fN(r.t.gap_per_month,1)},{h:'Conservative',n:1,f:r=>fN(r.t.gap_low_per_month,1)},{h:'Share of Invest gap',n:1,f:r=>r.t.share_of_invest_gap_pct.toFixed(0)+'%'},
+    {h:'Demand · approval',n:1,f:r=>fN(r.e.gap_demand,0)+' · '+fN(r.e.gap_approval,0)},{h:'Closing shops',n:1,f:r=>fN(r.e.closing_shops)},{h:'Measured lever',n:1,f:r=>'+'+fN(r.e.closing_expected,1)},{h:'% of gap',n:1,f:r=>fP(r.e.closing_expected/r.t.gap_per_month,0)}],W);
+  groupedHbar($('#chWaves'),W.map(r=>r.l+' · '+fN(r.n)),[{name:'Gap (central)',color:'var(--o3)',values:W.map(r=>r.t.gap_per_month)},{name:'Conservative (5th pct)',color:'var(--o1)',values:W.map(r=>r.t.gap_low_per_month)},{name:'Closing programme (measured)',color:'var(--s2)',values:W.map(r=>r.e.closing_expected)}],{labelW:110});
+  const w=W[0];
+  $('#wavesStory').innerHTML=`<b>${w.l}</b> (${fN(w.n)} shops) carries +${fN(w.t.gap_per_month,1)} central / +${fN(w.t.gap_low_per_month,1)} conservative, ${w.t.share_of_invest_gap_pct.toFixed(0)}% of the Invest gap. Only <b>${w.e.closing_shops}</b> of them book below the peer mean with ≥ 3 applications a month (${fP(w.e.closing_book_rate,1)} vs ${fP(w.e.closing_peer_book_rate,1)} on ${fN(w.e.closing_apps_pm)} applications / month): a closing-quality programme there is the one lever with measured evidence, worth about <b>+${fN(w.e.closing_expected,0)}</b> a month (${fP(w.e.closing_expected/w.t.gap_per_month,0)} of the wave’s gap). The rest, mostly demand capture (${w.e.main_constraint_demand} of ${fN(w.n)} shops, +${fN(w.e.gap_demand,0)}), has no measured lever yet: that is what the 300 vs 300 pilot measures.`;}
+const I={scope:$('#inScope'),fte:$('#inFte'),slots:$('#inSlots'),hor:$('#inHorizon'),fpd:$('#inFpd'),conf:$('#inConf'),react:$('#inReact'),elas:$('#inElas')};
+Object.values(I).forEach(el=>el.addEventListener('input',runSim));
+[['low','Low'],['base','Base'],['high','High']].forEach(([v,n])=>{I.elas.querySelector(`option[value=${v}]`).textContent=`${n}: Aldi ${f2(E[v].Aldi)} · Non-Aldi ${f2(E[v]['Non-Aldi'])}`;});
+let LAST=null;
+function runSim(){
+  const rows=scopeRows().filter(s=>inWave(s,I.scope.value));const fteB=+I.fte.value,slotB=+I.slots.value;$('#outFte').textContent=fteB;$('#outSlots').textContent=slotB;
+  const fpd=+I.fpd.value;$('#outFpd').textContent=fpd>=0.40?'any':fP(fpd,0);$('#outReact').textContent=I.react.value+'%';
+  const f={maxFpd:fpd>=0.40?null:fpd,conf:I.conf.value==='hm'?['High','Medium']:I.conf.value==='h'?['High']:null};
+  const p=params({horizon:+I.hor.value,reactReserve:+I.react.value/100,elas:E[I.elas.value]});
+  const R=run(rows,fteB,slotB,f,p);const k=R.k,ke=R.ke;LAST={R,k,p,rows};
+  $('#verdict').innerHTML=`<span class="badge ${k.verdict}">${k.verdict==='APPROVE'?'✔':k.verdict==='REVISE'?'▲':'✖'} ${k.verdict}</span>`;
+  $('#checks').innerHTML=k.checks.map(c=>`<li><span class="${c[2]?'ok':'ko'}">${c[2]?'✔':'✖'}</span><span><b>${esc(c[1])}</b><br><span class="note">${esc(c[3])}</span></span></li>`).join('');
+  tiles($('#tilesSim'),[{label:'Expected uplift (run-rate)',value:'+'+fN(k.uplift),delta:'booked / month · conservative +'+fN(k.uplift05)},{label:'Gap closure',value:fP(k.closure),delta:'of '+fN(k.gapT)+' gap in scope'},
+    {label:'Attainment',value:fP(k.attBefore,0)+' → '+fP(k.attAfter),delta:'BAU ÷ Attainable, before → after'},{label:'vs. team priority order',value:k.binding?'×'+f2(k.eff):'same shops',delta:'order-only plan: +'+fN(ke.uplift)+' / month'},
+    {label:'Extra contracts over '+p.horizon+' mo',value:'+'+fN(k.upliftH),delta:'linear ramp-up assumed'},{label:'Credit value over horizon',value:fN(k.creditH/1e9,1)+' bn VND',delta:'at each shop’s average ticket'},
+    {label:'Marginal booked / FTE-month',value:k.perFte==null?'–':f2(k.perFte),delta:'network average '+f2(p.minPerFte)},{label:'Shops selected',value:fN(k.shopsSelected),delta:fN(k.fteUsed,2)+' FTE · '+k.slotsUsed+' slots used of '+slotB}]);
+  // FTE payback curve in scope (slots 0)
+  const steps=[0.25,0.5,1,2,5,10,20,30,40,50];const full=allocate(rows,50,0,f,p,'opt').curve;const pts=[];
+  steps.forEach(b=>{const c=full.filter(x=>x[0]<=b+1e-9).pop();if(c)pts.push([b,c[1]/c[0]]);});
+  let be=null;pts.forEach(([b,v])=>{if(v>=p.minPerFte)be=b;});
+  const lv=Object.entries(k.byLever).sort((a,b)=>b[1].uplift-a[1].uplift);
+  $('#reco').innerHTML='<b>Recommendation.</b> '+(k.verdict==='APPROVE'?'Approve as the pilot plan: ':k.verdict==='REVISE'?'Revise before approval: ':'Reject: guardrail breached. ')+
+    `the plan closes ${fP(k.closure)} of the gap in scope (+${fN(k.uplift)} of +${fN(k.gapT)}) and lifts attainment from ${fP(k.attBefore,0)} to ${fP(k.attAfter)}. `+
+    (lv.length?`Most value comes from <b>${LEVER_NAME[lv[0][0]]}</b> (${lv[0][1].shops} shops, +${fN(lv[0][1].uplift)} / month). `:'')+
+    (pts.length?(be==null?`<b>No extra SA FTE:</b> in this scope even the first 0.25 FTE yields ${f2(pts[0][1])} booked per FTE-month, below the network’s ${f2(p.minPerFte)}. `:fteB>be?`FTE above ~<b>${be}</b> is absorbed below network productivity: redirect the remainder to programmes. `:`The scope absorbs up to ~${be} FTE at or above network productivity. `):'No FTE-eligible shop responds to staffing in this scope. ')+
+    (k.binding&&!k.checks[0][2]?`The engine beats the team priority order by only ×${f2(k.eff)}: use the team waves as the shop list and the engine to assign the lever. `:'')+
+    (k.checks[4][2]?'':'Downside is weak: raise the minimum confidence. ')+
+    `The other ${fP(1-k.closure,0)} of the gap has no measured lever: the pilot on page 3 measures it before scaling.`;
+  const levers=['FTE','APPROVAL','REACT','QUALITY_FIX'].filter(l=>(k.byLever[l]||ke.byLever[l]));
+  groupedHbar($('#chLever'),levers.map(l=>LEVER_NAME[l]),[{name:'Engine plan',color:'var(--s1)',values:levers.map(l=>k.byLever[l]?k.byLever[l].uplift:0)},{name:'Team priority order',color:'var(--de)',values:levers.map(l=>ke.byLever[l]?ke.byLever[l].uplift:0)}],{labelW:190});
+  if(pts.length)lineChart($('#chCurve'),pts.map(x=>x[0]+''),[{name:'Avg booked per extra FTE-month',color:'var(--s1)',values:pts.map(x=>x[1])}],{h:200,ref:p.minPerFte,refLabel:'network '+f2(p.minPerFte),fmt:v=>f2(v),axisFmt:v=>v.toFixed(1)});
+  else $('#chCurve').innerHTML='<div class="note">No FTE-eligible shop with a staffing response in this scope.</div>';
+  const byA={};k.ups.forEach(([a,r])=>{byA[r.area]=(byA[r.area]||0)+a.uplift;});
+  hbar($('#chUpArea'),Object.entries(byA).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({label:l,value:v})),{labelW:120,labelH:'Area',valueH:'Uplift'});
+  const plan=k.ups.map(([a,r])=>({...r,lever:a.lever,fte_add:a.fte,uplift:a.uplift,p05:a.uplift*r.gap_p05_ratio})).sort((a,b)=>b.uplift-a.uplift);
+  $('#planCap').textContent=`${plan.length} shops · showing top 40 by expected uplift · full list in the CSV`;
+  $('#tblPlan').innerHTML=tableHTML([{h:'Shop',k:'shop_id'},{h:'Rank',n:1,f:r=>r.team_rank??''},{h:'Area',k:'area'},{h:'Province',k:'province'},{h:'Cat.',k:'category'},{h:'Model',k:'model'},{h:'Lever',f:r=>`<span class="pill" style="border-color:${LEVER_COLOR[r.lever]}">${esc(r.lever)}</span>`},{h:'+FTE',n:1,f:r=>r.fte_add?f2(r.fte_add):''},{h:'BAU',n:1,f:r=>f1(r.bau)},{h:'Attainable',n:1,f:r=>f1(r.attainable)},{h:'Uplift',n:1,f:r=>f1(r.uplift)},{h:'P05',n:1,f:r=>f1(r.p05)},{h:'Book rate / peer',n:1,f:r=>fP(r.book_rate,0)+' / '+fP(r.peer_book_rate,0)},{h:'FPD',n:1,f:r=>fP(r.fpd_rate)},{h:'Prime %',n:1,f:r=>fP(r.share_prime,0)},{h:'Conf.',k:'confidence'}],plan.slice(0,40));
+  LAST.plan=plan;}
+$('#btnCsv').onclick=()=>{if(!LAST)return;const cols=['shop_id','team_rank','wave','area','province','category','model','shop_product','track','main_constraint','confidence','lever','fte_add','bau','attainable','gap','gap_low','uplift','p05','book_rate','peer_book_rate','fpd_rate','peer_fpd','share_prime','share_stressed'];
+  const csv=[cols.join(',')].concat(LAST.plan.map(r=>cols.map(c=>{const v=r[c];return typeof v==='number'?(Math.round(v*1000)/1000):`"${String(v??'').replace(/"/g,'""')}"`;}).join(','))).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='r3_allocation_plan.csv';a.click();};
+
+/* ===================== page 3 ===================== */
+const SCN={W1_programme:'Wave 1 · programmes only',W2_programme:'Wave 2 · programmes only',W3_programme:'Wave 3 · programmes only',W1_fte5:'Wave 1 · + 5 FTE',network_500:'All scored · 500 slots',network_fte20_500:'All scored · 500 slots + 20 FTE'};
+function renderValidation(){
+  const bt=T.backtest,eb=bt.methods.find(m=>m.method==='eb_bau'),n3=bt.methods.find(m=>m.method==='naive_3m');
+  const el={};T.staffing_elasticity.forEach(g=>el[g.group]=g);const pv=S6.panel,v2=pv.v2_staffing,gh=T.growth_history.find(x=>x.horizon_months===6),ar=bt.attainable_realism,rc=T.reactivation,dr=S6.drift;
+  tiles($('#tilesVal'),[
+    {label:'1 · BAU forecast backtest (team)',value:'WAPE '+eb.wape_pct+'%',delta:`model at ${bt.t0.slice(0,7)}, ${fN(bt.shops)} shops, next 6 months · Spearman ${f2(eb.spearman)} · bias ${eb.bias_pct}% · naive 3-month ${n3.wape_pct}%`},
+    {label:'2 · Staffing response (team, fixed effects)',value:`Aldi ${sg(el.Aldi.elasticity)} · Non-Aldi ${sg(el['Non-Aldi'].elasticity)}`,delta:`booked vs SA FTE within shop, ${fN(el.all.shop_months)} shop-months (all shops ${f2(el.all.elasticity)}) · Task 6 cross-check, difference-in-differences on ${v2.n_treated} shops adding ≥ 30% FTE: ${f2(v2.elasticity_booked_did)} [${f2(v2.ci95_dlog_booked[0]/v2.did_dlog_fte)}, ${f2(v2.ci95_dlog_booked[1]/v2.did_dlog_fte)}]`},
+    {label:'3 · Dormant reactivation (team)',value:fP(rc.reactivation_rate,1),delta:`${fN(rc.reactivated)} of ${fN(rc.dormant_followed)} shops dormant at ${rc.t0.slice(0,7)} came back unaided · engine: reactivation programme closes this share of the gap`},
+    {label:'4 · Growth guardrail (team)',value:gh.pct_ge_3x+'% tripled',delta:`${fN(gh.pairs)} shop pairs two quarters apart (P95 ×${gh.p95}) → Attainable capped at 3× run-rate for ${fN(T.growth_capped_shops)} shops`},
+    {label:'5 · Attainable reachable? (team)',value:ar.reached_without_programme_pct+'%',delta:`of ${fN(ar.shops_below_benchmark)} shops below benchmark reached Attainable within 6 months with no programme: reachable, but it needs action`},
+    {label:'6 · Closing-quality gain (Task 6)',value:'+'+(pv.v4_approval.bottom_tercile_mean_gain*100).toFixed(1)+' pts',delta:`next-quarter booking-rate gain in bottom-tercile shops, ${fP(pv.v4_approval.p_improve,0)} improve, n=${fN(pv.v4_approval.n)} → engine assumes half the shortfall to the peer mean closes`},
+    {label:'7 · Organic drift (Task 6 on the team backtest)',value:sg(dr.team_rank_top1000.mean_uplift_vs_bau),delta:`booked / month above BAU, Apr–Sep 2026, top 1,000 by the team order at ${dr.t0} with no programme (median ${sg(dr.team_rank_top1000.median_uplift_vs_bau)}; rest of the pool ${sg(dr.team_rank_rest.mean_uplift_vs_bau)}) → read the pilot against control, not BAU`}]);
+  const q=T.sensitivity_benchmark_quantile,gc=T.sensitivity_growth_cap;
+  hbar($('#chRange'),[...q.map(x=>({label:'Benchmark P'+Math.round(x.q*100)+(x.q===0.75?' (base)':''),value:x.attainable_uncapped,color:x.q===0.75?'var(--o3)':'var(--o1)'})),
+    ...gc.map(x=>({label:(x.g==null?'No guardrail':'Guardrail '+x.g+'×')+(x.g===3?' (base)':''),value:x.attainable_uncapped,color:x.g===3?'var(--o3)':'var(--s7)',sub:x.capped_shops?fN(x.capped_shops)+' shops capped':''}))],{labelW:150,fmt:v=>fN(v,1),labelH:'Assumption',valueH:'Attainable before ceiling'});
+  $('#rangeNote').innerHTML=`Base after the provincial ceiling: <b>${fN(T.network_per_month.attainable,1)}</b> vs BAU ${fN(T.network_per_month.bau,1)} (gap +${fN(T.gap_per_month.total,1)}). The benchmark quantile moves Attainable more than the guardrail. The team ranking is stable to the ceiling: ${T.ranking_agreement.top1000_overlap_pct}% of the top 1,000 are the same with or without it.`;
+  const pp=S6.pilot,d1=dr.team_rank_top1000;
+  $('#pilot').innerHTML=`<div class="kv">
+    <span>Design (team)</span><b>600 of the top 1,000 priority shops, stratified by format and area: 300 treated vs 300 control, 12 weeks, difference-in-differences with shop fixed effects. KPI: booked contracts a month; guardrails: first-payment default, cancellations. Scale only if the effect clears the detectable effect and guardrails hold.</b>
+    <span>Power (team)</span><b>SD of the change in mean monthly bookings, Apr–Jun → Jul–Sep 2026, ${f2(pp.sd_raw)} (${fN(pp.shops_with_both_quarters)} of the top 1,000) → detectable effect +${f2(pp.mde_raw_300v300)} a month, about half their mean gap of ${f2(pp.mean_gap_top1000)}; 500 per arm +${f2(pp.mde_raw_500v500)} (80% power, 5% two-sided)</b>
+    <span>Task 6 proposal 1</span><b>Pre-register the KPI winsorized at P5 / P95 (${f2(pp.winsor_bounds_p5_p95[0])} / +${f2(pp.winsor_bounds_p5_p95[1])}): SD ${f2(pp.sd_winsor)} → detectable effect <span class="ok">+${f2(pp.mde_winsor_300v300)}</span> a month (${fP(pp.mde_winsor_share_of_mean_gap,0)} of the mean gap) with the same 300 vs 300. A few very large shops drive the raw SD.</b>
+    <span>Task 6 proposal 2</span><b>Judge the effect against control, never against BAU: in the team backtest the top 1,000 at ${dr.t0} rose ${sg(d1.mean_uplift_vs_bau)} a month above BAU with no programme (median ${sg(d1.median_uplift_vs_bau)}).</b>
+    <span>Link to the engine</span><b>The measured lift replaces the closing share (0.5) and shows whether demand-capture shops respond. SA FTE stays at 0 unless the pilot shows a response above network productivity (${f2(P0.network_booked_per_fte)} booked per FTE-month).</b></div>`;
+  const sc=Object.entries(S6.scenarios).map(([n,x])=>({n,...x}));
+  $('#tblScen').innerHTML=tableHTML([{h:'Scenario',f:r=>esc(SCN[r.n]||r.n)},{h:'FTE',n:1,f:r=>r.inputs.fte},{h:'Slots',n:1,f:r=>r.inputs.slots},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'Conservative',n:1,f:r=>'+'+fN(r.uplift_p05,1)},{h:'Team order',n:1,f:r=>'+'+fN(r.even_uplift,1)},{h:'×',n:1,f:r=>r.budget_binding?f2(r.eff_vs_even):'same'},{h:'Per FTE',n:1,f:r=>r.per_fte==null?'–':f2(r.per_fte)},{h:'Closure',n:1,f:r=>fP(r.gap_closure)},{h:'Verdict',f:r=>esc(r.verdict)}],sc);
+  const PN={elasticity:'staffing elasticity',p_react:'reactivation rate',approval_closable_share:'closing share',conf_weight:'confidence weights'};
+  $('#tblSens').innerHTML=tableHTML([{h:'Assumption',f:r=>esc(PN[r.param]||r.param)},{h:'Value',f:r=>esc(r.param==='elasticity'?r.value+': Aldi '+f2(E[r.value].Aldi):r.value==='flat'?'all 1.0':String(r.value))},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'vs team order',n:1,f:r=>'×'+f2(r.eff_vs_even)},{h:'Same shops (Jaccard)',n:1,f:r=>f2(r.jaccard_vs_base)},{h:'Verdict',k:'verdict'},{h:'20-FTE yield',n:1,f:r=>f2(r.fte20_per_fte)}],S6.sensitivity);
+  const g=D.r2_link.outcome_by_group;$('#tblR2').innerHTML=tableHTML([{h:'Round 2 group',k:'group'},{h:'Contracts 2025-26',n:1,f:r=>fN(r.contracts)},{h:'Booking rate',n:1,f:r=>fP(r.book_rate)},{h:'FPD',n:1,f:r=>fP(r.fpd_rate)}],g);
+  $('#r2Note2').textContent='Shown per shop as context (share of Prime / Stressed, shrunk toward the peer mean when < 20 scored clients). It does not change the allocation: only '+D.r2_link.shops_with_30_scored+' shops have ≥ 30 scored clients, and the FPD guardrail uses observed shop FPD.';
+  const NT=P0.network_totals;
+  $('#notes').innerHTML=[
+    `Task 1–5 follow the team’s final package (v4) unchanged: ${fN(NT.shops)} scored shops (≥ 3 months of history), levels, tracks, main constraint, priority ranking and waves. Only Active shops can receive FTE or a programme; other statuses keep their levels for reporting.`,
+    'Levels (team): BAU = empirical-Bayes application rate × shrunk booking rate; Attainable = peer P75 frontier with the 3× growth guardrail, then the provincial ceiling; Ceiling = provincial penetration frontier. Waves: Invest shops ranked by gap_low = min(gap P05 × cap factor, gap), cumulative top 500 / 1,000 / 2,000.',
+    `Staffing response: booked = BAU × ((FTE + x) / FTE)^ε, ε by merchant model from the team’s fixed effects (Aldi ${f2(E.base.Aldi)}, Non-Aldi ${f2(el['Non-Aldi'].elasticity)} read as 0); low / high = ± 1.96 standard errors; floor FTE 0.25; capped at Attainable.`,
+    `Reactivation: ${f2(P0.p_react)} (team) × gap. Closing quality: applications × (peer mean booking rate − shop booking rate) × ${P0.approval_closable_share}, capped at the gap (Task 6 panel check 6).`,
+    'Confidence weights (High 1.0 / Medium 0.7 / Low 0.4) scale the ranking score, not the expected value. Conservative uplift uses each shop’s gap_low ÷ gap.',
+    'Baseline for check 1: the same FTE split evenly across eligible shops and slots given in the team priority order (gap_low). The check is not applicable when the budget covers every eligible shop in scope.',
+    'Horizon uplift assumes a linear ramp (×0.5). Credit value uses each shop’s average booked ticket; card and BNPL tickets are near zero by design.',
+    'Lead → contract attribution (sourcing view only): same client, same product, assigned ≤ apply, last touch within 90 days, cross-shop ties dropped. BAU and Attainable come from applications, bookings and peer benchmarks, so they do not depend on it.',
+    'Assumptions pending organiser confirmation: finish reason = RESULT; leads referencing a contract applied before assignment are not conversions.'].map(x=>`<li>${x}</li>`).join('');}
+
+/* ===================== nav / theme ===================== */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('on',s.id==='page-'+b.dataset.page));$('#filters').style.display=b.dataset.page==='valid'?'none':'';if(b.dataset.page==='valid')renderValidation();else{refresh();if(b.dataset.page==='sim')renderWaves();}});
+$('#themeBtn').onclick=()=>{const r=document.documentElement;const cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.setAttribute('data-theme',cur==='dark'?'light':'dark');};
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{refresh();renderWaves();},200);});
+renderValidation();renderWaves();refresh();
+</script>
+</body>
+</html>
