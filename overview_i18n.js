@@ -13,6 +13,9 @@ const OVERVIEW_I18N = {
     tab_cleaning: "Data Cleaning",
     tab_correlation: "Tương quan",
 
+    theme_dark: "Tối",
+    theme_light: "Sáng",
+
     sec1_title: "1. Hợp đồng theo thời gian",
     sec1_sub: "contract · 01/2025 – 09/2026 · lọc theo Sản phẩm",
     c_monthly_h3: "Hồ sơ nộp và hồ sơ booked proxy theo tháng",
@@ -55,14 +58,53 @@ const OVERVIEW_I18N = {
     sec6_sub: "đối soát ClickHouse ngày 21/10/2026 · biểu đồ phía trên là snapshot 20/10/2026 22:07",
     sec7_title: "7. Tách bạch bốn lớp tiềm năng theo đề Round 3",
 
-    // KPI labels
-    kpi_apps: "Hồ sơ nộp",
-    kpi_booked: "Hồ sơ booked proxy*",
-    kpi_credit: "credit_amount proxy*",
-    kpi_fpd: "Tỷ lệ cờ trễ kỳ 1 (dpd_1pd)*",
-    kpi_unmapped: "Hồ sơ thiếu mã salesroom",
-    kpi_leads: "Lead có trọng số (sample_weight)",
-    kpi_match: "Lead ghép được contract*",
+    // Subtitle
+    sub_text: "Nguồn: ClickHouse r3_bronze · tạo lúc {gen} · {rows} dòng trên {tables} bảng",
+
+    // Number unit suffixes
+    unit_trillion: " nghìn tỷ",
+    unit_billion: " tỷ",
+    unit_million: " tr",
+    unit_thousand: " k",
+    currency: " ₫",
+
+    // KPI Titles and Subtitles
+    kpi_apps_l: "Hồ sơ nộp",
+    kpi_apps_s: "{apps} hồ sơ · 21 tháng",
+    kpi_booked_l: "Hồ sơ booked proxy*",
+    kpi_booked_s: "Tỷ lệ proxy {pct}",
+    kpi_credit_l: "credit_amount proxy*",
+    kpi_credit_s: "Tổng credit_amount trên hồ sơ booked proxy; không phải dư nợ xác nhận",
+    kpi_unmapped_l: "Hợp đồng chưa khớp salesroom",
+    kpi_unmapped_s: "{rows} hồ sơ · không suy ra kênh",
+    kpi_fpd_l: "Cờ trễ kỳ 1",
+    kpi_fpd_s: "Hồ sơ booked proxy nộp trước 06/2026",
+    kpi_leads_l: "Lead (có trọng số)",
+    kpi_leads_s: "{rate} ghép candidate theo ASOF · không phải conversion chính thức",
+
+    // Insights Cards
+    ins_warn_unmapped_t: "Hợp đồng thiếu mapping salesroom, chưa xác định được kênh",
+    ins_warn_unmapped_b: "{pct} hồ sơ ({unmapped}/{total}) ở {shops} mã shop không khớp salesroom. Thiếu mapping không chứng minh đây là online hay đối tác; tỷ lệ khớp khác nhiều theo sản phẩm.",
+    ins_pareto_t: "Booked proxy tập trung ở một nhóm shop",
+    ins_pareto_b: "Top 1% shop có {p1}% hồ sơ booked proxy L12M; top 10% có {p10}% trên {shops} shop có booking proxy.",
+    ins_cross_t: "Liên kết khác shop chỉ là ứng viên cross-sell",
+    ins_cross_b: "Toàn kỳ lead 31/12/2025–17/10/2026, trong lead có trọng số đã ghép từ POS vật lý, tỷ trọng contract ở mã shop ngoài salesroom là {cross}. Mẫu số là lead ứng viên đã ghép theo nhóm shop nguồn; biểu đồ dùng một phép gán ASOF, không phải conversion chính thức hay bằng chứng nhân quả.",
+    ins_match_t: "Không đọc match rate như conversion",
+    ins_match_b: "{rate} lead có trọng số được ghép với contract ứng viên trong snapshot. UUID lặp, sample_weight và right-censoring cần được xử lý trước khi công bố conversion.",
+
+    // Chart labels
+    chart_booked_proxy_rate: "Tỷ lệ booked proxy (%)",
+    chart_apps: "Hồ sơ",
+    chart_booked_proxy: "Booked proxy",
+    chart_shop_count: "Số shop",
+    chart_cum_booked: "Tích lũy % booked proxy",
+    chart_even_dist: "Phân bổ đều",
+    chart_avg_sa: "SA trung bình/shop",
+    chart_booked_l12: "Booked proxy L12M",
+    chart_match_asof: "% lead ghép candidate contract (ASOF)",
+    chart_match_booked: "% ghép candidate và booked proxy",
+    chart_match_30d: "% ghép candidate trong 30 ngày",
+    chart_subtitle_censor: "Các tháng cuối thấp một phần do kiểm duyệt phải (contract dừng ở 30/09/2026)",
 
     // Table Column Headers
     th_shop: "Shop",
@@ -78,7 +120,12 @@ const OVERVIEW_I18N = {
     th_book_rate: "% booked proxy",
     th_q3_yoy: "Q3 YoY %",
     th_fpd: "Trễ kỳ 1 %",
-    th_n_prods: "Số SP"
+    th_n_prods: "Số SP",
+    th_dq_check: "Kiểm tra",
+    th_dq_value: "Giá trị",
+    th_table_bronze: "Bảng r3_bronze",
+    th_rows: "Số dòng",
+    tbl_no_shop: "Không có shop nào trong top 300 khớp bộ lọc."
   },
   en: {
     head_title: "BI10 Round 3 · Dataset Overview",
@@ -91,6 +138,9 @@ const OVERVIEW_I18N = {
     tab_overview: "Overview",
     tab_cleaning: "Data Cleaning",
     tab_correlation: "Correlation",
+
+    theme_dark: "Dark",
+    theme_light: "Light",
 
     sec1_title: "1. Contracts Over Time",
     sec1_sub: "contract · 01/2025 – 09/2026 · filtered by Product",
@@ -134,14 +184,53 @@ const OVERVIEW_I18N = {
     sec6_sub: "ClickHouse reconciliation 2026-10-21 · charts above reflect snapshot 2026-10-20 22:07",
     sec7_title: "7. Separation of Four Potential Layers per Round 3 Brief",
 
-    // KPI labels
-    kpi_apps: "Total Applications",
-    kpi_booked: "Booked Proxy Contracts*",
-    kpi_credit: "credit_amount proxy*",
-    kpi_fpd: "First-Payment Default Rate*",
-    kpi_unmapped: "Unmapped Salesroom Contracts",
-    kpi_leads: "Weighted Leads (sample_weight)",
-    kpi_match: "Leads Matched to Contract*",
+    // Subtitle
+    sub_text: "Source: ClickHouse r3_bronze · generated {gen} · {rows} rows across {tables} tables",
+
+    // Number unit suffixes
+    unit_trillion: "T VND",
+    unit_billion: "B VND",
+    unit_million: "M",
+    unit_thousand: "k",
+    currency: " ₫",
+
+    // KPI Titles and Subtitles
+    kpi_apps_l: "Applications",
+    kpi_apps_s: "{apps} applications · 21 months",
+    kpi_booked_l: "Booked Proxy Contracts*",
+    kpi_booked_s: "Proxy conversion rate {pct}",
+    kpi_credit_l: "credit_amount proxy*",
+    kpi_credit_s: "Total credit_amount of booked proxy contracts; not confirmed outstanding",
+    kpi_unmapped_l: "Unmapped Salesroom Contracts",
+    kpi_unmapped_s: "{rows} applications · unclassified channel",
+    kpi_fpd_l: "First-Payment Default (FPD)",
+    kpi_fpd_s: "Booked proxy contracts applied before 06/2026",
+    kpi_leads_l: "Weighted Leads",
+    kpi_leads_s: "{rate} matched candidate via ASOF · not formal conversion",
+
+    // Insights Cards
+    ins_warn_unmapped_t: "Unmapped salesroom contracts, channel unconfirmed",
+    ins_warn_unmapped_b: "{pct} of applications ({unmapped}/{total}) at {shops} shop codes not in salesroom master. Missing mapping does not prove online or partner; match rate varies widely by product.",
+    ins_pareto_t: "Booked proxy contracts heavily concentrated",
+    ins_pareto_b: "Top 1% shops generate {p1}% of L12M booked proxy contracts; top 10% generate {p10}% across {shops} shops with booking proxy.",
+    ins_cross_t: "Cross-shop links are candidate cross-sells",
+    ins_cross_b: "Across 2025-12-31 to 2026-10-17, among weighted leads matched from physical POS, share of contracts at unmatched shop codes is {cross}. Denominator is candidate matched leads by source shop category; chart uses ASOF nearest assignment, not formal conversion or causal proof.",
+    ins_match_t: "Do not read candidate match rate as conversion",
+    ins_match_b: "{rate} of weighted leads matched to a candidate contract in this snapshot. Repeated UUIDs, sample_weight, and right-censoring must be resolved before publishing conversion.",
+
+    // Chart labels
+    chart_booked_proxy_rate: "Booked proxy rate (%)",
+    chart_apps: "Applications",
+    chart_booked_proxy: "Booked proxy",
+    chart_shop_count: "Shops",
+    chart_cum_booked: "Cumulative % booked proxy",
+    chart_even_dist: "Even distribution",
+    chart_avg_sa: "Average SA/shop",
+    chart_booked_l12: "L12M Booked proxy",
+    chart_match_asof: "% leads matched candidate contract (ASOF)",
+    chart_match_booked: "% matched candidate & booked proxy",
+    chart_match_30d: "% matched candidate within 30 days",
+    chart_subtitle_censor: "Later months lower partly due to right-censoring (contracts end 2026-09-30)",
 
     // Table Column Headers
     th_shop: "Shop",
@@ -157,7 +246,12 @@ const OVERVIEW_I18N = {
     th_book_rate: "% Booked Proxy",
     th_q3_yoy: "Q3 YoY %",
     th_fpd: "FPD %",
-    th_n_prods: "Prod Count"
+    th_n_prods: "Prod Count",
+    th_dq_check: "Check Item",
+    th_dq_value: "Value",
+    th_table_bronze: "r3_bronze Table",
+    th_rows: "Rows",
+    tbl_no_shop: "No shops in top 300 match current filters."
   }
 };
 

@@ -289,8 +289,17 @@ const D=window.R3DATA,P0=D.params,COLS=D.columns,T=D.team,S6=D.task6,E=P0.elasti
 const SHOPS=D.shops.map(a=>{const o={};COLS.forEach((c,i)=>o[c]=a[i]);return o;});
 SHOPS.forEach(s=>{if(s.avg_ticket==null)s.avg_ticket=0;if(s.gap_p05_ratio==null)s.gap_p05_ratio=1;});
 const LEVER_COLOR={FTE:'var(--s1)',APPROVAL:'var(--s2)',REACT:'var(--s3)',QUALITY_FIX:'var(--s4)'};
-const LEVER_NAME={FTE:'Add SA FTE (demand capture)',APPROVAL:'Closing-quality programme',REACT:'Reactivation programme',QUALITY_FIX:'Fix quality first (programme, no FTE)'};
-$('#dataStamp').textContent='Model '+D.model.split(' · ')[0]+' · build '+D.generated+' · '+SHOPS.length.toLocaleString()+' scored shops';
+function getLeverName(k) {
+  const isEn = (window.BI10_LANG === 'en');
+  if (isEn) return {FTE:'Add SA FTE (demand capture)',APPROVAL:'Closing-quality programme',REACT:'Reactivation programme',QUALITY_FIX:'Fix quality first (programme, no FTE)'}[k] || k;
+  return {FTE:'Bổ sung SA FTE (đón cầu)',APPROVAL:'Chương trình nâng tỷ lệ duyệt',REACT:'Chương trình tái kích hoạt shop dormant',QUALITY_FIX:'Ưu tiên xử lý chất lượng (không tăng FTE)'}[k] || k;
+}
+const LEVER_NAME = new Proxy({}, { get: (target, prop) => getLeverName(prop) });
+function updateDataStamp() {
+  const isEn = (window.BI10_LANG === 'en');
+  $('#dataStamp').textContent = isEn ? ('Model '+D.model.split(' · ')[0]+' · build '+D.generated+' · '+SHOPS.length.toLocaleString()+' scored shops') : ('Mô hình '+D.model.split(' · ')[0]+' · build '+D.generated+' · '+SHOPS.length.toLocaleString()+' shop đã chấm điểm');
+}
+updateDataStamp();
 const sg=x=>(x>=0?'+':'−')+Math.abs(x).toFixed(2);
 
 /* ===================== filters ===================== */
@@ -358,10 +367,22 @@ function run(rows,fteB,slotB,f,p){const e=allocate(rows,fteB,slotB,f,p,'even');c
 const CN={'Demand capture (applications)':'Demand capture','Activation (no applications in 3 months)':'Activation (dormant)','Approval / closing':'Approval / closing','Demand capture (risk-capped)':'Demand (risk-capped)','None (at peer frontier)':'At frontier','Local market capacity':'Market capacity'};
 function renderNetwork(rows){
   const A=sum(rows,r=>r.actual),B=sum(rows,r=>r.bau),Pv=sum(rows,r=>r.attainable),C=sum(rows,r=>r.ceiling),G=sum(rows,r=>r.gap),GL=sum(rows,r=>Math.max(r.gap_low||0,0));
-  $('#heroGap').textContent='+'+fN(G);$('#heroGapSub').innerHTML='booked contracts / month · conservative <b>+'+fN(GL)+'</b> (sum of shop gap_low) · '+fP(G/Math.max(1e-9,Pv))+' of Attainable not yet realised';
-  tiles($('#tilesNet'),[{label:'Shops in scope',value:fN(rows.length),delta:rows.filter(r=>r.team_rank!=null).length.toLocaleString()+' in the Invest ranking'},{label:'Current actual',value:fN(A),delta:'last 3 months run-rate'},{label:'Business-as-usual',value:fN(B),delta:'if nothing changes'},
-    {label:'Attainable',value:fN(Pv),delta:'peer P75 · 3× guardrail · ceiling'},{label:'Market ceiling',value:fN(C),delta:'provincial penetration frontier'},{label:'Attainment (BAU ÷ Attainable)',value:fP(B/Math.max(1e-9,Pv)),delta:'target 100%: gap closed'}]);
-  vbar($('#chLadder'),[{label:'Actual',value:A,color:'var(--o1)',tip:'Current run-rate'},{label:'BAU',value:B,color:'var(--o2)',tip:'Business-as-usual'},{label:'Attainable',value:Pv,color:'var(--o3)',tip:'Attainable (team v4)'},{label:'Ceiling',value:C,color:'var(--o4)',tip:'Addressable market ceiling'}]);
+  $('#heroGap').textContent='+'+fN(G);$('#heroGapSub').innerHTML= (window.BI10_LANG === 'en') ? ('booked contracts / month · conservative <b>+'+fN(GL)+'</b> (sum of shop gap_low) · '+fP(G/Math.max(1e-9,Pv))+' of Attainable not yet realised') : ('hợp đồng booked / tháng · thận trọng <b>+'+fN(GL)+'</b> (tổng gap_low) · '+fP(G/Math.max(1e-9,Pv))+' Attainable chưa khai thác');
+  const isEn = (window.BI10_LANG === 'en');
+  tiles($('#tilesNet'),[
+    {label: isEn ? 'Shops in scope' : 'Shop trong phạm vi lọc', value:fN(rows.length), delta: rows.filter(r=>r.team_rank!=null).length.toLocaleString() + (isEn ? ' in the Invest ranking' : ' thuộc nhóm Invest')},
+    {label: isEn ? 'Current actual' : 'Thực tế hiện tại', value:fN(A), delta: isEn ? 'last 3 months run-rate' : 'run-rate 3 tháng gần nhất'},
+    {label: isEn ? 'Business-as-usual' : 'Kinh doanh thông thường (BAU)', value:fN(B), delta: isEn ? 'if nothing changes' : 'nếu không có can thiệp'},
+    {label: isEn ? 'Attainable' : 'Mục tiêu khả thi (Attainable)', value:fN(Pv), delta: isEn ? 'peer P75 · 3× guardrail · ceiling' : 'biên P75 · trần 3× · trần tỉnh'},
+    {label: isEn ? 'Market ceiling' : 'Trần thị trường tỉnh', value:fN(C), delta: isEn ? 'provincial penetration frontier' : 'biên thâm nhập thị trường tỉnh'},
+    {label: isEn ? 'Attainment (BAU ÷ Attainable)' : 'Tỷ lệ đạt được (BAU ÷ Attainable)', value:fP(B/Math.max(1e-9,Pv)), delta: isEn ? 'target 100%: gap closed' : 'mục tiêu 100%: xóa sạch gap'}
+  ]);
+  vbar($('#chLadder'),[
+    {label: isEn ? 'Actual' : 'Thực tế', value:A, color:'var(--o1)', tip: isEn ? 'Current run-rate' : 'Run-rate hiện tại'},
+    {label: 'BAU', value:B, color:'var(--o2)', tip: isEn ? 'Business-as-usual' : 'Kinh doanh thông thường'},
+    {label: isEn ? 'Attainable' : 'Khả thi', value:Pv, color:'var(--o3)', tip: isEn ? 'Attainable (team v4)' : 'Khả thi (mô hình v4)'},
+    {label: isEn ? 'Ceiling' : 'Trần tỉnh', value:C, color:'var(--o4)', tip: isEn ? 'Addressable market ceiling' : 'Trần thị trường tỉnh'}
+  ]);
   const byC={};rows.forEach(r=>{byC[r.main_constraint]=(byC[r.main_constraint]||0)+r.gap;});
   hbar($('#chConstraint'),Object.entries(byC).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({label:CN[l]||l,value:v,tip:l+': '+fN(v,1),sub:fP(v/Math.max(1e-9,G),0)})),{labelW:140,labelH:'Constraint',valueH:'Gap'});
   const geoKey=F.area?'province':'area';const byG={};rows.forEach(r=>{byG[r[geoKey]]=(byG[r[geoKey]]||0)+r.gap;});
@@ -427,7 +448,17 @@ function renderSourcing(rows){
 
 /* ---- two shops, same sales ---- */
 const BYID=new Map(SHOPS.map(s=>[s.shop_id,s]));
-function leverOf(r){return r.shop_status!=='Active'?'No lever: shop is '+r.shop_status:r.track.startsWith('Market')?'Hold: provincial market ceiling':r.risk_flag?'Fix quality first (FPD above peer)':r.elig_react?'Reactivation programme':r.elig_approval?'Closing-quality programme':r.gap<=0.5?'Hold: at peer frontier':r.main_constraint.startsWith('Demand')?'Demand capture: no measured lever yet (pilot)':'No funded lever';}
+function leverOf(r){
+  const isEn = (window.BI10_LANG === 'en');
+  if(r.shop_status!=='Active') return isEn ? ('No lever: shop is '+r.shop_status) : ('Không cấp đòn bẩy: shop đang '+r.shop_status);
+  if(r.track.startsWith('Market')) return isEn ? 'Hold: provincial market ceiling' : 'Giữ nguyên: chạm trần thị trường tỉnh';
+  if(r.risk_flag) return isEn ? 'Fix quality first (FPD above peer)' : 'Ưu tiên khắc phục chất lượng (FPD cao hơn nhóm)';
+  if(r.elig_react) return isEn ? 'Reactivation programme' : 'Chương trình tái kích hoạt';
+  if(r.elig_approval) return isEn ? 'Closing-quality programme' : 'Chương trình nâng cao tỷ lệ duyệt';
+  if(r.gap<=0.5) return isEn ? 'Hold: at peer frontier' : 'Giữ nguyên: đang ở biên hiệu quả';
+  if(r.main_constraint.startsWith('Demand')) return isEn ? 'Demand capture: no measured lever yet (pilot)' : 'Đón cầu: chưa có đòn bẩy đo lường (pilot)';
+  return isEn ? 'No funded lever' : 'Không cấp đòn bẩy';
+}
 $('#pairCase').innerHTML=D.pairs.map((c,i)=>`<option value="${i}">${esc(c.label)}</option>`).join('')+'<option value="">Custom IDs</option>';
 $('#pairCase').addEventListener('change',e=>{const c=D.pairs[e.target.value];if(c){$('#pairA').value=c.a;$('#pairB').value=c.b;}renderPair();});
 function renderPair(){
@@ -551,6 +582,7 @@ let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{refres
 
 window.addEventListener('bi10-lang-changed', e => {
   applyDecisionStaticI18n();
+  if (typeof updateDataStamp === 'function') updateDataStamp();
   refresh();
   if (typeof renderWaves === 'function') renderWaves();
   if (typeof renderValidation === 'function') renderValidation();

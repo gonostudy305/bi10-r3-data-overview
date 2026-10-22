@@ -511,7 +511,7 @@ const PCOLOR = { CL: "#2f6fb0", BNPL: "#e07b39", CD: "#3a9a5b", CC: "#c0392b", T
 const SERIES = ["#2f6fb0", "#e07b39", "#3a9a5b", "#c0392b", "#7b5ea7", "#8c6d46", "#d46aa8", "#9aa5b1", "#3fa7b5"];
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fmt = (v, d = 0) => v == null || isNaN(v) ? "–" : Number(v).toLocaleString("vi-VN", { maximumFractionDigits: d, minimumFractionDigits: d });
-const big = v => v >= 1e12 ? fmt(v / 1e12, 2) + " nghìn tỷ" : v >= 1e9 ? fmt(v / 1e9, 2) + " tỷ" : v >= 1e6 ? fmt(v / 1e6, 2) + " tr" : v >= 1e3 ? fmt(v / 1e3, 1) + " k" : fmt(v);
+const big = v => { const isEn = (window.BI10_LANG === "en"); return v >= 1e12 ? fmt(v / 1e12, 2) + (isEn ? "T VND" : " nghìn tỷ") : v >= 1e9 ? fmt(v / 1e9, 2) + (isEn ? "B VND" : " tỷ") : v >= 1e6 ? fmt(v / 1e6, 2) + (isEn ? "M" : " tr") : v >= 1e3 ? fmt(v / 1e3, 1) + (isEn ? "k" : " k") : fmt(v); };
 const pct = (a, b, d = 1) => b ? fmt(a / b * 100, d) + "%" : "–";
 const sum = (arr, k) => arr.reduce((s, r) => s + (Number(r[k]) || 0), 0);
 const uniq = arr => [...new Set(arr)];
@@ -557,13 +557,14 @@ function renderKPIs() {
   const lm = byProd(D.lead_match, state.product);
   const leads = sum(byProd(D.lead_monthly, state.product), "leads_w");
   const matchRate = pct(sum(lm, "matched_w"), sum(lm, "leads_w"), 2);
+  const isEn = (window.BI10_LANG === 'en');
   const k = [
-    ["Hồ sơ nộp", big(apps), `${fmt(apps)} hồ sơ · 21 tháng`],
-    ["Hồ sơ booked proxy*", big(booked), `Tỷ lệ proxy ${pct(booked, apps)}`],
-    ["credit_amount proxy*", big(credit) + " ₫", "Tổng credit_amount trên hồ sơ booked proxy; không phải dư nợ xác nhận"],
-    ["Hợp đồng chưa khớp salesroom", pct(notDim, apps), `${fmt(notDim)} hồ sơ · không suy ra kênh`],
-    ["Cờ trễ kỳ 1", pct(sum(fc, "fpd_num"), sum(fc, "fpd_den")), "Hồ sơ booked proxy nộp trước 06/2026"],
-    ["Lead (có trọng số)", big(leads), `${matchRate} ghép candidate theo ASOF · không phải conversion chính thức`],
+    [tO('kpi_apps_l'), big(apps), tO('kpi_apps_s').replace('{apps}', fmt(apps))],
+    [tO('kpi_booked_l'), big(booked), tO('kpi_booked_s').replace('{pct}', pct(booked, apps))],
+    [tO('kpi_credit_l'), big(credit) + (isEn ? " VND" : " ₫"), tO('kpi_credit_s')],
+    [tO('kpi_unmapped_l'), pct(notDim, apps), tO('kpi_unmapped_s').replace('{rows}', fmt(notDim))],
+    [tO('kpi_fpd_l'), pct(sum(fc, "fpd_num"), sum(fc, "fpd_den")), tO('kpi_fpd_s')],
+    [tO('kpi_leads_l'), big(leads), tO('kpi_leads_s').replace('{rate}', matchRate)],
   ];
   document.getElementById("kpis").innerHTML = k.map(([l, v, s]) =>
     `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
@@ -581,21 +582,21 @@ function renderInsights() {
   }).join(" · ");
   const leadMatches = D.lead_match;
   const items = [
-    ["warn", "Hợp đồng thiếu mapping salesroom, chưa xác định được kênh",
-      pct(sum(notDim, "apps"), apps) + " hồ sơ (" +
-      fmt(sum(notDim, "apps")) + "/" + fmt(apps) + ") ở " +
-      fmt(D.data_quality.find(r => r.check === "contract shops not in salesroom table")?.value) +
-      " mã shop không khớp salesroom. Thiếu mapping không chứng minh đây là online hay đối tác; tỷ lệ khớp khác nhiều theo sản phẩm."],
-    ["", "Booked proxy tập trung ở một nhóm shop",
-      "Top 1% shop có " + fmt(p1.pct_booked, 1) +
-      "% hồ sơ booked proxy L12M; top 10% có " + fmt(p10.pct_booked, 1) +
-      "% trên " + fmt(D.pareto_meta.shops_with_booking) + " shop có booking proxy."],
-    ["warn", "Liên kết khác shop chỉ là ứng viên cross-sell",
-      "Toàn kỳ lead 31/12/2025–17/10/2026, trong lead có trọng số đã ghép từ POS vật lý, tỷ trọng contract ở mã shop ngoài salesroom là " +
-      cross + ". Mẫu số là lead ứng viên đã ghép theo nhóm shop nguồn; biểu đồ dùng một phép gán ASOF, không phải conversion chính thức hay bằng chứng nhân quả."],
-    ["warn", "Không đọc match rate như conversion",
-      pct(sum(leadMatches, "matched_w"), sum(leadMatches, "leads_w"), 2) +
-      " lead có trọng số được ghép với contract ứng viên trong snapshot. UUID lặp, sample_weight và right-censoring cần được xử lý trước khi công bố conversion."]
+    ["warn", tO('ins_warn_unmapped_t'),
+      tO('ins_warn_unmapped_b')
+        .replace('{pct}', pct(sum(notDim, "apps"), apps))
+        .replace('{unmapped}', fmt(sum(notDim, "apps")))
+        .replace('{total}', fmt(apps))
+        .replace('{shops}', fmt(D.data_quality.find(r => r.check === "contract shops not in salesroom table")?.value))],
+    ["", tO('ins_pareto_t'),
+      tO('ins_pareto_b')
+        .replace('{p1}', fmt(p1.pct_booked, 1))
+        .replace('{p10}', fmt(p10.pct_booked, 1))
+        .replace('{shops}', fmt(D.pareto_meta.shops_with_booking))],
+    ["warn", tO('ins_cross_t'),
+      tO('ins_cross_b').replace('{cross}', cross)],
+    ["warn", tO('ins_match_t'),
+      tO('ins_match_b').replace('{rate}', pct(sum(leadMatches, "matched_w"), sum(leadMatches, "leads_w"), 2))]
   ];
   document.getElementById("insights").innerHTML = items.map(([c, t, b]) =>
     '<div class="insight ' + c + '"><div class="t">' + t + '</div>' + b + '</div>').join("");
@@ -667,9 +668,9 @@ function renderCategory() {
   const cats = ["Not in salesroom table", "Big", "Medium", "Small", "Virtual"].filter(c => rows.some(r => r.category === c));
   draw("c-cat", { type: "bar",
     data: { labels: cats, datasets: [
-      { label: "Hồ sơ", data: cats.map(c => sum(rows.filter(r => r.category === c), "apps")), backgroundColor: "#9ec5e8" },
-      { label: "Booked proxy", data: cats.map(c => sum(rows.filter(r => r.category === c), "n_booked")), backgroundColor: "#2f6fb0" },
-      { label: "Số shop", type: "line", yAxisID: "y1", showLine: false, pointRadius: 6, pointStyle: "rectRot",
+      { label: tO("chart_apps"), data: cats.map(c => sum(rows.filter(r => r.category === c), "apps")), backgroundColor: "#9ec5e8" },
+      { label: tO("chart_booked_proxy"), data: cats.map(c => sum(rows.filter(r => r.category === c), "n_booked")), backgroundColor: "#2f6fb0" },
+      { label: tO("chart_shop_count"), type: "line", yAxisID: "y1", showLine: false, pointRadius: 6, pointStyle: "rectRot",
         borderColor: "#e07b39", backgroundColor: "#e07b39",
         data: cats.map(c => { const rs = D.contract_by_category.filter(r => r.category === c);
           return state.product === "all" ? null : sum(rs.filter(r => r.product === state.product), "shops"); }) } ] },
@@ -684,8 +685,8 @@ function renderPareto() {
   const pts = [{ x: 0, y: 0 }, ...D.pareto.map(p => ({ x: p.pct_shops, y: p.pct_booked }))];
   draw("c-pareto", { type: "line",
     data: { datasets: [
-      { label: "Tích lũy % booked proxy", data: pts, borderColor: "#2f6fb0", backgroundColor: "#2f6fb022", fill: true, pointRadius: 0, tension: .1 },
-      { label: "Phân bổ đều", data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css("--muted"), borderDash: [5, 5], pointRadius: 0 } ] },
+      { label: tO("chart_cum_booked"), data: pts, borderColor: "#2f6fb0", backgroundColor: "#2f6fb022", fill: true, pointRadius: 0, tension: .1 },
+      { label: tO("chart_even_dist"), data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css("--muted"), borderDash: [5, 5], pointRadius: 0 } ] },
     options: { parsing: false, scales: { x: { type: "linear", min: 0, max: 100, title: { display: true, text: "% shop (xếp theo booked proxy giảm dần)" }, ticks: { callback: v => v + "%" } },
       y: { min: 0, max: 100, ticks: { callback: v => v + "%" } } },
       plugins: { tooltip: { callbacks: { label: c => ` Top ${fmt(c.parsed.x, 1)}% shop → ${fmt(c.parsed.y, 1)}% booked proxy` } } } } });
@@ -694,8 +695,8 @@ function renderPareto() {
 function renderSize() {
   const r = D.shop_size_buckets;
   draw("c-size", { data: { labels: r.map(x => x.bucket), datasets: [
-      { type: "bar", label: "Số shop", data: r.map(x => x.shops), backgroundColor: "#3a9a5b", yAxisID: "y" },
-      { type: "line", label: "SA trung bình/shop", data: r.map(x => x.avg_sa), borderColor: "#e07b39", backgroundColor: "#e07b39", yAxisID: "y1", tension: .25 } ] },
+      { type: "bar", label: tO("chart_shop_count"), data: r.map(x => x.shops), backgroundColor: "#3a9a5b", yAxisID: "y" },
+      { type: "line", label: tO("chart_avg_sa"), data: r.map(x => x.avg_sa), borderColor: "#e07b39", backgroundColor: "#e07b39", yAxisID: "y1", tension: .25 } ] },
     options: { scales: { x: { title: { display: true, text: "Hồ sơ booked proxy L12M / shop" }, grid: { display: false } },
       y: { ticks: { callback: v => big(v) } }, y1: { position: "right", grid: { display: false }, min: 0 } } } });
 }
@@ -710,7 +711,7 @@ function renderArea() {
   draw("c-area", { data: { labels: areas, datasets: [
       ...cats.map(c => ({ type: "bar", label: c, stack: "s", yAxisID: "y", backgroundColor: ccol[c],
         data: areas.map(a => sum(rows.filter(r => r.area === a && r.category === c), "shops")) })),
-      { type: "line", label: "Booked proxy L12M", yAxisID: "y1", borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2,
+      { type: "line", label: tO("chart_booked_l12"), yAxisID: "y1", borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2,
         data: areas.map(a => sum(rows.filter(r => r.area === a), "booked_l12")) } ] },
     options: { interaction: { mode: "index", intersect: false },
       scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, title: { display: true, text: "Số shop" } },
@@ -733,9 +734,9 @@ function renderMatch() {
   const months = uniq(D.lead_match.map(r => r.month)).sort();
   const series = (k) => months.map(m => { const rs = rows.filter(r => r.month === m); const t = sum(rs, "leads_w"); return t ? sum(rs, k) / t * 100 : null; });
   draw("c-match", { data: { labels: months, datasets: [
-      { type: "bar", label: "% lead ghép candidate contract (ASOF)", data: series("matched_w"), backgroundColor: "#2f6fb0" },
-      { type: "bar", label: "% ghép candidate và booked proxy", data: series("matched_booked_w"), backgroundColor: "#3a9a5b" },
-      { type: "line", label: "% ghép candidate trong 30 ngày", data: series("matched_30d_w"), borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2 } ] },
+      { type: "bar", label: tO("chart_match_asof"), data: series("matched_w"), backgroundColor: "#2f6fb0" },
+      { type: "bar", label: tO("chart_match_booked"), data: series("matched_booked_w"), backgroundColor: "#3a9a5b" },
+      { type: "line", label: tO("chart_match_30d"), data: series("matched_30d_w"), borderColor: "#e07b39", backgroundColor: "#e07b39", tension: .2 } ] },
     options: { interaction: { mode: "index", intersect: false }, scales: { x: { grid: { display: false } }, y: { min: 0, ticks: { callback: v => fmt(v, 1) + "%" } } },
       plugins: { tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${fmt(c.parsed.y, 2)}%` } },
         subtitle: { display: true, text: "Các tháng cuối thấp một phần do kiểm duyệt phải (contract dừng ở 30/09/2026)", font: { size: 11 } } } } });
@@ -771,10 +772,10 @@ function renderSource() {
 }
 
 // ---------------------------------------------------------------- tables
-const SHOP_COLS = [
-  ["shop", "Shop"], ["category", "Loại"], ["model", "Model"], ["area", "Vùng"], ["province", "Tỉnh"],
-  ["product", "SP chính"], ["status", "Trạng thái"], ["age_m", "Tuổi (tháng)", 1], ["sa", "SA gán", 1],
-  ["booked_l12", "Booked proxy L12M", 1], ["book_rate", "% booked proxy", 1], ["q3_yoy", "Q3 YoY %", 1], ["fpd", "Trễ kỳ 1 %", 1], ["n_products", "Số SP", 1]];
+const getShopCols = () => [
+  ["shop", tO("th_shop")], ["category", tO("th_category")], ["model", tO("th_model")], ["area", tO("th_area")], ["province", tO("th_province")],
+  ["product", tO("th_prod")], ["status", tO("th_status")], ["age_m", tO("th_age"), 1], ["sa", tO("th_sa"), 1],
+  ["booked_l12", tO("th_booked_l12"), 1], ["book_rate", tO("th_book_rate"), 1], ["q3_yoy", tO("th_q3_yoy"), 1], ["fpd", tO("th_fpd"), 1], ["n_products", tO("th_n_prods"), 1]];
 let sortKey = "booked_l12", sortDir = -1;
 function renderShopTable() {
   let rows = D.shop_table;
@@ -788,10 +789,11 @@ function renderShopTable() {
     if (k === "status") return `<td><span class="pill">${v ?? "–"}</span></td>`;
     return num ? `<td class="num">${fmt(v, ["book_rate", "fpd"].includes(k) ? 1 : 0)}</td>` : `<td>${v ?? "–"}</td>`;
   };
+  const SHOP_COLS = getShopCols();
   document.getElementById("t-shops").innerHTML =
     `<thead><tr>${SHOP_COLS.map(([k, l, num]) => `<th class="${num ? "num" : ""}" data-k="${k}">${l}${sortKey === k ? (sortDir < 0 ? " ▼" : " ▲") : ""}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map(r => `<tr>${SHOP_COLS.map(c => cell(r, c)).join("")}</tr>`).join("") ||
-      `<tr><td colspan="${SHOP_COLS.length}">Không có shop nào trong top 300 khớp bộ lọc.</td></tr>`}</tbody>`;
+      `<tr><td colspan="${SHOP_COLS.length}">${tO('tbl_no_shop')}</td></tr>`}</tbody>`;
   document.querySelectorAll("#t-shops th").forEach(th => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderShopTable(); });
 }
@@ -803,9 +805,9 @@ function renderDQ() {
     "leads code_lead_status = 4 share %", "leads assigned range", "emp_2_salesroom active SA at 2026-09-30"];
   const rows = order.map(k => D.data_quality.find(r => r.check === k)).filter(Boolean);
   const show = v => /^\d+(\.\d+)?$/.test(v) ? fmt(Number(v), v.includes(".") ? 2 : 0) : v;
-  document.getElementById("t-dq").innerHTML = `<thead><tr><th>Kiểm tra</th><th class="num">Giá trị</th></tr></thead>
+  document.getElementById("t-dq").innerHTML = `<thead><tr><th>${tO('th_dq_check')}</th><th class="num">${tO('th_dq_value')}</th></tr></thead>
     <tbody>${rows.map(r => `<tr><td>${r.check}</td><td class="num">${show(r.value)}</td></tr>`).join("")}</tbody>`;
-  document.getElementById("t-tables").innerHTML = `<thead><tr><th>Bảng r3_bronze</th><th class="num">Số dòng</th></tr></thead>
+  document.getElementById("t-tables").innerHTML = `<thead><tr><th>${tO('th_table_bronze')}</th><th class="num">${tO('th_rows')}</th></tr></thead>
     <tbody>${D.tables.map(r => `<tr><td>${r.table}</td><td class="num">${fmt(r.rows)}</td></tr>`).join("")}</tbody>`;
 }
 
@@ -931,8 +933,14 @@ function render() {
   renderArea(); renderLeads(); renderMatch(); renderShopTable();
 }
 
-document.getElementById("sub").textContent =
-  `Nguồn: ClickHouse r3_bronze · tạo lúc ${D.generated_at} · ${fmt(sum(D.tables, "rows"))} dòng trên ${D.tables.length} bảng`;
+function updateSubTitle() {
+  document.getElementById("sub").textContent =
+    tO('sub_text')
+      .replace('{gen}', D.generated_at)
+      .replace('{rows}', fmt(sum(D.tables, "rows")))
+      .replace('{tables}', D.tables.length);
+}
+updateSubTitle();
 function renderAll() {
   if (!document.getElementById("panel-overview").hidden) {
     renderInsights(); renderPareto(); renderSize(); renderCross(); renderOutcome(); renderSource(); renderDQ();
@@ -996,7 +1004,8 @@ imageLightbox.addEventListener("close", () => {
 function updateThemeButton() {
   const dark = currentTheme() === "dark";
   const btn = document.getElementById("theme-toggle");
-  btn.innerHTML = (dark ? ICON_SUN : ICON_MOON) + (dark ? "Sáng" : "Tối");
+  const isEn = (window.BI10_LANG === 'en');
+  btn.innerHTML = (dark ? ICON_SUN : ICON_MOON) + (dark ? (isEn ? "Light" : "Sáng") : (isEn ? "Dark" : "Tối"));
   btn.setAttribute("aria-pressed", String(dark));
 }
 function refreshTheme() { setChartTheme(); updateThemeButton(); renderAll(); }
@@ -1011,6 +1020,8 @@ darkMQ.addEventListener("change", () => { if (!document.documentElement.dataset.
 
 window.addEventListener('bi10-lang-changed', e => {
   applyOverviewStaticI18n();
+  updateSubTitle();
+  updateThemeButton();
   renderAll();
 });
 applyOverviewStaticI18n();
