@@ -354,9 +354,11 @@ darkMQ.addEventListener("change", () => { if (!document.documentElement.dataset.
 document.getElementById("sub").textContent = `Nguồn: ClickHouse r3_bronze · tạo lúc ${D.generated_at} · ${D.tables.length} bảng dữ liệu`;
 window.addEventListener('bi10-lang-changed', e => {
   applyErdStaticI18n();
+  if (typeof renderErdI18nDynamic === 'function') renderErdI18nDynamic();
   switchView(activeView);
 });
 applyErdStaticI18n();
+if (typeof renderErdI18nDynamic === 'function') renderErdI18nDynamic();
 renderFacts(); renderJourney(); renderRel(); renderTables(); updateThemeButton();
 drawDiagram();
 </script>
