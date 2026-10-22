@@ -3,6 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" type="image/svg+xml" href="../favicon.svg">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('r3-overview-theme');
+    if (t === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.dataset.theme = 'dark';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.dataset.theme = 'light';
+    }
+  } catch(e){
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.dataset.theme = 'light';
+  }
+})();
+</script>
 <title>Shop Growth Decision</title>
 <meta name="description" content="BI10 Round 3 - Task 6 on the team's final model (v4): network potential, priority waves and levers, validation and pilot.">
 <style>
@@ -12,10 +31,7 @@
   --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#104281;
   --good:#0ca30c;--warn:#fab219;--serious:#ec835a;--crit:#d03b3b;--goodtxt:#006300;
   --midpt:#f0efec;}
-@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;
-  --surface:#1a1a19;--plane:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
-  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--de:#5a5955;
-  --o1:#86b6ef;--o2:#3987e5;--o3:#256abf;--o4:#184f95;--goodtxt:#0ca30c;--midpt:#383835;}}
+/* prefers-color-scheme auto-dark removed; default is light */
 :root[data-theme="dark"]{color-scheme:dark;
   --surface:#1a1a19;--plane:#0d0d0d;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
   --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--de:#5a5955;
