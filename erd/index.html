@@ -97,25 +97,39 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 footer { font-size: 12px; color: var(--muted); margin: 22px 2px 8px; }
 footer ul { margin: 6px 0 0 18px; }
 @media (max-width: 760px) { .facts,.journey-grid { grid-template-columns:1fr; } .view-tabs { overflow-x:auto; } .view-tab { white-space:nowrap; } #diagram { max-height:72vh; } }
+
+.lang-btn {
+  background: none; border: 1px solid var(--line); border-radius: 4px;
+  padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--muted);
+}
+.lang-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
 </style>
+<script src="i18n.js"></script>
+<script src="erd_i18n.js"></script>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>BI10 Round 3 · Sơ đồ quan hệ dữ liệu (ERD)</h1>
+      <h1 data-i18n="head_title">BI10 Round 3 · Sơ đồ quan hệ dữ liệu (ERD)</h1>
       <div class="sub" id="sub"></div>
     </div>
     <div class="nav">
-      <a class="btn" href="../">📊 Dashboard tổng quan</a>
-      <a class="btn" href="../decision/" style="background:#2563eb; color:#fff; font-weight:600; border-color:#1d4ed8">🎯 Decision Studio (Task 6)</a>
+      <a class="btn" href="../" data-i18n="nav_dashboard">📊 Dashboard Tổng quan</a>
+      <a class="btn" href="../decision/" style="background:#2563eb; color:#fff; font-weight:600; border-color:#1d4ed8" data-i18n="nav_decision">🎯 Decision Studio (Task 6)</a>
+      <div style="display:inline-flex; gap:2px; border:1px solid var(--line); border-radius:6px; padding:2px; background:var(--card)">
+        <button type="button" class="lang-btn" data-lang="vi" onclick="setLanguage('vi')">VI</button>
+        <button type="button" class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+      </div>
       <button type="button" id="theme-toggle" class="btn" aria-label="Đổi giao diện sáng hoặc tối"></button>
     </div>
   </header>
 
   <div class="view-tabs" role="tablist" aria-label="Chọn tầng dữ liệu trong ERD">
-    <button type="button" class="view-tab" id="tab-bronze" role="tab" aria-selected="true" aria-controls="diagram">Nguồn BTC · Bronze</button>
-    <button type="button" class="view-tab" id="tab-clean" role="tab" aria-selected="false" aria-controls="diagram" tabindex="-1">Cleaning &amp; marts</button>
+    <button type="button" class="view-tab" id="tab-bronze" role="tab" aria-selected="true" aria-controls="diagram" data-i18n="tab_bronze">Nguồn BTC · Bronze</button>
+    <button type="button" class="view-tab" id="tab-clean" role="tab" aria-selected="false" aria-controls="diagram" tabindex="-1" data-i18n="tab_clean">Cleaning &amp; Marts</button>
   </div>
   <h2 class="sec" id="section-title"><span id="section-title-main">1. ERD nguồn BTC</span><small id="section-summary">7 bảng nguồn; không có bảng Employee theo đính chính BTC</small></h2>
   <div class="card">
@@ -127,16 +141,16 @@ footer ul { margin: 6px 0 0 18px; }
     <div class="tools">
       <button type="button" class="tbtn" id="z-out" aria-label="Thu nhỏ">−</button>
       <button type="button" class="tbtn" id="z-in" aria-label="Phóng to">+</button>
-      <button type="button" class="tbtn" id="z-fit">Vừa khung</button>
-      <button type="button" class="tbtn" id="z-100">100%</button>
+      <button type="button" class="tbtn" id="z-fit" data-i18n="btn_z_fit">Vừa khung</button>
+      <button type="button" class="tbtn" id="z-100" data-i18n="btn_z_100">100%</button>
       <span class="hint" id="zoom-label"></span>
-      <span class="hint">Kéo thanh cuộn hoặc giữ Shift + lăn chuột để di chuyển</span>
+      <span class="hint"><span data-i18n="hint_scroll">Kéo thanh cuộn hoặc giữ Shift + lăn chuột để di chuyển</span></span>
       <span id="clean-downloads" hidden><a class="download-link" href="R3_CLEANING_ERD.svg" download>Tải SVG</a> <a class="download-link" href="R3_CLEANING_ERD.drawio" download>Tải draw.io</a></span>
     </div>
     <div id="diagram" role="img" aria-label="Sơ đồ quan hệ giữa các bảng dữ liệu Round 3"><p style="padding:16px;color:var(--muted)">Đang vẽ sơ đồ…</p></div>
   </div>
 
-  <h2 class="sec" id="facts-heading">2. Điều cần biết trước khi join</h2>
+  <h2 class="sec" id="facts-heading" data-i18n="h2_facts">2. Điều cần biết trước khi join</h2>
   <div class="facts" id="facts"></div>
 
   <section id="flow-section" hidden aria-labelledby="flow-heading">
@@ -150,7 +164,7 @@ footer ul { margin: 6px 0 0 18px; }
   <h2 class="sec" id="rel-heading"><span id="rel-heading-main">3. Danh sách quan hệ</span><small id="rel-summary">Tỷ lệ khớp tính trên dòng bảng con sau khi chuẩn hóa mã (123.0 → 123)</small></h2>
   <div class="card"><div class="tbl-wrap"><table id="t-rel"></table></div></div>
 
-  <h2 class="sec" id="tables-heading">4. Các bảng</h2>
+  <h2 class="sec" id="tables-heading" data-i18n="h2_tables">4. Các bảng</h2>
   <div class="card"><div class="tbl-wrap"><table id="t-tables"></table></div></div>
 
   <footer>
@@ -338,6 +352,11 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
 darkMQ.addEventListener("change", () => { if (!document.documentElement.dataset.theme) refreshTheme(); });
 
 document.getElementById("sub").textContent = `Nguồn: ClickHouse r3_bronze · tạo lúc ${D.generated_at} · ${D.tables.length} bảng dữ liệu`;
+window.addEventListener('bi10-lang-changed', e => {
+  applyErdStaticI18n();
+  switchView(activeView);
+});
+applyErdStaticI18n();
 renderFacts(); renderJourney(); renderRel(); renderTables(); updateThemeButton();
 drawDiagram();
 </script>

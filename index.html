@@ -135,134 +135,148 @@ footer ul { margin: 6px 0 0 18px; }
   #t-cleaning tbody td:nth-child(3)::before { content: "Xử lý: "; font-weight: 650; color: var(--muted); }
 }
 @media print { .filters { display: none; } .card, .kpi { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; } }
+
+.lang-btn {
+  background: none; border: 1px solid var(--line); border-radius: 4px;
+  padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--muted);
+}
+.lang-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
 </style>
+<script src="i18n.js"></script>
+<script src="overview_i18n.js"></script>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>BI10 Round 3 · Tổng quan bộ dữ liệu</h1>
+      <h1 data-i18n="head_title">BI10 Round 3 · Tổng quan bộ dữ liệu</h1>
       <div class="sub" id="sub"></div>
     </div>
     <div class="filters">
-      <span class="overview-filter"><label for="f-product">Sản phẩm</label>
-        <select id="f-product"><option value="all">Tất cả</option></select></span>
-      <span class="overview-filter"><label for="f-area">Vùng (shop)</label>
-        <select id="f-area"><option value="all">Tất cả</option></select></span>
-      <span class="overview-filter"><label for="f-cat">Loại shop</label>
-        <select id="f-cat"><option value="all">Tất cả</option></select></span>
-      <a class="theme-btn" href="decision/" style="text-decoration:none; background:#2563eb; color:#fff; font-weight:600; border-color:#1d4ed8">🎯 Decision Studio (Task 6)</a>
-      <a class="theme-btn" href="erd/" style="text-decoration:none">ERD dữ liệu</a>
+      <span class="overview-filter"><label for="f-product" data-i18n="filter_product">Sản phẩm</label>
+        <select id="f-product"><option value="all" data-i18n="opt_all">Tất cả</option></select></span>
+      <span class="overview-filter"><label for="f-area" data-i18n="filter_area">Vùng (shop)</label>
+        <select id="f-area"><option value="all" data-i18n="opt_all">Tất cả</option></select></span>
+      <span class="overview-filter"><label for="f-cat" data-i18n="filter_category">Loại shop</label>
+        <select id="f-cat"><option value="all" data-i18n="opt_all">Tất cả</option></select></span>
+      <a class="theme-btn" href="decision/" style="text-decoration:none; background:#2563eb; color:#fff; font-weight:600; border-color:#1d4ed8" data-i18n="link_decision">🎯 Decision Studio (Task 6)</a>
+      <a class="theme-btn" href="erd/" style="text-decoration:none" data-i18n="link_erd">🏛️ ERD Dữ liệu</a>
+      <div style="display:inline-flex; gap:2px; border:1px solid var(--line); border-radius:6px; padding:2px; background:var(--card)">
+        <button type="button" class="lang-btn" data-lang="vi" onclick="setLanguage('vi')">VI</button>
+        <button type="button" class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+      </div>
       <button type="button" id="theme-toggle" class="theme-btn" aria-label="Đổi giao diện sáng hoặc tối"></button>
     </div>
   </header>
 
   <nav class="tabbar" role="tablist" aria-label="Các màn hình phân tích dữ liệu">
-    <button class="tab-button" type="button" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" tabindex="0">Tổng quan</button>
-    <button class="tab-button" type="button" id="tab-cleaning" role="tab" aria-selected="false" aria-controls="panel-cleaning" tabindex="-1">Data Cleaning</button>
-    <button class="tab-button" type="button" id="tab-correlation" role="tab" aria-selected="false" aria-controls="panel-correlation" tabindex="-1">Tương quan</button>
+    <button class="tab-button" type="button" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" tabindex="0" data-i18n="tab_overview">Tổng quan</button>
+    <button class="tab-button" type="button" id="tab-cleaning" role="tab" aria-selected="false" aria-controls="panel-cleaning" tabindex="-1" data-i18n="tab_cleaning">Data Cleaning</button>
+    <button class="tab-button" type="button" id="tab-correlation" role="tab" aria-selected="false" aria-controls="panel-correlation" tabindex="-1" data-i18n="tab_correlation">Tương quan</button>
   </nav>
 
   <section class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
   <section class="kpis" id="kpis"></section>
   <section class="insights" id="insights"></section>
 
-  <h2 class="sec">1. Hợp đồng theo thời gian <small>contract · 01/2025 – 09/2026 · lọc theo Sản phẩm</small></h2>
+  <h2 class="sec"><span data-i18n="sec1_title">1. Hợp đồng theo thời gian</span> <small data-i18n="sec1_sub">contract · 01/2025 – 09/2026 · lọc theo Sản phẩm</small></h2>
   <div class="grid">
     <div class="card" style="grid-column: span 2; min-width: 0">
-      <h3>Hồ sơ nộp và hồ sơ booked proxy theo tháng</h3>
-      <div class="cap">Cột: hồ sơ theo date_apply · Đường: tỷ lệ hồ sơ thuộc nhóm booked proxy / hồ sơ nộp</div>
+      <h3 data-i18n="c_monthly_h3">Hồ sơ nộp và hồ sơ booked proxy theo tháng</h3>
+      <div class="cap" data-i18n="c_monthly_cap">Cột: hồ sơ theo date_apply · Đường: tỷ lệ hồ sơ thuộc nhóm booked proxy / hồ sơ nộp</div>
       <div class="chart tall"><canvas id="c-monthly"></canvas></div>
     </div>
   </div>
   <div class="grid three" style="margin-top: var(--gap)">
     <div class="card">
-      <h3>Cơ cấu hồ sơ thuộc nhóm booked proxy theo sản phẩm</h3>
-      <div class="cap">Toàn kỳ 21 tháng</div>
+      <h3 data-i18n="c_mix_h3">Cơ cấu hồ sơ thuộc nhóm booked proxy theo sản phẩm</h3>
+      <div class="cap" data-i18n="c_mix_cap">Toàn kỳ 21 tháng</div>
       <div class="chart"><canvas id="c-mix"></canvas></div>
     </div>
     <div class="card">
-      <h3>Trạng thái hồ sơ theo sản phẩm</h3>
-      <div class="cap">% số hồ sơ của từng sản phẩm</div>
+      <h3 data-i18n="c_status_h3">Trạng thái hồ sơ theo sản phẩm</h3>
+      <div class="cap" data-i18n="c_status_cap">% số hồ sơ của từng sản phẩm</div>
       <div class="chart"><canvas id="c-status"></canvas></div>
     </div>
     <div class="card">
-      <h3>Tỷ lệ cờ trễ kỳ 1 (dpd_1pd) theo tháng nộp</h3>
-      <div class="cap">Hồ sơ thuộc nhóm booked proxy, nộp trước 06/2026 để có thời gian quan sát dpd_1pd</div>
+      <h3 data-i18n="c_fpd_h3">Tỷ lệ cờ trễ kỳ 1 (dpd_1pd) theo tháng nộp</h3>
+      <div class="cap" data-i18n="c_fpd_cap">Hồ sơ thuộc nhóm booked proxy, nộp trước 06/2026 để có thời gian quan sát dpd_1pd</div>
       <div class="chart"><canvas id="c-fpd"></canvas></div>
     </div>
   </div>
 
-  <h2 class="sec">2. Mạng lưới shop <small>salesroom × contract · 12 tháng gần nhất (10/2025 – 09/2026)</small></h2>
+  <h2 class="sec"><span data-i18n="sec2_title">2. Mạng lưới shop</span> <small data-i18n="sec2_sub">salesroom × contract · 12 tháng gần nhất (10/2025 – 09/2026)</small></h2>
   <div class="grid">
     <div class="card">
-      <h3>Hồ sơ theo danh mục shop</h3>
-      <div class="cap">"Not in salesroom table" = mã shop không khớp salesroom · không đủ căn cứ kết luận là kênh online · lọc theo Sản phẩm</div>
+      <h3 data-i18n="c_cat_h3">Hồ sơ theo danh mục shop</h3>
+      <div class="cap" data-i18n="c_cat_cap">"Not in salesroom table" = mã shop không khớp salesroom · không đủ căn cứ kết luận là kênh online · lọc theo Sản phẩm</div>
       <div class="chart"><canvas id="c-cat"></canvas></div>
     </div>
     <div class="card">
-      <h3>Mức độ tập trung (Pareto)</h3>
-      <div class="cap">% hồ sơ booked proxy L12M do x% shop đứng đầu tạo ra · shop có ≥1 hồ sơ thuộc nhóm này</div>
+      <h3 data-i18n="c_pareto_h3">Mức độ tập trung (Pareto)</h3>
+      <div class="cap" data-i18n="c_pareto_cap">% hồ sơ booked proxy L12M do x% shop đứng đầu tạo ra · shop có ≥1 hồ sơ thuộc nhóm này</div>
       <div class="chart"><canvas id="c-pareto"></canvas></div>
     </div>
   </div>
   <div class="grid" style="margin-top: var(--gap)">
     <div class="card">
-      <h3>Phân bố quy mô shop (shop có trong salesroom)</h3>
-      <div class="cap">Cột: số shop theo số hồ sơ booked proxy L12M · Đường: số SA trung bình được gán/shop tại 30/09/2026</div>
+      <h3 data-i18n="c_size_h3">Phân bố quy mô shop (shop có trong salesroom)</h3>
+      <div class="cap" data-i18n="c_size_cap">Cột: số shop theo số hồ sơ booked proxy L12M · Đường: số SA trung bình được gán/shop tại 30/09/2026</div>
       <div class="chart"><canvas id="c-size"></canvas></div>
     </div>
     <div class="card">
-      <h3>Shop và hồ sơ theo vùng</h3>
-      <div class="cap">Cột: số shop theo loại · Đường: hồ sơ booked proxy L12M · lọc theo Vùng/Loại shop</div>
+      <h3 data-i18n="c_area_h3">Shop và hồ sơ theo vùng</h3>
+      <div class="cap" data-i18n="c_area_cap">Cột: số shop theo loại · Đường: hồ sơ booked proxy L12M · lọc theo Vùng/Loại shop</div>
       <div class="chart"><canvas id="c-area"></canvas></div>
     </div>
   </div>
 
-  <h2 class="sec">3. Lead và liên kết ứng viên với contract <small>leads · 31/12/2025 – 17/10/2026 · số liệu lead có nhân sample_weight</small></h2>
+  <h2 class="sec"><span data-i18n="sec3_title">3. Lead và liên kết ứng viên với contract</span> <small data-i18n="sec3_sub">leads · 31/12/2025 – 17/10/2026 · số liệu lead có nhân sample_weight</small></h2>
   <div class="note"><b>Cách đọc:</b> số dòng lead, số UUID và số sau sample_weight là các đại lượng khác nhau. Biểu đồ ghép dùng ASOF để gán tối đa một contract ứng viên phù hợp cho mỗi lead; đây là candidate association theo một chính sách ghép, không xác nhận conversion hay đóng góp nhân quả. Hợp đồng dừng ở 30/09/2026 nên các lead cuối kỳ bị right-censored.</div>
   <div class="grid">
     <div class="card">
-      <h3>Lead theo tháng gán (date_assigned)</h3>
-      <div class="cap">Lead có trọng số theo sản phẩm · lọc theo Sản phẩm</div>
+      <h3 data-i18n="c_leads_h3">Lead theo tháng gán (date_assigned)</h3>
+      <div class="cap" data-i18n="c_leads_cap">Lead có trọng số theo sản phẩm · lọc theo Sản phẩm</div>
       <div class="chart"><canvas id="c-leads"></canvas></div>
     </div>
     <div class="card">
-      <h3>Lead ghép với contract ứng viên (quy tắc đề)</h3>
-      <div class="cap">Cùng khách đã chuẩn hóa + cùng sản phẩm + date_assigned ≤ date_apply · mỗi lead chọn một contract ASOF gần nhất · đây là liên kết ứng viên, chưa phải conversion chính thức</div>
+      <h3 data-i18n="c_match_h3">Lead ghép với contract ứng viên (quy tắc đề)</h3>
+      <div class="cap" data-i18n="c_match_cap">Cùng khách đã chuẩn hóa + cùng sản phẩm + date_assigned ≤ date_apply · mỗi lead chọn một contract ASOF gần nhất · đây là liên kết ứng viên, chưa phải conversion chính thức</div>
       <div class="chart"><canvas id="c-match"></canvas></div>
     </div>
   </div>
   <div class="grid three" style="margin-top: var(--gap)">
     <div class="card">
-      <h3>Contract ứng viên được ghép với lead ở shop nào?</h3>
-      <div class="cap">Trong các lead có trọng số đã ghép được, toàn kỳ lead 31/12/2025–17/10/2026 · mẫu số là lead ứng viên đã ghép theo nhóm shop nguồn</div>
+      <h3 data-i18n="c_cross_h3">Contract ứng viên được ghép với lead ở shop nào?</h3>
+      <div class="cap" data-i18n="c_cross_cap">Trong các lead có trọng số đã ghép được, toàn kỳ lead 31/12/2025–17/10/2026 · mẫu số là lead ứng viên đã ghép theo nhóm shop nguồn</div>
       <div class="chart"><canvas id="c-cross"></canvas></div>
     </div>
     <div class="card">
-      <h3>Kết quả lead (cột result)</h3>
-      <div class="cap">Ánh xạ result → cl_lead_fin_reason.id_source (giả định, xem ghi chú)</div>
+      <h3 data-i18n="c_outcome_h3">Kết quả lead (cột result)</h3>
+      <div class="cap" data-i18n="c_outcome_cap">Ánh xạ result → cl_lead_fin_reason.id_source (giả định, xem ghi chú)</div>
       <div class="chart"><canvas id="c-outcome"></canvas></div>
     </div>
     <div class="card">
-      <h3>Nguồn lead</h3>
-      <div class="cap">id_lead_source · lead có trọng số</div>
+      <h3 data-i18n="c_source_h3">Nguồn lead</h3>
+      <div class="cap" data-i18n="c_source_cap">id_lead_source · lead có trọng số</div>
       <div class="chart"><canvas id="c-source"></canvas></div>
     </div>
   </div>
 
-  <h2 class="sec">4. Top 300 shop theo hồ sơ booked proxy L12M <small>chỉ shop có trong salesroom · bấm tiêu đề cột để sắp xếp · lọc theo Vùng/Loại shop</small></h2>
+  <h2 class="sec"><span data-i18n="sec4_title">4. Top 300 shop theo hồ sơ booked proxy L12M</span> <small data-i18n="sec4_sub">chỉ shop có trong salesroom · bấm tiêu đề cột để sắp xếp · lọc theo Vùng/Loại shop</small></h2>
   <div class="card">
     <div class="tbl-wrap"><table id="t-shops"></table></div>
   </div>
 
-  <h2 class="sec">5. Kiểm tra chất lượng dữ liệu</h2>
+  <h2 class="sec" data-i18n="sec5_title">5. Kiểm tra chất lượng dữ liệu</h2>
   <div class="grid">
     <div class="card"><div class="tbl-wrap"><table id="t-dq"></table></div></div>
     <div class="card"><div class="tbl-wrap"><table id="t-tables"></table></div></div>
   </div>
 
-  <h2 class="sec">6. Độ phủ, khóa nối và giới hạn dữ liệu <small>đối soát ClickHouse ngày 21/10/2026 · biểu đồ phía trên là snapshot 20/10/2026 22:07</small></h2>
+  <h2 class="sec"><span data-i18n="sec6_title">6. Độ phủ, khóa nối và giới hạn dữ liệu</span> <small data-i18n="sec6_sub">đối soát ClickHouse ngày 21/10/2026 · biểu đồ phía trên là snapshot 20/10/2026 22:07</small></h2>
   <div class="grid">
     <div class="card review-card">
       <h3>Độ phủ giữa các bảng</h3>
@@ -296,7 +310,7 @@ footer ul { margin: 6px 0 0 18px; }
     </div>
   </div>
 
-  <h2 class="sec">7. Tách bạch bốn lớp tiềm năng theo đề Round 3</h2>
+  <h2 class="sec" data-i18n="sec7_title">7. Tách bạch bốn lớp tiềm năng theo đề Round 3</h2>
   <div class="grid three">
     <div class="card review-card">
       <h3>Current Actual</h3>
@@ -980,6 +994,13 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
 });
 // follow the system setting while the viewer has not picked a theme
 darkMQ.addEventListener("change", () => { if (!document.documentElement.dataset.theme) refreshTheme(); });
+
+window.addEventListener('bi10-lang-changed', e => {
+  applyOverviewStaticI18n();
+  renderAll();
+});
+applyOverviewStaticI18n();
+
 updateThemeButton();
 renderAll();
 </script>
