@@ -2,8 +2,8 @@
 /* ===================== Decision Studio i18n ===================== */
 const DECISION_I18N = {
   vi: {
-    head_title: "Shop Growth Decision · Quyết định Tăng trưởng",
-    head_sub: "BI10 Round 3 · Task 6 trên mô hình chính thức (v4) · Tiềm năng mạng lưới → Phân làn sóng ưu tiên & Đòn bẩy → Kiểm định & Thử nghiệm Pilot. Đơn vị: Hợp đồng booked / tháng (trừ khi có ghi chú khác).",
+    head_title: "AURORA · Quyết định tăng trưởng",
+    head_sub: "Chọn nơi đầu tư, thử thách sự đánh đổi và kiểm chứng tác động trước khi mở rộng.",
     nav_data_overview: "📊 Báo cáo Dữ liệu",
     nav_erd: "🏛️ Kiến trúc ERD",
     nav_page_network: "1 · Tiềm năng mạng lưới",
@@ -29,8 +29,8 @@ const DECISION_I18N = {
     cap_constraint: "Khoảng trống phân bổ theo rào cản chính mà mô hình đã gán cho từng shop",
     h3_geo: "Khoảng trống nằm ở đâu: Địa lý",
     cap_geo: "Khoảng trống theo vùng / tỉnh",
-    h3_reach: "Đòn bẩy hiện tại bù đắp được bao nhiêu?",
-    cap_reach: "Cận trên: Nhân đôi SA FTE tại mọi shop đủ điều kiện FTE, 1 suất chương trình cho mọi shop đủ điều kiện, phản hồi đo lường được · Hợp đồng booked thêm / tháng",
+    h3_reach: "Mô hình gắn được bao nhiêu dư địa với hành động?",
+    cap_reach: "Kịch bản mô hình: nhân đôi SA FTE tại shop đủ điều kiện và cấp suất chương trình · Hợp đồng tăng thêm / tháng theo giả định, cần kiểm chứng bằng pilot",
     h3_src: "Nguồn tạo lead vs Nơi ký hợp đồng: Doanh số chưa được ghi nhận",
     cap_src: "Hợp đồng booked có lead xuất phát từ shop nhưng được ký tại shop khác · lead → contract: cùng khách hàng, cùng sản phẩm, giao trước khi nộp, trong vòng 90 ngày · Q3/2026",
     lbl_src_chart: "Hợp đồng ký nơi khác so với số hợp đồng tự ký, theo quy mô shop (booked / tháng)",
@@ -44,7 +44,7 @@ const DECISION_I18N = {
     h3_top: "Danh sách ưu tiên trong phạm vi lọc",
     cap_top: "Xếp hạng nhóm Invest theo khoảng trống thận trọng (gap_low = min(gap P05 × hệ số trần tỉnh, gap)) · Top 15 shop trong phạm vi lọc",
     h3_waves: "Làn sóng ưu tiên & Phần khoảng trống đòn bẩy bù đắp được",
-    cap_waves: "Làn sóng tích lũy: Xếp hạng 5.755 shop Invest theo khoảng trống thận trọng (t05 / t06) · Đòn bẩy đo lường được = Chương trình nâng cao tỷ lệ duyệt tại shop Active có ≥ 3 hồ sơ/tháng đang chốt dưới mức trung bình nhóm · Toàn mạng lưới",
+    cap_waves: "Làn sóng tích lũy theo thứ hạng v4 · Chương trình hỗ trợ hoàn tất hồ sơ: shop Active có ≥ 3 hồ sơ/tháng, chốt dưới nhóm tương đồng; giả định đóng một nửa khoảng cách · Toàn mạng lưới, không theo bộ lọc",
     h3_inputs: "Tham số đầu vào — Thuộc quyền kiểm soát của Giám đốc Kinh doanh",
     cap_inputs: "Phạm vi = Phạm vi làn sóng ∩ Bộ lọc. Hệ thống gán tối đa 1 đòn bẩy cho mỗi shop: Thêm SA FTE (đón cầu) hoặc 1 suất chương trình (chất lượng duyệt / tái kích hoạt / xử lý chất lượng trước).",
     lbl_in_scope: "Phạm vi ưu tiên",
@@ -59,13 +59,13 @@ const DECISION_I18N = {
     cap_verdict: "Vi phạm rào cản cứng dẫn đến Từ chối (Reject); Không đạt các tiêu chí khác dẫn đến Cần điều chỉnh (Revise)",
     h3_lever: "Mức tăng trưởng theo đòn bẩy",
     cap_lever: "Kế hoạch tối ưu của thuật toán vs Phân bổ theo thứ tự ưu tiên truyền thống với cùng ngân sách",
-    h3_curve: "Thêm SA FTE có sinh lời không?",
+    h3_curve: "Nhân sự bổ sung có đạt chuẩn năng suất?",
     cap_curve: "Số hợp đồng tăng thêm trung bình trên mỗi FTE-tháng khi tăng ngân sách FTE (suất chương trình giữ ở mức 0) · Đường tham chiếu = Năng suất trung bình toàn mạng lưới",
     h3_up_area: "Mức tăng trưởng theo khu vực",
     cap_up_area: "Số hợp đồng booked tăng thêm dự kiến / tháng từ kế hoạch",
     h3_plan: "Kế hoạch hành động: Danh sách shop được chọn",
     btn_download_csv: "Tải kế hoạch chi tiết (CSV)",
-    note_plan_footer: "Mức tăng kỳ vọng = Hợp đồng booked thêm mỗi tháng tại thời điểm cuối kỳ kế hoạch; P05 = Tỷ trọng thận trọng từ gap_low.",
+    note_plan_footer: "Mức tăng từ mô hình theo giả định, chưa phải tác động đã chứng minh. Thận trọng = tỷ lệ gap_low từng shop, không phải phân vị của toàn kế hoạch.",
     h3_trust: "Số liệu có đáng tin cậy? Kiểm định mô hình (Task 3–5) & Phản biện Task 6",
     h3_range: "Attainable là một dải giá trị, không phải điểm đơn lẻ",
     cap_range: "Attainable toàn mạng lưới trước khi áp trần tỉnh theo các phân vị chuẩn đối sánh và trần tăng trưởng khác nhau (summary.json) · Chuẩn cơ sở: P75 & 3×",
@@ -77,11 +77,11 @@ const DECISION_I18N = {
     h3_r2_insight: "Insight Vòng 2 tiếp nối vào Vòng 3",
     cap_r2_insight: "Phân khúc FHS × CES được xây dựng trên hồ sơ nộp 12/2024–01/2025; nhóm khách hàng này khi phát sinh giao dịch trong năm 2025–2026 chứng minh mô hình phân khúc giữ vững giá trị dự báo ngoài mẫu ở cấp khách hàng.",
     h3_notes: "Ghi chú phương pháp & Giả định kỹ thuật",
-    footer_text: "Đội ngũ sở hữu Dashboard: Vietnam Ecom Team - Hayat · Dữ liệu: Gói kết quả chính thức v4 của nhóm (05_analysis/output: shop_potential, t05 / t06 priority tables, summary) + r3_silver (góc nhìn Sourcing) + r2_gold.customer_segment_actions (Cầu nối Vòng 2) · Thuật toán Task 6 chạy thuần HTML/SVG, hoạt động hoàn toàn offline."
+    footer_text: "AURORA · BI10 Vòng 3 · Dữ liệu v4, nguồn khách shop và cầu nối Vòng 2 · Kết quả mô phỏng phụ thuộc giả định và cần pilot kiểm chứng · Mốc dữ liệu: tháng 9/2026."
   },
   en: {
-    head_title: "Shop Growth Decision",
-    head_sub: "BI10 Round 3 · Task 6 on the team’s final model (v4) · Network potential → priority waves & levers → validation & pilot. Units: booked contracts per month unless stated.",
+    head_title: "AURORA · Growth decisions",
+    head_sub: "Choose where to invest, challenge the trade-offs, and prove impact before scaling.",
     nav_data_overview: "📊 Data Overview",
     nav_erd: "🏛️ ERD Architecture",
     nav_page_network: "1 · Network potential",
@@ -107,8 +107,8 @@ const DECISION_I18N = {
     cap_constraint: "Gap by the main constraint the team model assigned to each shop",
     h3_geo: "Where the gap sits: geography",
     cap_geo: "Gap by area",
-    h3_reach: "What can today’s measured levers close?",
-    cap_reach: "Upper bound: SA FTE doubled in every FTE-eligible shop, a programme slot for every eligible shop, measured responses · extra booked / month",
+    h3_reach: "How much opportunity can the model link to an action?",
+    cap_reach: "Model scenario: double eligible SA FTE and fund eligible programmes · extra booked / month under response assumptions; pilot validation required",
     h3_src: "Sourcing vs booking: business the booking view does not credit",
     cap_src: "Booked contracts whose lead came from a shop in scope but that were signed at another shop · lead → contract: same client, same product, assigned ≤ apply, last touch within 90 days · Jul–Sep 2026",
     lbl_src_chart: "Booked elsewhere as a share of the shop’s own booked, by shop size (booked / month)",
@@ -122,7 +122,7 @@ const DECISION_I18N = {
     h3_top: "Priority list in scope",
     cap_top: "Team ranking of Invest shops by conservative gap (gap_low = min(gap P05 × provincial cap factor, gap)) · top 15 in scope",
     h3_waves: "Priority waves and the part a measured lever can back",
-    cap_waves: "Waves are cumulative: the team’s ranking of the 5,755 Invest shops by conservative gap (t05 / t06) · measured lever = closing-quality programme in Active shops with ≥ 3 applications a month that book below the peer mean (half the shortfall × applications, capped at the gap) · whole network, filter row not applied",
+    cap_waves: "Cumulative v4 priority waves · closing-support programme in Active shops with ≥ 3 applications/month below peer booking rate; assumes half the shortfall closes, capped at the gap · whole network, filters not applied",
     h3_inputs: "Inputs — what Sales Management controls",
     cap_inputs: "Scope = priority scope ∩ filter row. The engine assigns one lever per shop: SA FTE (demand capture) or one programme slot (closing quality / reactivation / fix quality first).",
     lbl_in_scope: "Priority scope",
@@ -137,13 +137,13 @@ const DECISION_I18N = {
     cap_verdict: "Hard guardrails decide Reject; any other failed check gives Revise",
     h3_lever: "Uplift by lever",
     cap_lever: "Engine plan vs the team priority order with the same budget (FTE spread evenly, slots in rank order)",
-    h3_curve: "Does an extra SA FTE pay back?",
+    h3_curve: "Does extra staffing meet the productivity benchmark?",
     cap_curve: "Average extra booked per added FTE-month as the FTE budget grows in scope (slots held at 0) · reference line = network booked per FTE-month",
     h3_up_area: "Uplift by area",
     cap_up_area: "Expected extra booked / month from the plan",
     h3_plan: "The plan: shops selected",
     btn_download_csv: "Download plan (CSV)",
-    note_plan_footer: "Expected uplift = extra booked contracts per month at the end of the horizon; P05 = conservative share from the team’s gap_low.",
+    note_plan_footer: "Uplift is modelled under assumptions, pending pilot validation. Conservative uplift uses each shop’s gap_low ratio; it is not a plan-level percentile.",
     h3_trust: "Can we trust the numbers? Team validation (Task 3–5) and Task 6 checks",
     h3_range: "Attainable is a range, not a point",
     cap_range: "Network Attainable before the provincial ceiling under other benchmark quantiles and growth guardrails (team summary.json) · base = P75 and 3×",
@@ -155,7 +155,7 @@ const DECISION_I18N = {
     h3_r2_insight: "Round 2 insight carried into Round 3",
     cap_r2_insight: "FHS × CES segments were built on Dec-24/Jan-25 applicants; those who transact again in 2025-26 show the segmentation holds out of sample at customer level",
     h3_notes: "Method notes & assumptions",
-    footer_text: "Dashboard owner: Vietnam Ecom Team - Hayat · Data: team final package v4 (05_analysis/output: shop_potential, t05 / t06 priority tables, summary) + r3_silver (sourcing view) + r2_gold.customer_segment_actions (Round 2 bridge) · Task 6 engine, plain HTML/SVG, runs offline."
+    footer_text: "AURORA · BI10 Round 3 · Data: team v4, shop sourcing and Round 2 bridge · Scenarios depend on assumptions and require pilot validation · Snapshot: September 2026."
   }
 };
 
@@ -240,7 +240,7 @@ const DYN_I18N = {
     th_Booking_rate: 'Tỷ lệ duyệt',
 
     // Verdict badges & checks
-    v_APPROVE: 'PHÊ DUYỆT',
+    v_APPROVE: 'ĐỀ XUẤT THỬ NGHIỆM',
     v_REVISE: 'CẦN ĐIỀU CHỈNH',
     v_REJECT: 'TỪ CHỐI',
     c_beats_even: 'Vượt trội thứ tự ưu tiên truyền thống ≥ ',
@@ -329,7 +329,7 @@ const DYN_I18N = {
     th_Contracts_2526: 'Contracts 2025-26',
     th_Booking_rate: 'Booking rate',
 
-    v_APPROVE: 'APPROVE',
+    v_APPROVE: 'RECOMMENDED FOR PILOT',
     v_REVISE: 'REVISE',
     v_REJECT: 'REJECT',
     c_beats_even: 'Beats the team priority order by ≥ ',

@@ -22,7 +22,7 @@
   }
 })();
 </script>
-<title>Shop Growth Decision</title>
+<title>AURORA · Growth decisions</title>
 <meta name="description" content="BI10 Round 3 - Task 6 on the team's final model (v4): network potential, priority waves and levers, validation and pilot.">
 <style>
 :root{color-scheme:light;
@@ -118,6 +118,7 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
   background: var(--s1); color: #fff; border-color: var(--s1);
 }
 </style>
+<link rel="stylesheet" href="demo.css">
 <script src="i18n.js"></script>
 </head>
 <body data-palette="#2a78d6,#eb6834,#1baf7a,#eda100">
@@ -127,8 +128,8 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
     <div class="sub" data-i18n="head_sub">BI10 Round 3 · Task 6 on the team’s final model (v4) · Network potential → priority waves &amp; levers → validation &amp; pilot. Units: booked contracts per month unless stated.</div>
   </div>
   <div class="actions">
-    <a href="../" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_data_overview">📊 Data Overview</a>
-    <a href="../erd/" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_erd">🏛️ ERD Architecture</a>
+    <a href="../" class="btn technical-link" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_data_overview">📊 Data Overview</a>
+    <a href="../erd/" class="btn technical-link" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" data-i18n="nav_erd">🏛️ ERD Architecture</a>
     <div class="sub" id="dataStamp" style="margin-left:4px"></div>
     <div style="display:inline-flex; gap:2px; border:1px solid var(--axis); border-radius:6px; padding:2px; background:var(--surface)">
       <button type="button" class="lang-btn" data-lang="vi" onclick="setLanguage('vi')">VI</button>
@@ -153,7 +154,7 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
   <button class="btn" id="fReset" data-i18n="btn_reset">Reset</button>
   <span class="note" id="fCount"></span>
 </div>
-<main>
+<main id="main-content">
 <!-- ================= PAGE 1 ================= -->
 <section class="page on" id="page-network">
   <div class="grid">
@@ -193,7 +194,7 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
     <div class="card c4"><h3 data-i18n="h3_verdict">Decision</h3><div class="cap" data-i18n="cap_verdict">Hard guardrails decide Reject; any other failed check gives Revise</div><div id="verdict"></div><ul class="checks" id="checks"></ul></div>
     <div class="card c8"><div class="tiles" id="tilesSim"></div><div class="note" style="margin-top:10px" id="reco"></div></div>
     <div class="card c4"><h3 data-i18n="h3_lever">Uplift by lever</h3><div class="cap" data-i18n="cap_lever">Engine plan vs the team priority order with the same budget (FTE spread evenly, slots in rank order)</div><div id="chLever"></div></div>
-    <div class="card c4"><h3 data-i18n="h3_curve">Does an extra SA FTE pay back?</h3><div class="cap" data-i18n="cap_curve">Average extra booked per added FTE-month as the FTE budget grows in scope (slots held at 0) · reference line = network booked per FTE-month</div><div id="chCurve"></div></div>
+    <div class="card c4"><h3 data-i18n="h3_curve">Does extra staffing meet the productivity benchmark?</h3><div class="cap" data-i18n="cap_curve">Average extra booked per added FTE-month as the FTE budget grows in scope (slots held at 0) · reference line = network booked per FTE-month. This compares productivity; costs are not included.</div><div id="chCurve"></div></div>
     <div class="card c4"><h3 data-i18n="h3_up_area">Uplift by area</h3><div class="cap" data-i18n="cap_up_area">Expected extra booked / month from the plan</div><div id="chUpArea"></div></div>
     <div class="card c12"><h3>The plan: shops selected</h3><div class="cap" id="planCap"></div><div class="tbl" id="tblPlan"></div><div style="margin-top:8px;display:flex;gap:8px;align-items:center"><button class="btn primary" id="btnCsv" data-i18n="btn_download_csv">Download plan (CSV)</button><span class="note" data-i18n="note_plan_footer">Expected uplift = extra booked contracts per month at the end of the horizon; P05 = conservative share from the team’s gap_low.</span></div></div>
   </div>
@@ -211,7 +212,7 @@ footer{color:var(--muted);font-size:12px;padding:16px;text-align:center}
   </div>
 </section>
 </main>
-<footer data-i18n="footer_text">Dashboard owner: Vietnam Ecom Team - Hayat · Data: team final package v4 (05_analysis/output: shop_potential, t05 / t06 priority tables, summary) + r3_silver (sourcing view) + r2_gold.customer_segment_actions (Round 2 bridge) · Task 6 engine, plain HTML/SVG, runs offline.</footer>
+<footer data-i18n="footer_text">AURORA · BI10 Round 3 · Data: team v4 + shop sourcing + Round 2 bridge. Scenario outputs are modelled, subject to assumptions and pilot validation. Snapshot: September 2026.</footer>
 <div id="tip"></div>
 <script src="decision_i18n.js"></script>
 <script src="data.js"></script>
@@ -224,6 +225,8 @@ const f1=x=>(x==null||isNaN(x))?'–':Number(x).toFixed(1);
 const f2=x=>(x==null||isNaN(x))?'–':Number(x).toFixed(2);
 const sum=(a,f)=>a.reduce((t,r)=>t+(f?f(r):r),0);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const demoText=(en,vi)=>(window.BI10_LANG==='vi'?vi:en);
+const decisionLabel=v=>v==='APPROVE'?demoText('Recommended for pilot','Đề xuất thử nghiệm'):v==='REVISE'?demoText('Revise the plan','Điều chỉnh kế hoạch'):demoText('Do not proceed','Chưa triển khai');
 const tip=$('#tip');
 function showTip(e,html){tip.innerHTML=html;tip.style.display='block';moveTip(e);}
 function moveTip(e){const w=tip.offsetWidth,h=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;if(x+w>innerWidth-8)x=e.clientX-w-10;if(y+h>innerHeight-8)y=e.clientY-h-10;tip.style.left=x+'px';tip.style.top=y+'px';}
@@ -404,7 +407,7 @@ function renderNetwork(rows){
   const fteT=sum(rows,r=>r.fte);const RE=renderReach(rows,G);const SRC=renderSourcing(rows);
   $('#hl').innerHTML=[
     `<b>Headline:</b> BAU is ${fP(B/Math.max(1e-9,Pv),0)} of Attainable; closing the whole gap adds <b>+${fN(G)}</b> booked / month (+${fP(G/Math.max(1e-9,B),0)} on BAU), +${fN(GL)} on the conservative shop-level gap (gap_low).`,
-    `<b>Where to start:</b> ${fN(w1.length)} Wave 1 shops in scope hold +${fN(w1G)} (${fP(w1G/Math.max(1e-9,G),0)} of the gap in scope); page 2 shows which part a measured lever can back.`,
+    `<b>Where to start:</b> ${fN(w1.length)} Wave 1 shops in scope hold +${fN(w1G)} (${fP(w1G/Math.max(1e-9,G),0)} of the gap in scope); page 2 shows which part is associated with a modelled lever.`,
     `<b>Reach:</b> doubling SA FTE in every FTE-eligible shop and running a programme in every eligible shop closes only ${fP(RE.all/Math.max(1e-9,G),0)} of the gap (SA FTE alone ${fP(RE.fte/Math.max(1e-9,G),0)}). The gap is mainly a demand problem, not a headcount problem.`,
     `<b>Parallax:</b> shops in scope also source <b>+${fN(SRC.x,0)}</b> booked / month signed at other shops (${fP(SRC.x/Math.max(1e-9,A),1)} of their own booked; ${fP(SRC.xp/Math.max(1e-9,SRC.x),0)} proven by the contract id on the lead). The smallest shops send the largest share elsewhere.`,
     `<b>Driver:</b> ${con[0]?(CN[con[0][0]]||con[0][0]):'–'} explains ${con[0]?fP(con[0][1]/Math.max(1e-9,G),0):'–'} of the gap${con[1]?`; ${CN[con[1][0]]||con[1][0]} ${fP(con[1][1]/Math.max(1e-9,G),0)}`:''}.`,
@@ -432,7 +435,7 @@ function renderReach(rows,G){
     {label:'Programmes, all',value:out.prog,color:'var(--s2)',sub:fP(out.prog/Math.max(1e-9,G),0)+' · '+fN(nProg)+' shops'},
     {label:'Both combined',value:out.all,color:'var(--s3)',sub:fP(out.all/Math.max(1e-9,G),0)},
     {label:'Not reachable today',value:out.rest,color:'var(--de)',sub:fP(out.rest/Math.max(1e-9,G),0)}],{labelW:130,max:G,labelH:'Lever',valueH:'Booked / month'});
-  $('#reachStory').innerHTML=`Gap in scope <b>+${fN(G)}</b>. Doubling SA FTE in every FTE-eligible shop (+${fN(fteX,0)} FTE) closes ${fP(out.fte/Math.max(1e-9,G),0)}: the team’s fixed-effects response is ${f2(E.base.Aldi)} at Aldi shops (+100% FTE → +${fP(Math.pow(2,E.base.Aldi)-1,0)} booked) and none at Non-Aldi. <b>Fund programmes before headcount</b> (page 2) and test new demand levers in the pilot for the ${fP(out.rest/Math.max(1e-9,G),0)} that no measured lever reaches.`;
+  $('#reachStory').innerHTML=`Gap in scope <b>+${fN(G)}</b>. Doubling SA FTE in every FTE-eligible shop (+${fN(fteX,0)} FTE) closes ${fP(out.fte/Math.max(1e-9,G),0)}: the team’s fixed-effects response is ${f2(E.base.Aldi)} at Aldi shops (+100% FTE → +${fP(Math.pow(2,E.base.Aldi)-1,0)} booked) and none at Non-Aldi. <b>Fund programmes before headcount</b> (page 2) and test new demand levers in the pilot for the ${fP(out.rest/Math.max(1e-9,G),0)} that these modelled levers do not close.`;
   return out;}
 
 /* ---- sourcing vs booking ---- */
@@ -477,8 +480,8 @@ function renderPair(){
     rowsP.map(([k,f,hl,v])=>{const va=v?v(a):0,vb=v?v(b):0;return `<div class="k">${k}</div><div class="${hl&&v&&va>vb?'win':''}">${f(a)}</div><div class="${hl&&v&&vb>va?'win':''}">${f(b)}</div>`;}).join('')+'</div>';
   groupedHbar($('#chPair'),['Actual','BAU','Attainable','Ceiling'],[{name:'Shop A '+a.shop_id,color:'var(--s1)',values:[a.actual,a.bau,a.attainable,a.ceiling]},{name:'Shop B '+b.shop_id,color:'var(--s2)',values:[b.actual,b.bau,b.attainable,b.ceiling]}],{labelW:80,fmt:v=>f1(v)});
   const [hi,lo,nh,nl]=a.gap>=b.gap?[a,b,'A','B']:[b,a,'B','A'];
-  const why=lo.track.startsWith('Market')?` and is held at the provincial market ceiling (cap factor ${f2(lo.cap_factor)}: its province has no headroom left)`:lo.gap<=0.5?` and already performs at the peer frontier (books ${fP(lo.book_rate,0)} of applications vs ${fP(lo.peer_book_rate,0)} for peers)`:'';
-  $('#pairStory').innerHTML=`Both book about <b>${f1(a.actual)}</b> and <b>${f1(b.actual)}</b> contracts a month. Shop ${nh} can realistically reach <b>${f1(hi.attainable)}</b> (+${f1(hi.gap)} on BAU, +${f1(Math.max(hi.gap_low,0))} conservative); its main constraint is ${esc(hi.main_constraint.toLowerCase())}`+
+  const why=lo.track.startsWith('Market')?` and is held at the provincial market ceiling (cap factor ${f2(lo.cap_factor)}: the macro model assigns no additional headroom)`:lo.gap<=0.5?` and already performs at the peer frontier (books ${fP(lo.book_rate,0)} of applications vs ${fP(lo.peer_book_rate,0)} for peers)`:'';
+  $('#pairStory').innerHTML=`Both book about <b>${f1(a.actual)}</b> and <b>${f1(b.actual)}</b> contracts a month. Shop ${nh} has a conditional model benchmark of <b>${f1(hi.attainable)}</b> (+${f1(hi.gap)} on BAU, +${f1(Math.max(hi.gap_low,0))} conservative); its main constraint is ${esc(hi.main_constraint.toLowerCase())}`+
     (hi.book_rate<hi.peer_book_rate?`: it books ${fP(hi.book_rate,0)} of applications vs ${fP(hi.peer_book_rate,0)} for peers`:'')+`. Shop ${nl} has +${f1(lo.gap)} left`+why+
     `. <b>Same sales today, different decision:</b> ${esc(leverOf(hi).toLowerCase())} for Shop ${nh}${hi.team_rank!=null?' ('+esc(hi.wave)+', rank '+hi.team_rank+')':''}; ${esc(leverOf(lo).toLowerCase())} for Shop ${nl}.`;}
 ['#pairA','#pairB'].forEach(id=>$(id).addEventListener('change',()=>{$('#pairCase').value='';renderPair();}));
@@ -487,10 +490,10 @@ function renderPair(){
 function renderWaves(){
   const W=[[500,'Wave 1'],[1000,'Wave 2'],[2000,'Wave 3']].map(([n,l])=>{const t=T.waves.find(x=>x.top_n_shops===n),e=S6.waves['top'+n];return {n,l,t,e};});
   $('#tblWaves').innerHTML=tableHTML([{h:'Wave',f:r=>`<b>${r.l}</b> · top ${fN(r.n)}`},{h:'Gap',n:1,f:r=>fN(r.t.gap_per_month,1)},{h:'Conservative',n:1,f:r=>fN(r.t.gap_low_per_month,1)},{h:'Share of Invest gap',n:1,f:r=>r.t.share_of_invest_gap_pct.toFixed(0)+'%'},
-    {h:'Demand · approval',n:1,f:r=>fN(r.e.gap_demand,0)+' · '+fN(r.e.gap_approval,0)},{h:'Closing shops',n:1,f:r=>fN(r.e.closing_shops)},{h:'Measured lever',n:1,f:r=>'+'+fN(r.e.closing_expected,1)},{h:'% of gap',n:1,f:r=>fP(r.e.closing_expected/r.t.gap_per_month,0)}],W);
-  groupedHbar($('#chWaves'),W.map(r=>r.l+' · '+fN(r.n)),[{name:'Gap (central)',color:'var(--o3)',values:W.map(r=>r.t.gap_per_month)},{name:'Conservative (5th pct)',color:'var(--o1)',values:W.map(r=>r.t.gap_low_per_month)},{name:'Closing programme (measured)',color:'var(--s2)',values:W.map(r=>r.e.closing_expected)}],{labelW:110});
+    {h:'Demand · approval',n:1,f:r=>fN(r.e.gap_demand,0)+' · '+fN(r.e.gap_approval,0)},{h:'Closing shops',n:1,f:r=>fN(r.e.closing_shops)},{h:'Modelled lever',n:1,f:r=>'+'+fN(r.e.closing_expected,1)},{h:'% of gap',n:1,f:r=>fP(r.e.closing_expected/r.t.gap_per_month,0)}],W);
+  groupedHbar($('#chWaves'),W.map(r=>r.l+' · '+fN(r.n)),[{name:'Gap (central)',color:'var(--o3)',values:W.map(r=>r.t.gap_per_month)},{name:'Conservative (shop gap_low)',color:'var(--o1)',values:W.map(r=>r.t.gap_low_per_month)},{name:'Closing programme (modelled)',color:'var(--s2)',values:W.map(r=>r.e.closing_expected)}],{labelW:110});
   const w=W[0];
-  $('#wavesStory').innerHTML=`<b>${w.l}</b> (${fN(w.n)} shops) carries +${fN(w.t.gap_per_month,1)} central / +${fN(w.t.gap_low_per_month,1)} conservative, ${w.t.share_of_invest_gap_pct.toFixed(0)}% of the Invest gap. Only <b>${w.e.closing_shops}</b> of them book below the peer mean with ≥ 3 applications a month (${fP(w.e.closing_book_rate,1)} vs ${fP(w.e.closing_peer_book_rate,1)} on ${fN(w.e.closing_apps_pm)} applications / month): a closing-quality programme there is the one lever with measured evidence, worth about <b>+${fN(w.e.closing_expected,0)}</b> a month (${fP(w.e.closing_expected/w.t.gap_per_month,0)} of the wave’s gap). The rest, mostly demand capture (${w.e.main_constraint_demand} of ${fN(w.n)} shops, +${fN(w.e.gap_demand,0)}), has no measured lever yet: that is what the 300 vs 300 pilot measures.`;}
+  $('#wavesStory').innerHTML=`<b>${w.l}</b> (${fN(w.n)} shops) carries +${fN(w.t.gap_per_month,1)} central / +${fN(w.t.gap_low_per_month,1)} conservative, ${w.t.share_of_invest_gap_pct.toFixed(0)}% of the Invest gap. Only <b>${w.e.closing_shops}</b> of them book below the peer mean with ≥ 3 applications a month (${fP(w.e.closing_book_rate,1)} vs ${fP(w.e.closing_peer_book_rate,1)} on ${fN(w.e.closing_apps_pm)} applications / month): a closing-support programme under the assumed response gives a modelled <b>+${fN(w.e.closing_expected,0)}</b> a month (${fP(w.e.closing_expected/w.t.gap_per_month,0)} of the wave’s gap). The rest, mostly demand capture (${w.e.main_constraint_demand} of ${fN(w.n)} shops, +${fN(w.e.gap_demand,0)}), requires an operational diagnosis and a controlled pilot of a specified intervention.`;}
 const I={scope:$('#inScope'),fte:$('#inFte'),slots:$('#inSlots'),hor:$('#inHorizon'),fpd:$('#inFpd'),conf:$('#inConf'),react:$('#inReact'),elas:$('#inElas')};
 Object.values(I).forEach(el=>el.addEventListener('input',runSim));
 [['low','Low'],['base','Base'],['high','High']].forEach(([v,n])=>{I.elas.querySelector(`option[value=${v}]`).textContent=`${n}: Aldi ${f2(E[v].Aldi)} · Non-Aldi ${f2(E[v]['Non-Aldi'])}`;});
@@ -501,24 +504,24 @@ function runSim(){
   const f={maxFpd:fpd>=0.40?null:fpd,conf:I.conf.value==='hm'?['High','Medium']:I.conf.value==='h'?['High']:null};
   const p=params({horizon:+I.hor.value,reactReserve:+I.react.value/100,elas:E[I.elas.value]});
   const R=run(rows,fteB,slotB,f,p);const k=R.k,ke=R.ke;LAST={R,k,p,rows};
-  $('#verdict').innerHTML=`<span class="badge ${k.verdict}">${k.verdict==='APPROVE'?'✔':k.verdict==='REVISE'?'▲':'✖'} ${k.verdict}</span>`;
-  $('#checks').innerHTML=k.checks.map(c=>`<li><span class="${c[2]?'ok':'ko'}">${c[2]?'✔':'✖'}</span><span><b>${esc(c[1])}</b><br><span class="note">${esc(c[3])}</span></span></li>`).join('');
-  tiles($('#tilesSim'),[{label:'Expected uplift (run-rate)',value:'+'+fN(k.uplift),delta:'booked / month · conservative +'+fN(k.uplift05)},{label:'Gap closure',value:fP(k.closure),delta:'of '+fN(k.gapT)+' gap in scope'},
+  $('#verdict').innerHTML=`<span class="badge ${k.verdict}">${k.verdict==='APPROVE'?'✔':k.verdict==='REVISE'?'▲':'✖'} ${decisionLabel(k.verdict)}</span><p class="note">${demoText('Model checks only. Pilot outcomes, programme-wide credit quality and costs still need validation.','Kiểm tra theo mô hình. Hiệu quả pilot, chất lượng tín dụng toàn chương trình và chi phí cần được kiểm chứng.')}</p>`;
+  $('#checks').innerHTML=k.checks.map(c=>{const na=(c[0]==='beats_even_spread'&&!k.binding)||(['fpd_guardrail','no_fte_to_risk_shops','marginal_fte_productive'].includes(c[0])&&k.fteUsed===0);return `<li><span class="${na?'na':c[2]?'ok':'ko'}">${na?'N/A':c[2]?'✔':'✖'}</span><span><b>${esc(c[1])}</b><br><span class="note">${esc(na&&c[0]==='no_fte_to_risk_shops'?demoText('No extra FTE allocated','Không phân bổ thêm FTE'):c[3])}</span></span></li>`;}).join('');
+  tiles($('#tilesSim'),[{label:'Modelled uplift (run-rate)',value:'+'+fN(k.uplift),delta:'booked / month · conservative +'+fN(k.uplift05)+' (shop gap_low convention)'},{label:'Gap closure',value:fP(k.closure),delta:'of '+fN(k.gapT)+' gap in scope'},
     {label:'Attainment',value:fP(k.attBefore,0)+' → '+fP(k.attAfter),delta:'BAU ÷ Attainable, before → after'},{label:'vs. team priority order',value:k.binding?'×'+f2(k.eff):'same shops',delta:'order-only plan: +'+fN(ke.uplift)+' / month'},
-    {label:'Extra contracts over '+p.horizon+' mo',value:'+'+fN(k.upliftH),delta:'linear ramp-up assumed'},{label:'Credit value over horizon',value:fN(k.creditH/1e9,1)+' bn VND',delta:'at each shop’s average ticket'},
+    {label:'Extra contracts over '+p.horizon+' mo',value:'+'+fN(k.upliftH),delta:'linear ramp-up assumed'},{label:'Credit value over horizon',value:fN(k.creditH/1e9,1)+' bn VND',delta:'volume estimate; revenue and profit require costs'},
     {label:'Marginal booked / FTE-month',value:k.perFte==null?'–':f2(k.perFte),delta:'network average '+f2(p.minPerFte)},{label:'Shops selected',value:fN(k.shopsSelected),delta:fN(k.fteUsed,2)+' FTE · '+k.slotsUsed+' slots used of '+slotB}]);
-  // FTE payback curve in scope (slots 0)
+  // FTE productivity curve in scope (slots 0)
   const steps=[0.25,0.5,1,2,5,10,20,30,40,50];const full=allocate(rows,50,0,f,p,'opt').curve;const pts=[];
   steps.forEach(b=>{const c=full.filter(x=>x[0]<=b+1e-9).pop();if(c)pts.push([b,c[1]/c[0]]);});
   let be=null;pts.forEach(([b,v])=>{if(v>=p.minPerFte)be=b;});
   const lv=Object.entries(k.byLever).sort((a,b)=>b[1].uplift-a[1].uplift);
-  $('#reco').innerHTML='<b>Recommendation.</b> '+(k.verdict==='APPROVE'?'Approve as the pilot plan: ':k.verdict==='REVISE'?'Revise before approval: ':'Reject: guardrail breached. ')+
+  $('#reco').innerHTML='<b>Recommendation.</b> '+(k.verdict==='APPROVE'?'Recommended for pilot, subject to cost and outcome validation: ':k.verdict==='REVISE'?'Revise the pilot plan: ':'Do not proceed: guardrail breached. ')+
     `the plan closes ${fP(k.closure)} of the gap in scope (+${fN(k.uplift)} of +${fN(k.gapT)}) and lifts attainment from ${fP(k.attBefore,0)} to ${fP(k.attAfter)}. `+
     (lv.length?`Most value comes from <b>${LEVER_NAME[lv[0][0]]}</b> (${lv[0][1].shops} shops, +${fN(lv[0][1].uplift)} / month). `:'')+
     (pts.length?(be==null?`<b>No extra SA FTE:</b> in this scope even the first 0.25 FTE yields ${f2(pts[0][1])} booked per FTE-month, below the network’s ${f2(p.minPerFte)}. `:fteB>be?`FTE above ~<b>${be}</b> is absorbed below network productivity: redirect the remainder to programmes. `:`The scope absorbs up to ~${be} FTE at or above network productivity. `):'No FTE-eligible shop responds to staffing in this scope. ')+
     (k.binding&&!k.checks[0][2]?`The engine beats the team priority order by only ×${f2(k.eff)}: use the team waves as the shop list and the engine to assign the lever. `:'')+
     (k.checks[4][2]?'':'Downside is weak: raise the minimum confidence. ')+
-    `The other ${fP(1-k.closure,0)} of the gap has no measured lever: the pilot on page 3 measures it before scaling.`;
+    `The other ${fP(1-k.closure,0)} of the gap is not closed by this plan. Specify and test additional interventions before scaling.`;
   const levers=['FTE','APPROVAL','REACT','QUALITY_FIX'].filter(l=>(k.byLever[l]||ke.byLever[l]));
   groupedHbar($('#chLever'),levers.map(l=>LEVER_NAME[l]),[{name:'Engine plan',color:'var(--s1)',values:levers.map(l=>k.byLever[l]?k.byLever[l].uplift:0)},{name:'Team priority order',color:'var(--de)',values:levers.map(l=>ke.byLever[l]?ke.byLever[l].uplift:0)}],{labelW:190});
   if(pts.length)lineChart($('#chCurve'),pts.map(x=>x[0]+''),[{name:'Avg booked per extra FTE-month',color:'var(--s1)',values:pts.map(x=>x[1])}],{h:200,ref:p.minPerFte,refLabel:'network '+f2(p.minPerFte),fmt:v=>f2(v),axisFmt:v=>v.toFixed(1)});
@@ -527,8 +530,9 @@ function runSim(){
   hbar($('#chUpArea'),Object.entries(byA).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({label:l,value:v})),{labelW:120,labelH:'Area',valueH:'Uplift'});
   const plan=k.ups.map(([a,r])=>({...r,lever:a.lever,fte_add:a.fte,uplift:a.uplift,p05:a.uplift*r.gap_p05_ratio})).sort((a,b)=>b.uplift-a.uplift);
   $('#planCap').textContent=`${plan.length} shops · showing top 40 by expected uplift · full list in the CSV`;
-  $('#tblPlan').innerHTML=tableHTML([{h:'Shop',k:'shop_id'},{h:'Rank',n:1,f:r=>r.team_rank??''},{h:'Area',k:'area'},{h:'Province',k:'province'},{h:'Cat.',k:'category'},{h:'Model',k:'model'},{h:'Lever',f:r=>`<span class="pill" style="border-color:${LEVER_COLOR[r.lever]}">${esc(r.lever)}</span>`},{h:'+FTE',n:1,f:r=>r.fte_add?f2(r.fte_add):''},{h:'BAU',n:1,f:r=>f1(r.bau)},{h:'Attainable',n:1,f:r=>f1(r.attainable)},{h:'Uplift',n:1,f:r=>f1(r.uplift)},{h:'P05',n:1,f:r=>f1(r.p05)},{h:'Book rate / peer',n:1,f:r=>fP(r.book_rate,0)+' / '+fP(r.peer_book_rate,0)},{h:'FPD',n:1,f:r=>fP(r.fpd_rate)},{h:'Prime %',n:1,f:r=>fP(r.share_prime,0)},{h:'Conf.',k:'confidence'}],plan.slice(0,40));
-  LAST.plan=plan;}
+  $('#tblPlan').innerHTML=tableHTML([{h:'Shop',k:'shop_id'},{h:'Rank',n:1,f:r=>r.team_rank??''},{h:'Area',k:'area'},{h:'Province',k:'province'},{h:'Cat.',k:'category'},{h:'Model',k:'model'},{h:'Lever',f:r=>`<span class="pill" style="border-color:${LEVER_COLOR[r.lever]}">${esc(r.lever)}</span>`},{h:'+FTE',n:1,f:r=>r.fte_add?f2(r.fte_add):''},{h:'BAU',n:1,f:r=>f1(r.bau)},{h:'Attainable',n:1,f:r=>f1(r.attainable)},{h:'Uplift',n:1,f:r=>f1(r.uplift)},{h:'Conservative',n:1,f:r=>f1(r.p05)},{h:'Book rate / peer',n:1,f:r=>fP(r.book_rate,0)+' / '+fP(r.peer_book_rate,0)},{h:'FPD',n:1,f:r=>fP(r.fpd_rate)},{h:'Prime %',n:1,f:r=>fP(r.share_prime,0)},{h:'Conf.',k:'confidence'}],plan.slice(0,40));
+  LAST.plan=plan;
+  window.dispatchEvent(new CustomEvent('r3:simulation',{detail:{k,ke,p,rows}}));}
 $('#btnCsv').onclick=()=>{if(!LAST)return;const cols=['shop_id','team_rank','wave','area','province','category','model','shop_product','track','main_constraint','confidence','lever','fte_add','bau','attainable','gap','gap_low','uplift','p05','book_rate','peer_book_rate','fpd_rate','peer_fpd','share_prime','share_stressed'];
   const csv=[cols.join(',')].concat(LAST.plan.map(r=>cols.map(c=>{const v=r[c];return typeof v==='number'?(Math.round(v*1000)/1000):`"${String(v??'').replace(/"/g,'""')}"`;}).join(','))).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='r3_allocation_plan.csv';a.click();};
@@ -558,9 +562,9 @@ function renderValidation(){
     <span>Task 6 proposal 2</span><b>Judge the effect against control, never against BAU: in the team backtest the top 1,000 at ${dr.t0} rose ${sg(d1.mean_uplift_vs_bau)} a month above BAU with no programme (median ${sg(d1.median_uplift_vs_bau)}).</b>
     <span>Link to the engine</span><b>The measured lift replaces the closing share (0.5) and shows whether demand-capture shops respond. SA FTE stays at 0 unless the pilot shows a response above network productivity (${f2(P0.network_booked_per_fte)} booked per FTE-month).</b></div>`;
   const sc=Object.entries(S6.scenarios).map(([n,x])=>({n,...x}));
-  $('#tblScen').innerHTML=tableHTML([{h:'Scenario',f:r=>esc(SCN[r.n]||r.n)},{h:'FTE',n:1,f:r=>r.inputs.fte},{h:'Slots',n:1,f:r=>r.inputs.slots},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'Conservative',n:1,f:r=>'+'+fN(r.uplift_p05,1)},{h:'Team order',n:1,f:r=>'+'+fN(r.even_uplift,1)},{h:'×',n:1,f:r=>r.budget_binding?f2(r.eff_vs_even):'same'},{h:'Per FTE',n:1,f:r=>r.per_fte==null?'–':f2(r.per_fte)},{h:'Closure',n:1,f:r=>fP(r.gap_closure)},{h:'Verdict',f:r=>esc(r.verdict)}],sc);
+  $('#tblScen').innerHTML=tableHTML([{h:'Scenario',f:r=>esc(SCN[r.n]||r.n)},{h:'FTE',n:1,f:r=>r.inputs.fte},{h:'Slots',n:1,f:r=>r.inputs.slots},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'Conservative',n:1,f:r=>'+'+fN(r.uplift_p05,1)},{h:'Team order',n:1,f:r=>'+'+fN(r.even_uplift,1)},{h:'×',n:1,f:r=>r.budget_binding?f2(r.eff_vs_even):'same'},{h:'Per FTE',n:1,f:r=>r.per_fte==null?'–':f2(r.per_fte)},{h:'Closure',n:1,f:r=>fP(r.gap_closure)},{h:'Verdict',f:r=>esc(decisionLabel(r.verdict))}],sc);
   const PN={elasticity:'staffing elasticity',p_react:'reactivation rate',approval_closable_share:'closing share',conf_weight:'confidence weights'};
-  $('#tblSens').innerHTML=tableHTML([{h:'Assumption',f:r=>esc(PN[r.param]||r.param)},{h:'Value',f:r=>esc(r.param==='elasticity'?r.value+': Aldi '+f2(E[r.value].Aldi):r.value==='flat'?'all 1.0':String(r.value))},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'vs team order',n:1,f:r=>'×'+f2(r.eff_vs_even)},{h:'Same shops (Jaccard)',n:1,f:r=>f2(r.jaccard_vs_base)},{h:'Verdict',k:'verdict'},{h:'20-FTE yield',n:1,f:r=>f2(r.fte20_per_fte)}],S6.sensitivity);
+  $('#tblSens').innerHTML=tableHTML([{h:'Assumption',f:r=>esc(PN[r.param]||r.param)},{h:'Value',f:r=>esc(r.param==='elasticity'?r.value+': Aldi '+f2(E[r.value].Aldi):r.value==='flat'?'all 1.0':String(r.value))},{h:'Uplift / mo',n:1,f:r=>'+'+fN(r.uplift,1)},{h:'vs team order',n:1,f:r=>'×'+f2(r.eff_vs_even)},{h:'Same shops (Jaccard)',n:1,f:r=>f2(r.jaccard_vs_base)},{h:'Verdict',f:r=>esc(decisionLabel(r.verdict))},{h:'20-FTE yield',n:1,f:r=>f2(r.fte20_per_fte)}],S6.sensitivity);
   const g=D.r2_link.outcome_by_group;$('#tblR2').innerHTML=tableHTML([{h:'Round 2 group',k:'group'},{h:'Contracts 2025-26',n:1,f:r=>fN(r.contracts)},{h:'Booking rate',n:1,f:r=>fP(r.book_rate)},{h:'FPD',n:1,f:r=>fP(r.fpd_rate)}],g);
   $('#r2Note2').textContent='Shown per shop as context (share of Prime / Stressed, shrunk toward the peer mean when < 20 scored clients). It does not change the allocation: only '+D.r2_link.shops_with_30_scored+' shops have ≥ 30 scored clients, and the FPD guardrail uses observed shop FPD.';
   const NT=P0.network_totals;
@@ -591,5 +595,6 @@ applyDecisionStaticI18n();
 
 renderValidation();renderWaves();refresh();
 </script>
+<script src="demo.js"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@
     // Update URL query param without reload
     const url = new URL(window.location.href);
     url.searchParams.set('lang', lang);
-    window.history.replaceState({}, '', url.toString());
+    try { window.history.replaceState({}, '', url.toString()); } catch(e) { /* Standalone offline documents may restrict history changes. */ }
 
     // Update navigation links to preserve lang
     updateNavLinks(lang);
